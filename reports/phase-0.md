@@ -1,7 +1,8 @@
 # Phase 0 — repository and behavioral vectors
 
 Date: 2026-10-14 (Asia/Singapore).
-Status: implementation and verification complete; commit/PR delivery pending.
+Status: Phase 0 complete. Implementation commit: `8be5ab8`.
+Pull request: [#1](https://github.com/yuhui0531/localclip-windows/pull/1), open against `main`.
 Branch: `feat/phase-0-vectors`; base: remote `main` at `c59862d` (existing license preserved).
 
 ## Scope and baseline
@@ -26,7 +27,7 @@ The Swift package links the local public `LocalClipCore` library. No new third-p
 | P0-04–05 | §4.1–4.3, §5.5, §5.12–5.13, §5.17, §9.1 | Public-API exporter and all 15 JSON files; metadata first in each file |
 | P0-06 | §4.5, §5.6; AC03/12/13/17/19/20/26/27 | Seven ordered storage scenarios, every step carrying observed state, plus independent logical assertions |
 | P0-07 | §9.1, §13 | Two final exports compared in full, 15/15 byte-identical; clean reference before/after |
-| P0-08 | §13 | This report, task list, SHA-256 manifest, prepared PR description; delivery status above |
+| P0-08 | §13 | This report, task list, SHA-256 manifest, committed fixtures, and open PR #1 |
 
 | Fixture | Cases | Coverage |
 |---|---:|---|
