@@ -1,0 +1,139 @@
+{
+  "metadata": {
+  "localOffsetSeconds" : 28800,
+  "macosCommit" : "c097591431c00982ad34186068064b40965c95fd",
+  "macosVersion" : "0.3.29",
+  "notes" : [
+
+  ],
+  "nowMs" : 1760486400000,
+  "schemaVersion" : 1,
+  "sourceFunctions" : [
+    "ClipboardPayload.isImageFile",
+    "Windows PRD §4.3 extension whitelist"
+  ],
+  "timezone" : "Asia/Shanghai"
+},
+  "cases": [
+  {
+    "isImage" : true,
+    "macosDiffers" : false,
+    "macosIsImage" : true,
+    "path" : "C:/fixtures/中文 image.png"
+  },
+  {
+    "isImage" : true,
+    "macosDiffers" : false,
+    "macosIsImage" : true,
+    "path" : "C:/fixtures/中文 image.jpg"
+  },
+  {
+    "isImage" : true,
+    "macosDiffers" : false,
+    "macosIsImage" : true,
+    "path" : "C:/fixtures/中文 image.jpeg"
+  },
+  {
+    "isImage" : true,
+    "macosDiffers" : false,
+    "macosIsImage" : true,
+    "path" : "C:/fixtures/中文 image.gif"
+  },
+  {
+    "isImage" : true,
+    "macosDiffers" : false,
+    "macosIsImage" : true,
+    "path" : "C:/fixtures/中文 image.bmp"
+  },
+  {
+    "isImage" : true,
+    "macosDiffers" : false,
+    "macosIsImage" : true,
+    "path" : "C:/fixtures/中文 image.tif"
+  },
+  {
+    "isImage" : true,
+    "macosDiffers" : false,
+    "macosIsImage" : true,
+    "path" : "C:/fixtures/中文 image.tiff"
+  },
+  {
+    "isImage" : true,
+    "macosDiffers" : false,
+    "macosIsImage" : true,
+    "path" : "C:/fixtures/中文 image.webp"
+  },
+  {
+    "isImage" : true,
+    "macosDiffers" : false,
+    "macosIsImage" : true,
+    "path" : "C:/fixtures/中文 image.ico"
+  },
+  {
+    "isImage" : false,
+    "macosDiffers" : false,
+    "macosIsImage" : false,
+    "path" : "C:/fixtures/中文 image.svg"
+  },
+  {
+    "isImage" : false,
+    "macosDiffers" : true,
+    "macosIsImage" : true,
+    "path" : "C:/fixtures/中文 image.heic"
+  },
+  {
+    "isImage" : false,
+    "macosDiffers" : false,
+    "macosIsImage" : false,
+    "path" : "C:/fixtures/中文 image.pdf"
+  },
+  {
+    "isImage" : false,
+    "macosDiffers" : false,
+    "macosIsImage" : false,
+    "path" : "C:/fixtures/中文 image.txt"
+  },
+  {
+    "isImage" : false,
+    "macosDiffers" : false,
+    "macosIsImage" : false,
+    "path" : "C:/fixtures/中文 image."
+  },
+  {
+    "isImage" : true,
+    "macosDiffers" : false,
+    "macosIsImage" : true,
+    "path" : "C:/fixtures/中文 image.PNG"
+  },
+  {
+    "isImage" : true,
+    "macosDiffers" : false,
+    "macosIsImage" : true,
+    "path" : "C:/fixtures/中文 image.JpEg"
+  },
+  {
+    "isImage" : false,
+    "macosDiffers" : false,
+    "macosIsImage" : false,
+    "path" : "C:/fixtures/no-extension"
+  },
+  {
+    "isImage" : false,
+    "macosDiffers" : false,
+    "macosIsImage" : false,
+    "path" : "C:/fixtures/a.png.txt"
+  },
+  {
+    "isImage" : false,
+    "macosDiffers" : false,
+    "macosIsImage" : false,
+    "path" : "C:/fixtures/.png"
+  },
+  {
+    "isImage" : true,
+    "macosDiffers" : false,
+    "macosIsImage" : true,
+    "path" : "C:\\fixtures\\a.png"
+  }
+]
+}

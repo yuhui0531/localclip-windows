@@ -1,0 +1,304 @@
+{
+  "metadata": {
+  "localOffsetSeconds" : 28800,
+  "macosCommit" : "c097591431c00982ad34186068064b40965c95fd",
+  "macosVersion" : "0.3.29",
+  "notes" : [
+    "Public canonicalData/fingerprint APIs receive neutral IDs directly; kind is evaluated on original UTIs.",
+    "Image bytes are synthetic identity inputs, not decoder fixtures; DIBV5 is never produced by converting TIFF."
+  ],
+  "nowMs" : 1760486400000,
+  "schemaVersion" : 1,
+  "sourceFunctions" : [
+    "ClipboardPayload.canonicalData",
+    "ClipboardPayload.fingerprint"
+  ],
+  "timezone" : "Asia/Shanghai"
+},
+  "cases": [
+  {
+    "fingerprint" : "649d9e9d7d79f1a6a4c08b34ff2a4170c589a88972690dd2a89ec8c8faa3fc68",
+    "items" : [
+      [
+
+      ]
+    ]
+  },
+  {
+    "fingerprint" : "b38536b28ca351b6f0b1aa3cffac0a2d747781004fbb66efdef12033e20eafff",
+    "items" : [
+      [
+        {
+          "dataBase64" : "dGV4dA==",
+          "type" : "text/plain"
+        }
+      ]
+    ]
+  },
+  {
+    "fingerprint" : "c9f8e268478836fa0b024e7f046a9fb0b41651439686e91bdcc7b86261689962",
+    "items" : [
+      [
+        {
+          "dataBase64" : "aHR0cHM6Ly9leGFtcGxlLmNvbQ==",
+          "type" : "text/uri"
+        }
+      ]
+    ]
+  },
+  {
+    "fingerprint" : "801d22c8e8078622ec0338b858ab372a522498c5e9013e82c20637c2bfed9092",
+    "items" : [
+      [
+        {
+          "dataBase64" : "PGI+eDwvYj4=",
+          "type" : "text/html"
+        }
+      ]
+    ]
+  },
+  {
+    "fingerprint" : "8430737a4de5d4fb9fdbaf58a919eb9e6089c4f1c5e2e03a6288cd1f14673be3",
+    "items" : [
+      [
+        {
+          "dataBase64" : "e1xydGYxIHh9",
+          "type" : "text/rtf"
+        }
+      ]
+    ]
+  },
+  {
+    "fingerprint" : "d5d6a9a59c8fcec25e4b14297a872c218547d0a4183127495e61c667b1eb3f9d",
+    "items" : [
+      [
+        {
+          "dataBase64" : "AAH/",
+          "type" : "image/png"
+        }
+      ]
+    ]
+  },
+  {
+    "fingerprint" : "7e5be2b369969dbba58052388492a0dae7d45807f1aa744f75c0f9f3ad2c084e",
+    "items" : [
+      [
+        {
+          "dataBase64" : "/9j/",
+          "type" : "image/jpeg"
+        }
+      ]
+    ]
+  },
+  {
+    "fingerprint" : "2b35087849a0e7a1d31015c7a9fbc4e9a5048b9c55718d3a07f8619a239ef842",
+    "items" : [
+      [
+        {
+          "dataBase64" : "AQ==",
+          "type" : "image/png"
+        },
+        {
+          "dataBase64" : "Ag==",
+          "type" : "image/jpeg"
+        }
+      ]
+    ]
+  },
+  {
+    "fingerprint" : "2fe6b576da9ae7a5eb196ef921b4bce4141e7f48dae2811fd349dfdc251f13a4",
+    "items" : [
+      [
+        {
+          "dataBase64" : "eA==",
+          "type" : "text/plain"
+        },
+        {
+          "dataBase64" : "Aw==",
+          "type" : "image/png"
+        }
+      ]
+    ]
+  },
+  {
+    "fingerprint" : "1716125f5e5b6b7835f24c0fbe06edac6020da959929647ebd4867a9fdd14c87",
+    "items" : [
+      [
+        {
+          "dataBase64" : "ZmlsZTovLy9DOi9maXh0dXJlcy9hLnBuZw==",
+          "type" : "text/uri-list"
+        }
+      ]
+    ]
+  },
+  {
+    "fingerprint" : "532428fd1258b9963fbb1a1c3bcb78e091ca2fca8425a4b1168c7d0745191d2a",
+    "items" : [
+      [
+        {
+          "dataBase64" : "ZXhhbXBsZS5jb20=",
+          "type" : "text/plain"
+        }
+      ]
+    ]
+  },
+  {
+    "fingerprint" : "8693b955db8f895b33acd9ed051c078064d2a28f19b485064c2303fd5c168fce",
+    "items" : [
+      [
+        {
+          "dataBase64" : "UkVBRE1FLm1k",
+          "type" : "text/plain"
+        }
+      ]
+    ]
+  },
+  {
+    "fingerprint" : "8a68d0af44599971628d70442d84c2815b98992eb0390ad77911b498a3a8ab47",
+    "items" : [
+      [
+        {
+          "dataBase64" : "YQ==",
+          "type" : "text/plain"
+        }
+      ],
+      [
+        {
+          "dataBase64" : "Yg==",
+          "type" : "text/plain"
+        }
+      ]
+    ]
+  },
+  {
+    "fingerprint" : "99fa56f719d06d69a5e1307f29afc4e69ae8a85b65fb390b14bfb5421cc9f011",
+    "items" : [
+      [
+        {
+          "dataBase64" : "ZmlsZTovLy9DOi9maXh0dXJlcy9hLnBuZw==",
+          "type" : "text/uri-list"
+        }
+      ],
+      [
+        {
+          "dataBase64" : "ZmlsZTovLy9DOi9maXh0dXJlcy9hLnBuZw==",
+          "type" : "text/uri-list"
+        }
+      ]
+    ]
+  },
+  {
+    "fingerprint" : "28c7d5d7d3b1c3f567d1a1b8378035ffd7dd387761600ff90c17e5d1e777de00",
+    "items" : [
+      [
+        {
+          "dataBase64" : "ZmlsZTovLy9DOi9maXh0dXJlcy9hLnBuZw==",
+          "type" : "text/uri-list"
+        }
+      ],
+      [
+        {
+          "dataBase64" : "dGV4dA==",
+          "type" : "text/plain"
+        }
+      ]
+    ]
+  },
+  {
+    "fingerprint" : "442d3bdfbb5bb601a3d93780eca6e3865efb7e959f86c3ea18411f82b1c163cc",
+    "items" : [
+      [
+        {
+          "dataBase64" : "QQBC",
+          "type" : "text/plain"
+        }
+      ],
+      [
+        {
+          "dataBase64" : "ZcyB",
+          "type" : "text/plain"
+        }
+      ]
+    ]
+  },
+  {
+    "fingerprint" : "2e5d9ea1db445c200d14df73c27fed76dfe41fae463c4590fe0c4a2e131816ba",
+    "items" : [
+      [
+        {
+          "dataBase64" : "Yg==",
+          "type" : "text/plain"
+        }
+      ],
+      [
+        {
+          "dataBase64" : "YQ==",
+          "type" : "text/plain"
+        }
+      ]
+    ]
+  },
+  {
+    "fingerprint" : "413bc684b10dfd39520389865333a3df38ba613b027dd25f6340a2885ec0a07e",
+    "items" : [
+      [
+        {
+          "dataBase64" : "",
+          "type" : "text/plain"
+        }
+      ]
+    ]
+  },
+  {
+    "fingerprint" : "783825822a6f9e62da2190e828e4c9d2576e5977e3a0b3620b092dfb9e9996fa",
+    "items" : [
+
+    ]
+  },
+  {
+    "fingerprint" : "2fe6b576da9ae7a5eb196ef921b4bce4141e7f48dae2811fd349dfdc251f13a4",
+    "items" : [
+      [
+        {
+          "dataBase64" : "Aw==",
+          "type" : "image/png"
+        },
+        {
+          "dataBase64" : "eA==",
+          "type" : "text/plain"
+        }
+      ]
+    ]
+  },
+  {
+    "fingerprint" : "ffc6788e10fd9cc2afbbc8e0ae463b6136cf0677f01dd8c0c5c90c0993e77562",
+    "items" : [
+      [
+        {
+          "dataBase64" : "AAD/",
+          "type" : "image/x-win-dibv5"
+        }
+      ]
+    ]
+  },
+  {
+    "fingerprint" : "f38530d10daeb7e9f8577203ccd5ccdfadc4fa80798e80d557f26e09d1ce9bcf",
+    "items" : [
+      [
+        {
+          "dataBase64" : "AAD/",
+          "type" : "image/png"
+        },
+        {
+          "dataBase64" : "AQD/",
+          "type" : "image/jpeg"
+        },
+        {
+          "dataBase64" : "AgD/",
+          "type" : "image/x-win-dibv5"
+        }
+      ]
+    ]
+  }
+]
+}

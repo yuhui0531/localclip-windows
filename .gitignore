@@ -1,0 +1,8 @@
+target/
+node_modules/
+.build/
+dist/
+.DS_Store
+.swiftpm/
+reports/raw/
+__pycache__/

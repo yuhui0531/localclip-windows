@@ -1,0 +1,719 @@
+{
+  "metadata": {
+  "localOffsetSeconds" : 28800,
+  "macosCommit" : "c097591431c00982ad34186068064b40965c95fd",
+  "macosVersion" : "0.3.29",
+  "notes" : [
+    "Distinct timestamps avoid random-ID tie ordering; expectedOrder indexes corpus. Empty-query browse semantics come from the public search API."
+  ],
+  "nowMs" : 1760486400000,
+  "schemaVersion" : 1,
+  "sourceFunctions" : [
+    "HistoryStore.ingest",
+    "HistoryStore.renameClip",
+    "HistoryStore.search"
+  ],
+  "timezone" : "Asia/Shanghai"
+},
+  "cases": [
+  {
+    "corpus" : [
+      {
+        "copiedAt" : 1760486400000,
+        "items" : [
+          "needle"
+        ],
+        "source" : "Exact",
+        "text" : "needle"
+      },
+      {
+        "copiedAt" : 1760486401000,
+        "items" : [
+          "needle prefix"
+        ],
+        "source" : "Prefix",
+        "text" : "needle prefix"
+      },
+      {
+        "copiedAt" : 1760486402000,
+        "items" : [
+          "a needle b"
+        ],
+        "source" : "Contains",
+        "text" : "a needle b"
+      },
+      {
+        "copiedAt" : 1760486403000,
+        "items" : [
+          "other"
+        ],
+        "source" : "NEEDLE source",
+        "text" : "other"
+      },
+      {
+        "copiedAt" : 1760486404000,
+        "items" : [
+          "no match"
+        ],
+        "source" : "Other",
+        "text" : "no match"
+      },
+      {
+        "copiedAt" : 1760486405000,
+        "items" : [
+          "title body"
+        ],
+        "source" : "Other",
+        "text" : "title body",
+        "title" : "My NEEDLE title"
+      }
+    ],
+    "expectedOrder" : [
+      0,
+      5,
+      1,
+      2,
+      3
+    ],
+    "needle" : "needle"
+  },
+  {
+    "corpus" : [
+      {
+        "copiedAt" : 1760486400000,
+        "items" : [
+          "needle"
+        ],
+        "source" : "Exact",
+        "text" : "needle"
+      },
+      {
+        "copiedAt" : 1760486401000,
+        "items" : [
+          "needle prefix"
+        ],
+        "source" : "Prefix",
+        "text" : "needle prefix"
+      },
+      {
+        "copiedAt" : 1760486402000,
+        "items" : [
+          "a needle b"
+        ],
+        "source" : "Contains",
+        "text" : "a needle b"
+      },
+      {
+        "copiedAt" : 1760486403000,
+        "items" : [
+          "other"
+        ],
+        "source" : "NEEDLE source",
+        "text" : "other"
+      },
+      {
+        "copiedAt" : 1760486404000,
+        "items" : [
+          "no match"
+        ],
+        "source" : "Other",
+        "text" : "no match"
+      },
+      {
+        "copiedAt" : 1760486405000,
+        "items" : [
+          "title body"
+        ],
+        "source" : "Other",
+        "text" : "title body",
+        "title" : "My NEEDLE title"
+      }
+    ],
+    "expectedOrder" : [
+      5,
+      4,
+      3,
+      2,
+      1,
+      0
+    ],
+    "needle" : ""
+  },
+  {
+    "corpus" : [
+      {
+        "copiedAt" : 1760486400000,
+        "items" : [
+          "needle"
+        ],
+        "source" : "Exact",
+        "text" : "needle"
+      },
+      {
+        "copiedAt" : 1760486401000,
+        "items" : [
+          "needle prefix"
+        ],
+        "source" : "Prefix",
+        "text" : "needle prefix"
+      },
+      {
+        "copiedAt" : 1760486402000,
+        "items" : [
+          "a needle b"
+        ],
+        "source" : "Contains",
+        "text" : "a needle b"
+      },
+      {
+        "copiedAt" : 1760486403000,
+        "items" : [
+          "other"
+        ],
+        "source" : "NEEDLE source",
+        "text" : "other"
+      },
+      {
+        "copiedAt" : 1760486404000,
+        "items" : [
+          "no match"
+        ],
+        "source" : "Other",
+        "text" : "no match"
+      },
+      {
+        "copiedAt" : 1760486405000,
+        "items" : [
+          "title body"
+        ],
+        "source" : "Other",
+        "text" : "title body",
+        "title" : "My NEEDLE title"
+      }
+    ],
+    "expectedOrder" : [
+
+    ],
+    "needle" : "no-match"
+  },
+  {
+    "corpus" : [
+      {
+        "copiedAt" : 1760486400000,
+        "items" : [
+          "é"
+        ],
+        "source" : "Source",
+        "text" : "é"
+      },
+      {
+        "copiedAt" : 1760486401000,
+        "items" : [
+          "é suffix"
+        ],
+        "source" : "Source",
+        "text" : "é suffix"
+      },
+      {
+        "copiedAt" : 1760486402000,
+        "items" : [
+          "other"
+        ],
+        "source" : "É",
+        "text" : "other"
+      }
+    ],
+    "expectedOrder" : [
+      0,
+      1
+    ],
+    "needle" : "é"
+  },
+  {
+    "corpus" : [
+      {
+        "copiedAt" : 1760486400000,
+        "items" : [
+          "é"
+        ],
+        "source" : "Source",
+        "text" : "é"
+      },
+      {
+        "copiedAt" : 1760486401000,
+        "items" : [
+          "é suffix"
+        ],
+        "source" : "Source",
+        "text" : "é suffix"
+      },
+      {
+        "copiedAt" : 1760486402000,
+        "items" : [
+          "other"
+        ],
+        "source" : "É",
+        "text" : "other"
+      }
+    ],
+    "expectedOrder" : [
+      2
+    ],
+    "needle" : "É"
+  },
+  {
+    "corpus" : [
+      {
+        "copiedAt" : 1760486400000,
+        "items" : [
+          "é"
+        ],
+        "source" : "Source",
+        "text" : "é"
+      },
+      {
+        "copiedAt" : 1760486401000,
+        "items" : [
+          "é suffix"
+        ],
+        "source" : "Source",
+        "text" : "é suffix"
+      },
+      {
+        "copiedAt" : 1760486402000,
+        "items" : [
+          "other"
+        ],
+        "source" : "É",
+        "text" : "other"
+      }
+    ],
+    "expectedOrder" : [
+      0,
+      1
+    ],
+    "needle" : "é"
+  },
+  {
+    "corpus" : [
+      {
+        "copiedAt" : 1760486400000,
+        "items" : [
+          "first",
+          "second"
+        ],
+        "source" : "Source",
+        "text" : "first\nsecond"
+      },
+      {
+        "copiedAt" : 1760486401000,
+        "items" : [
+          "first second"
+        ],
+        "source" : "Source",
+        "text" : "first second"
+      },
+      {
+        "copiedAt" : 1760486402000,
+        "items" : [
+          "second"
+        ],
+        "source" : "Source",
+        "text" : "second"
+      }
+    ],
+    "expectedOrder" : [
+      0
+    ],
+    "needle" : "first\nsecond"
+  },
+  {
+    "corpus" : [
+      {
+        "copiedAt" : 1760486400000,
+        "items" : [
+          "first",
+          "second"
+        ],
+        "source" : "Source",
+        "text" : "first\nsecond"
+      },
+      {
+        "copiedAt" : 1760486401000,
+        "items" : [
+          "first second"
+        ],
+        "source" : "Source",
+        "text" : "first second"
+      },
+      {
+        "copiedAt" : 1760486402000,
+        "items" : [
+          "second"
+        ],
+        "source" : "Source",
+        "text" : "second"
+      }
+    ],
+    "expectedOrder" : [
+      2,
+      1,
+      0
+    ],
+    "needle" : "second"
+  },
+  {
+    "corpus" : [
+      {
+        "copiedAt" : 1760486400000,
+        "items" : [
+          "first",
+          "second"
+        ],
+        "source" : "Source",
+        "text" : "first\nsecond"
+      },
+      {
+        "copiedAt" : 1760486401000,
+        "items" : [
+          "first second"
+        ],
+        "source" : "Source",
+        "text" : "first second"
+      },
+      {
+        "copiedAt" : 1760486402000,
+        "items" : [
+          "second"
+        ],
+        "source" : "Source",
+        "text" : "second"
+      }
+    ],
+    "expectedOrder" : [
+      0
+    ],
+    "needle" : "\n"
+  },
+  {
+    "corpus" : [
+      {
+        "copiedAt" : 1760486400000,
+        "items" : [
+          "a\u0000b"
+        ],
+        "source" : "Source",
+        "text" : "a\u0000b"
+      },
+      {
+        "copiedAt" : 1760486401000,
+        "items" : [
+          "%_\"*"
+        ],
+        "source" : "Source",
+        "text" : "%_\"*"
+      },
+      {
+        "copiedAt" : 1760486402000,
+        "items" : [
+          "需求ABC"
+        ],
+        "source" : "Source",
+        "text" : "需求ABC"
+      },
+      {
+        "copiedAt" : 1760486403000,
+        "items" : [
+          "ＡBC"
+        ],
+        "source" : "Source",
+        "text" : "ＡBC"
+      }
+    ],
+    "expectedOrder" : [
+      0
+    ],
+    "needle" : "\u0000"
+  },
+  {
+    "corpus" : [
+      {
+        "copiedAt" : 1760486400000,
+        "items" : [
+          "a\u0000b"
+        ],
+        "source" : "Source",
+        "text" : "a\u0000b"
+      },
+      {
+        "copiedAt" : 1760486401000,
+        "items" : [
+          "%_\"*"
+        ],
+        "source" : "Source",
+        "text" : "%_\"*"
+      },
+      {
+        "copiedAt" : 1760486402000,
+        "items" : [
+          "需求ABC"
+        ],
+        "source" : "Source",
+        "text" : "需求ABC"
+      },
+      {
+        "copiedAt" : 1760486403000,
+        "items" : [
+          "ＡBC"
+        ],
+        "source" : "Source",
+        "text" : "ＡBC"
+      }
+    ],
+    "expectedOrder" : [
+      1
+    ],
+    "needle" : "%"
+  },
+  {
+    "corpus" : [
+      {
+        "copiedAt" : 1760486400000,
+        "items" : [
+          "a\u0000b"
+        ],
+        "source" : "Source",
+        "text" : "a\u0000b"
+      },
+      {
+        "copiedAt" : 1760486401000,
+        "items" : [
+          "%_\"*"
+        ],
+        "source" : "Source",
+        "text" : "%_\"*"
+      },
+      {
+        "copiedAt" : 1760486402000,
+        "items" : [
+          "需求ABC"
+        ],
+        "source" : "Source",
+        "text" : "需求ABC"
+      },
+      {
+        "copiedAt" : 1760486403000,
+        "items" : [
+          "ＡBC"
+        ],
+        "source" : "Source",
+        "text" : "ＡBC"
+      }
+    ],
+    "expectedOrder" : [
+      1
+    ],
+    "needle" : "_"
+  },
+  {
+    "corpus" : [
+      {
+        "copiedAt" : 1760486400000,
+        "items" : [
+          "a\u0000b"
+        ],
+        "source" : "Source",
+        "text" : "a\u0000b"
+      },
+      {
+        "copiedAt" : 1760486401000,
+        "items" : [
+          "%_\"*"
+        ],
+        "source" : "Source",
+        "text" : "%_\"*"
+      },
+      {
+        "copiedAt" : 1760486402000,
+        "items" : [
+          "需求ABC"
+        ],
+        "source" : "Source",
+        "text" : "需求ABC"
+      },
+      {
+        "copiedAt" : 1760486403000,
+        "items" : [
+          "ＡBC"
+        ],
+        "source" : "Source",
+        "text" : "ＡBC"
+      }
+    ],
+    "expectedOrder" : [
+      1
+    ],
+    "needle" : "\""
+  },
+  {
+    "corpus" : [
+      {
+        "copiedAt" : 1760486400000,
+        "items" : [
+          "a\u0000b"
+        ],
+        "source" : "Source",
+        "text" : "a\u0000b"
+      },
+      {
+        "copiedAt" : 1760486401000,
+        "items" : [
+          "%_\"*"
+        ],
+        "source" : "Source",
+        "text" : "%_\"*"
+      },
+      {
+        "copiedAt" : 1760486402000,
+        "items" : [
+          "需求ABC"
+        ],
+        "source" : "Source",
+        "text" : "需求ABC"
+      },
+      {
+        "copiedAt" : 1760486403000,
+        "items" : [
+          "ＡBC"
+        ],
+        "source" : "Source",
+        "text" : "ＡBC"
+      }
+    ],
+    "expectedOrder" : [
+      1
+    ],
+    "needle" : "*"
+  },
+  {
+    "corpus" : [
+      {
+        "copiedAt" : 1760486400000,
+        "items" : [
+          "a\u0000b"
+        ],
+        "source" : "Source",
+        "text" : "a\u0000b"
+      },
+      {
+        "copiedAt" : 1760486401000,
+        "items" : [
+          "%_\"*"
+        ],
+        "source" : "Source",
+        "text" : "%_\"*"
+      },
+      {
+        "copiedAt" : 1760486402000,
+        "items" : [
+          "需求ABC"
+        ],
+        "source" : "Source",
+        "text" : "需求ABC"
+      },
+      {
+        "copiedAt" : 1760486403000,
+        "items" : [
+          "ＡBC"
+        ],
+        "source" : "Source",
+        "text" : "ＡBC"
+      }
+    ],
+    "expectedOrder" : [
+      2
+    ],
+    "needle" : "需求"
+  },
+  {
+    "corpus" : [
+      {
+        "copiedAt" : 1760486400000,
+        "items" : [
+          "a\u0000b"
+        ],
+        "source" : "Source",
+        "text" : "a\u0000b"
+      },
+      {
+        "copiedAt" : 1760486401000,
+        "items" : [
+          "%_\"*"
+        ],
+        "source" : "Source",
+        "text" : "%_\"*"
+      },
+      {
+        "copiedAt" : 1760486402000,
+        "items" : [
+          "需求ABC"
+        ],
+        "source" : "Source",
+        "text" : "需求ABC"
+      },
+      {
+        "copiedAt" : 1760486403000,
+        "items" : [
+          "ＡBC"
+        ],
+        "source" : "Source",
+        "text" : "ＡBC"
+      }
+    ],
+    "expectedOrder" : [
+      2
+    ],
+    "needle" : "abc"
+  },
+  {
+    "corpus" : [
+      {
+        "copiedAt" : 1760486400000,
+        "items" : [
+          "a\u0000b"
+        ],
+        "source" : "Source",
+        "text" : "a\u0000b"
+      },
+      {
+        "copiedAt" : 1760486401000,
+        "items" : [
+          "%_\"*"
+        ],
+        "source" : "Source",
+        "text" : "%_\"*"
+      },
+      {
+        "copiedAt" : 1760486402000,
+        "items" : [
+          "需求ABC"
+        ],
+        "source" : "Source",
+        "text" : "需求ABC"
+      },
+      {
+        "copiedAt" : 1760486403000,
+        "items" : [
+          "ＡBC"
+        ],
+        "source" : "Source",
+        "text" : "ＡBC"
+      }
+    ],
+    "expectedOrder" : [
+      3
+    ],
+    "needle" : "Ａ"
+  }
+]
+}

@@ -1,0 +1,78 @@
+{
+  "metadata": {
+  "localOffsetSeconds" : 28800,
+  "macosCommit" : "c097591431c00982ad34186068064b40965c95fd",
+  "macosVersion" : "0.3.29",
+  "notes" : [
+
+  ],
+  "nowMs" : 1760486400000,
+  "schemaVersion" : 1,
+  "sourceFunctions" : [
+    "SearchNormalizer.normalize"
+  ],
+  "timezone" : "Asia/Shanghai"
+},
+  "cases": [
+  {
+    "input" : "",
+    "normalized" : ""
+  },
+  {
+    "input" : "HELLO world",
+    "normalized" : "hello world"
+  },
+  {
+    "input" : "需求",
+    "normalized" : "需求"
+  },
+  {
+    "input" : "ＡＢＣ１２３",
+    "normalized" : "ＡＢＣ１２３"
+  },
+  {
+    "input" : "é",
+    "normalized" : "é"
+  },
+  {
+    "input" : "ÉÉé",
+    "normalized" : "ÉÉé"
+  },
+  {
+    "input" : "Straße",
+    "normalized" : "straße"
+  },
+  {
+    "input" : "İΣσ",
+    "normalized" : "İΣσ"
+  },
+  {
+    "input" : "👨‍👩‍👧‍👦👍🏽",
+    "normalized" : "👨‍👩‍👧‍👦👍🏽"
+  },
+  {
+    "input" : "A\u0000B",
+    "normalized" : "a\u0000b"
+  },
+  {
+    "input" : "\r\n",
+    "normalized" : "\r\n"
+  },
+  {
+    "input" : "%_\"*",
+    "normalized" : "%_\"*"
+  },
+  {
+    "input" : "ÅÅ",
+    "normalized" : "ÅÅ"
+  },
+  {
+    "input" : "中文ABC",
+    "normalized" : "中文abc"
+  },
+  {
+    "input" : "路径/Name.TXT",
+    "normalized" : "路径/name.txt"
+  }
+]
+}

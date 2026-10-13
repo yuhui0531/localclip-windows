@@ -1,0 +1,128 @@
+{
+  "metadata": {
+  "localOffsetSeconds" : 28800,
+  "macosCommit" : "c097591431c00982ad34186068064b40965c95fd",
+  "macosVersion" : "0.3.29",
+  "notes" : [
+
+  ],
+  "nowMs" : 1760486400000,
+  "schemaVersion" : 1,
+  "sourceFunctions" : [
+    "SearchNormalizer.context"
+  ],
+  "timezone" : "Asia/Shanghai"
+},
+  "cases": [
+  {
+    "context" : "",
+    "literal" : "",
+    "original" : ""
+  },
+  {
+    "context" : "HELLO world",
+    "literal" : "HELLO world",
+    "original" : "HELLO world"
+  },
+  {
+    "context" : "需求",
+    "literal" : "需求",
+    "original" : "需求"
+  },
+  {
+    "context" : "ＡＢＣ１２３",
+    "literal" : "ＡＢＣ１２３",
+    "original" : "ＡＢＣ１２３"
+  },
+  {
+    "context" : "é",
+    "literal" : "é",
+    "original" : "é"
+  },
+  {
+    "context" : "ÉÉé",
+    "literal" : "ÉÉé",
+    "original" : "ÉÉé"
+  },
+  {
+    "context" : "Straße",
+    "literal" : "Straße",
+    "original" : "Straße"
+  },
+  {
+    "context" : "İΣσ",
+    "literal" : "İΣσ",
+    "original" : "İΣσ"
+  },
+  {
+    "context" : "👨‍👩‍👧‍👦👍🏽",
+    "literal" : "👨‍👩‍👧‍👦👍🏽",
+    "original" : "👨‍👩‍👧‍👦👍🏽"
+  },
+  {
+    "context" : "A\u0000B",
+    "literal" : "A\u0000B",
+    "original" : "A\u0000B"
+  },
+  {
+    "context" : "\r\n",
+    "literal" : "\r\n",
+    "original" : "\r\n"
+  },
+  {
+    "context" : "%_\"*",
+    "literal" : "%_\"*",
+    "original" : "%_\"*"
+  },
+  {
+    "context" : "ÅÅ",
+    "literal" : "ÅÅ",
+    "original" : "ÅÅ"
+  },
+  {
+    "context" : "中文ABC",
+    "literal" : "中文ABC",
+    "original" : "中文ABC"
+  },
+  {
+    "context" : "路径/Name.TXT",
+    "literal" : "路径/Name.TXT",
+    "original" : "路径/Name.TXT"
+  },
+  {
+    "context" : "…前前前前前前前前前前前前前前前前前前前前前前前前前前前前前前前前前前前NEEDLE后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后…",
+    "literal" : "needle",
+    "original" : "前前前前前前前前前前前前前前前前前前前前前前前前前前前前前前前前前前前前前前前前前前前前前前前前前前NEEDLE后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后后"
+  },
+  {
+    "context" : "…👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦é👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽…",
+    "literal" : "é",
+    "original" : "👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦é👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽👍🏽"
+  },
+  {
+    "context" : "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "literal" : "missing",
+    "original" : "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  {
+    "context" : "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "literal" : "",
+    "original" : "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  {
+    "context" : "abc\u0000def",
+    "literal" : "\u0000d",
+    "original" : "abc\u0000def"
+  },
+  {
+    "context" : "one\r\ntwo",
+    "literal" : "two",
+    "original" : "one\r\ntwo"
+  },
+  {
+    "context" : "ＡBC",
+    "literal" : "a",
+    "original" : "ＡBC"
+  }
+]
+}

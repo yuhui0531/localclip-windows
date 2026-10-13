@@ -1,0 +1,424 @@
+{
+  "metadata": {
+  "localOffsetSeconds" : 28800,
+  "macosCommit" : "c097591431c00982ad34186068064b40965c95fd",
+  "macosVersion" : "0.3.29",
+  "notes" : [
+    "declared maps to Windows owner for exclusion semantics. Sensitive marker inputs retain macOS names; Windows four-format filtering must be tested at the Win32 adapter before any body read."
+  ],
+  "nowMs" : 1760486400000,
+  "schemaVersion" : 1,
+  "sourceFunctions" : [
+    "SettingsSnapshot.rejection"
+  ],
+  "timezone" : "Asia/Shanghai"
+},
+  "cases": [
+  {
+    "settings" : {
+      "captureEnabled" : true,
+      "excludedAppIDs" : [
+        "fixture.excluded"
+      ]
+    },
+    "skipReason" : "excluded",
+    "source" : {
+      "basis" : "owner",
+      "name" : "Fixture",
+      "sourceAppID" : "fixture.excluded"
+    },
+    "types" : [
+      [
+        "text/plain"
+      ],
+      [
+        "image/png"
+      ]
+    ]
+  },
+  {
+    "settings" : {
+      "captureEnabled" : true,
+      "excludedAppIDs" : [
+        "fixture.excluded"
+      ]
+    },
+    "skipReason" : "sensitive",
+    "source" : {
+      "basis" : "owner",
+      "name" : "Fixture",
+      "sourceAppID" : "fixture.excluded"
+    },
+    "types" : [
+      [
+        "text/plain"
+      ],
+      [
+        "image/png",
+        "org.nspasteboard.ConcealedType"
+      ]
+    ]
+  },
+  {
+    "settings" : {
+      "captureEnabled" : true,
+      "excludedAppIDs" : [
+        "fixture.excluded"
+      ]
+    },
+    "skipReason" : "sensitive",
+    "source" : {
+      "basis" : "owner",
+      "name" : "Fixture",
+      "sourceAppID" : "fixture.excluded"
+    },
+    "types" : [
+      [
+        "text/plain"
+      ],
+      [
+        "image/png",
+        "org.nspasteboard.TransientType"
+      ]
+    ]
+  },
+  {
+    "settings" : {
+      "captureEnabled" : true,
+      "excludedAppIDs" : [
+        "fixture.excluded"
+      ]
+    },
+    "source" : {
+      "basis" : "foreground",
+      "name" : "Fixture",
+      "sourceAppID" : "fixture.excluded"
+    },
+    "types" : [
+      [
+        "text/plain"
+      ],
+      [
+        "image/png"
+      ]
+    ]
+  },
+  {
+    "settings" : {
+      "captureEnabled" : true,
+      "excludedAppIDs" : [
+        "fixture.excluded"
+      ]
+    },
+    "skipReason" : "sensitive",
+    "source" : {
+      "basis" : "foreground",
+      "name" : "Fixture",
+      "sourceAppID" : "fixture.excluded"
+    },
+    "types" : [
+      [
+        "text/plain"
+      ],
+      [
+        "image/png",
+        "org.nspasteboard.ConcealedType"
+      ]
+    ]
+  },
+  {
+    "settings" : {
+      "captureEnabled" : true,
+      "excludedAppIDs" : [
+        "fixture.excluded"
+      ]
+    },
+    "skipReason" : "sensitive",
+    "source" : {
+      "basis" : "foreground",
+      "name" : "Fixture",
+      "sourceAppID" : "fixture.excluded"
+    },
+    "types" : [
+      [
+        "text/plain"
+      ],
+      [
+        "image/png",
+        "org.nspasteboard.TransientType"
+      ]
+    ]
+  },
+  {
+    "settings" : {
+      "captureEnabled" : true,
+      "excludedAppIDs" : [
+        "fixture.excluded"
+      ]
+    },
+    "source" : {
+      "basis" : "unknown",
+      "name" : "Fixture",
+      "sourceAppID" : null
+    },
+    "types" : [
+      [
+        "text/plain"
+      ],
+      [
+        "image/png"
+      ]
+    ]
+  },
+  {
+    "settings" : {
+      "captureEnabled" : true,
+      "excludedAppIDs" : [
+        "fixture.excluded"
+      ]
+    },
+    "skipReason" : "sensitive",
+    "source" : {
+      "basis" : "unknown",
+      "name" : "Fixture",
+      "sourceAppID" : null
+    },
+    "types" : [
+      [
+        "text/plain"
+      ],
+      [
+        "image/png",
+        "org.nspasteboard.ConcealedType"
+      ]
+    ]
+  },
+  {
+    "settings" : {
+      "captureEnabled" : true,
+      "excludedAppIDs" : [
+        "fixture.excluded"
+      ]
+    },
+    "skipReason" : "sensitive",
+    "source" : {
+      "basis" : "unknown",
+      "name" : "Fixture",
+      "sourceAppID" : null
+    },
+    "types" : [
+      [
+        "text/plain"
+      ],
+      [
+        "image/png",
+        "org.nspasteboard.TransientType"
+      ]
+    ]
+  },
+  {
+    "settings" : {
+      "captureEnabled" : false,
+      "excludedAppIDs" : [
+        "fixture.excluded"
+      ]
+    },
+    "skipReason" : "paused",
+    "source" : {
+      "basis" : "owner",
+      "name" : "Fixture",
+      "sourceAppID" : "fixture.excluded"
+    },
+    "types" : [
+      [
+        "text/plain"
+      ],
+      [
+        "image/png"
+      ]
+    ]
+  },
+  {
+    "settings" : {
+      "captureEnabled" : false,
+      "excludedAppIDs" : [
+        "fixture.excluded"
+      ]
+    },
+    "skipReason" : "sensitive",
+    "source" : {
+      "basis" : "owner",
+      "name" : "Fixture",
+      "sourceAppID" : "fixture.excluded"
+    },
+    "types" : [
+      [
+        "text/plain"
+      ],
+      [
+        "image/png",
+        "org.nspasteboard.ConcealedType"
+      ]
+    ]
+  },
+  {
+    "settings" : {
+      "captureEnabled" : false,
+      "excludedAppIDs" : [
+        "fixture.excluded"
+      ]
+    },
+    "skipReason" : "sensitive",
+    "source" : {
+      "basis" : "owner",
+      "name" : "Fixture",
+      "sourceAppID" : "fixture.excluded"
+    },
+    "types" : [
+      [
+        "text/plain"
+      ],
+      [
+        "image/png",
+        "org.nspasteboard.TransientType"
+      ]
+    ]
+  },
+  {
+    "settings" : {
+      "captureEnabled" : false,
+      "excludedAppIDs" : [
+        "fixture.excluded"
+      ]
+    },
+    "skipReason" : "paused",
+    "source" : {
+      "basis" : "foreground",
+      "name" : "Fixture",
+      "sourceAppID" : "fixture.excluded"
+    },
+    "types" : [
+      [
+        "text/plain"
+      ],
+      [
+        "image/png"
+      ]
+    ]
+  },
+  {
+    "settings" : {
+      "captureEnabled" : false,
+      "excludedAppIDs" : [
+        "fixture.excluded"
+      ]
+    },
+    "skipReason" : "sensitive",
+    "source" : {
+      "basis" : "foreground",
+      "name" : "Fixture",
+      "sourceAppID" : "fixture.excluded"
+    },
+    "types" : [
+      [
+        "text/plain"
+      ],
+      [
+        "image/png",
+        "org.nspasteboard.ConcealedType"
+      ]
+    ]
+  },
+  {
+    "settings" : {
+      "captureEnabled" : false,
+      "excludedAppIDs" : [
+        "fixture.excluded"
+      ]
+    },
+    "skipReason" : "sensitive",
+    "source" : {
+      "basis" : "foreground",
+      "name" : "Fixture",
+      "sourceAppID" : "fixture.excluded"
+    },
+    "types" : [
+      [
+        "text/plain"
+      ],
+      [
+        "image/png",
+        "org.nspasteboard.TransientType"
+      ]
+    ]
+  },
+  {
+    "settings" : {
+      "captureEnabled" : false,
+      "excludedAppIDs" : [
+        "fixture.excluded"
+      ]
+    },
+    "skipReason" : "paused",
+    "source" : {
+      "basis" : "unknown",
+      "name" : "Fixture",
+      "sourceAppID" : null
+    },
+    "types" : [
+      [
+        "text/plain"
+      ],
+      [
+        "image/png"
+      ]
+    ]
+  },
+  {
+    "settings" : {
+      "captureEnabled" : false,
+      "excludedAppIDs" : [
+        "fixture.excluded"
+      ]
+    },
+    "skipReason" : "sensitive",
+    "source" : {
+      "basis" : "unknown",
+      "name" : "Fixture",
+      "sourceAppID" : null
+    },
+    "types" : [
+      [
+        "text/plain"
+      ],
+      [
+        "image/png",
+        "org.nspasteboard.ConcealedType"
+      ]
+    ]
+  },
+  {
+    "settings" : {
+      "captureEnabled" : false,
+      "excludedAppIDs" : [
+        "fixture.excluded"
+      ]
+    },
+    "skipReason" : "sensitive",
+    "source" : {
+      "basis" : "unknown",
+      "name" : "Fixture",
+      "sourceAppID" : null
+    },
+    "types" : [
+      [
+        "text/plain"
+      ],
+      [
+        "image/png",
+        "org.nspasteboard.TransientType"
+      ]
+    ]
+  }
+]
+}

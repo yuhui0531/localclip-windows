@@ -1,0 +1,74 @@
+{
+  "metadata": {
+  "localOffsetSeconds" : 28800,
+  "macosCommit" : "c097591431c00982ad34186068064b40965c95fd",
+  "macosVersion" : "0.3.29",
+  "notes" : [
+
+  ],
+  "nowMs" : 1760486400000,
+  "schemaVersion" : 1,
+  "sourceFunctions" : [
+    "HTMLText.extract"
+  ],
+  "timezone" : "Asia/Shanghai"
+},
+  "cases": [
+  {
+    "html" : "",
+    "text" : ""
+  },
+  {
+    "html" : "<b>Hello</b><br>World",
+    "text" : "Hello\nWorld"
+  },
+  {
+    "html" : "<p>一</p><div>二</div>",
+    "text" : "一\n二\n"
+  },
+  {
+    "html" : "<script>secret</script>safe",
+    "text" : "safe"
+  },
+  {
+    "html" : "<STYLE>x</STYLE><head>y</head>z",
+    "text" : "z"
+  },
+  {
+    "html" : "<!-- comment -->text",
+    "text" : "text"
+  },
+  {
+    "html" : "&lt;&gt;&quot;&apos;&nbsp;&amp;",
+    "text" : "<>\"' &"
+  },
+  {
+    "html" : "&#65;&#x1F600;&#0;",
+    "text" : "A😀\u0000"
+  },
+  {
+    "html" : "&#x110000;&#99999999;",
+    "text" : "&#x110000;&#99999999;"
+  },
+  {
+    "html" : "&amp;lt;",
+    "text" : "&lt;"
+  },
+  {
+    "html" : "<a href='https://example.com'>link</a>",
+    "text" : "link"
+  },
+  {
+    "html" : "<img src='https://example.com/test.png'>alt",
+    "text" : "alt"
+  },
+  {
+    "html" : "<p>one\r\ntwo</p>",
+    "text" : "one\r\ntwo\n"
+  },
+  {
+    "html" : "<broken",
+    "text" : "<broken"
+  }
+]
+}

@@ -1,0 +1,3512 @@
+{
+  "metadata": {
+  "localOffsetSeconds" : 28800,
+  "macosCommit" : "c097591431c00982ad34186068064b40965c95fd",
+  "macosVersion" : "0.3.29",
+  "notes" : [
+    "Only synthetic databases; generatedPayload is repeated-byte test data, not a decoded image.",
+    "AC17 uses a 512 KiB injected quota to test rejection and preservation, not the exact 500 MiB acceptance fixture.",
+    "IDs are fixture aliases; orderGroups preserve timestamp groups with actual UUID ascending as tie-break. Category order is exact.",
+    "macOS quotaExceeded maps to Windows skipped(quotaFull); candidateWritten injection occurs after eviction and before commit.",
+    "Reference c097591 already uses in-place DELETE-journal transactions; Windows §4.5 still requires WAL."
+  ],
+  "nowMs" : 1760486400000,
+  "schemaVersion" : 1,
+  "sourceFunctions" : [
+    "HistoryStore.ingest",
+    "HistoryStore.search",
+    "HistoryStore.touch",
+    "HistoryStore.preview",
+    "HistoryStore.apply",
+    "HistoryStore.expire",
+    "HistoryStore.undoDelete",
+    "HistoryStore.canCapture",
+    "ClipClock.now",
+    "StorageFaultInjector.check"
+  ],
+  "timezone" : "Asia/Shanghai"
+},
+  "cases": [
+  {
+    "initialNowMs" : 1760486400000,
+    "initialSettings" : {
+      "quotaBytes" : 524288000,
+      "retentionDays" : 30
+    },
+    "name" : "dedup-protection",
+    "rules" : [
+      "AC03",
+      "AC12",
+      "AC19",
+      "5.6-batch-touch"
+    ],
+    "steps" : [
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "a",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : false
+            }
+          ],
+          "orderGroups" : [
+            [
+              "a"
+            ]
+          ],
+          "protectedIDs" : [
+
+          ],
+          "quotaBytes" : 524288000,
+          "result" : "inserted",
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486400000,
+        "operation" : {
+          "id" : "a",
+          "kind" : "ingest",
+          "text" : "a"
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "a",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : false
+            }
+          ],
+          "orderGroups" : [
+            [
+              "a"
+            ]
+          ],
+          "protectedIDs" : [
+
+          ],
+          "quotaBytes" : 524288000,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486401000,
+        "operation" : {
+          "kind" : "advanceClock",
+          "milliseconds" : 1000
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "a",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : false
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486401000,
+              "id" : "b",
+              "lastCopiedAt" : 1760486401000,
+              "protected" : false
+            }
+          ],
+          "orderGroups" : [
+            [
+              "b"
+            ],
+            [
+              "a"
+            ]
+          ],
+          "protectedIDs" : [
+
+          ],
+          "quotaBytes" : 524288000,
+          "result" : "inserted",
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486401000,
+        "operation" : {
+          "id" : "b",
+          "kind" : "ingest",
+          "text" : "b"
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "a",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : false
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486401000,
+              "id" : "b",
+              "lastCopiedAt" : 1760486401000,
+              "protected" : false
+            }
+          ],
+          "orderGroups" : [
+            [
+              "b"
+            ],
+            [
+              "a"
+            ]
+          ],
+          "protectedIDs" : [
+
+          ],
+          "quotaBytes" : 524288000,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486402000,
+        "operation" : {
+          "kind" : "advanceClock",
+          "milliseconds" : 1000
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "a",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : false
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486401000,
+              "id" : "b",
+              "lastCopiedAt" : 1760486401000,
+              "protected" : false
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486402000,
+              "id" : "c",
+              "lastCopiedAt" : 1760486402000,
+              "protected" : false
+            }
+          ],
+          "orderGroups" : [
+            [
+              "c"
+            ],
+            [
+              "b"
+            ],
+            [
+              "a"
+            ]
+          ],
+          "protectedIDs" : [
+
+          ],
+          "quotaBytes" : 524288000,
+          "result" : "inserted",
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486402000,
+        "operation" : {
+          "id" : "c",
+          "kind" : "ingest",
+          "text" : "c"
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+            "work" : [
+
+            ]
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "a",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : false
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486401000,
+              "id" : "b",
+              "lastCopiedAt" : 1760486401000,
+              "protected" : false
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486402000,
+              "id" : "c",
+              "lastCopiedAt" : 1760486402000,
+              "protected" : false
+            }
+          ],
+          "orderGroups" : [
+            [
+              "c"
+            ],
+            [
+              "b"
+            ],
+            [
+              "a"
+            ]
+          ],
+          "protectedIDs" : [
+
+          ],
+          "quotaBytes" : 524288000,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486402000,
+        "operation" : {
+          "colorHex" : "34C759",
+          "id" : "work",
+          "kind" : "createCategory",
+          "name" : "work"
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+            "work" : [
+              "a",
+              "b",
+              "c"
+            ]
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "a",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486401000,
+              "id" : "b",
+              "lastCopiedAt" : 1760486401000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486402000,
+              "id" : "c",
+              "lastCopiedAt" : 1760486402000,
+              "protected" : true
+            }
+          ],
+          "orderGroups" : [
+            [
+              "c"
+            ],
+            [
+              "b"
+            ],
+            [
+              "a"
+            ]
+          ],
+          "preview" : {
+            "affectedCount" : 0,
+            "needsConfirmation" : false
+          },
+          "protectedIDs" : [
+            "a",
+            "b",
+            "c"
+          ],
+          "quotaBytes" : 524288000,
+          "removed" : 0,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486402000,
+        "operation" : {
+          "categoryID" : "work",
+          "confirm" : true,
+          "ids" : [
+            "a",
+            "b",
+            "c"
+          ],
+          "included" : true,
+          "kind" : "assign"
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+            "work" : [
+              "a",
+              "b",
+              "c"
+            ]
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "a",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486401000,
+              "id" : "b",
+              "lastCopiedAt" : 1760486401000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486402000,
+              "id" : "c",
+              "lastCopiedAt" : 1760486402000,
+              "protected" : true
+            }
+          ],
+          "orderGroups" : [
+            [
+              "c"
+            ],
+            [
+              "b"
+            ],
+            [
+              "a"
+            ]
+          ],
+          "preview" : {
+            "affectedCount" : 0,
+            "needsConfirmation" : false
+          },
+          "protectedIDs" : [
+            "a",
+            "b",
+            "c"
+          ],
+          "quotaBytes" : 524288000,
+          "removed" : 0,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486402000,
+        "operation" : {
+          "confirm" : true,
+          "id" : "a",
+          "kind" : "favorite",
+          "value" : true
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+            "work" : [
+              "a",
+              "b",
+              "c"
+            ]
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "a",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486401000,
+              "id" : "b",
+              "lastCopiedAt" : 1760486401000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486402000,
+              "id" : "c",
+              "lastCopiedAt" : 1760486402000,
+              "protected" : true
+            }
+          ],
+          "orderGroups" : [
+            [
+              "c"
+            ],
+            [
+              "b"
+            ],
+            [
+              "a"
+            ]
+          ],
+          "protectedIDs" : [
+            "a",
+            "b",
+            "c"
+          ],
+          "quotaBytes" : 524288000,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486403000,
+        "operation" : {
+          "kind" : "advanceClock",
+          "milliseconds" : 1000
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+            "work" : [
+              "a",
+              "b",
+              "c"
+            ]
+          },
+          "items" : [
+            {
+              "copyCount" : 2,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "a",
+              "lastCopiedAt" : 1760486403000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486401000,
+              "id" : "b",
+              "lastCopiedAt" : 1760486401000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486402000,
+              "id" : "c",
+              "lastCopiedAt" : 1760486402000,
+              "protected" : true
+            }
+          ],
+          "orderGroups" : [
+            [
+              "a"
+            ],
+            [
+              "c"
+            ],
+            [
+              "b"
+            ]
+          ],
+          "protectedIDs" : [
+            "a",
+            "b",
+            "c"
+          ],
+          "quotaBytes" : 524288000,
+          "result" : "deduplicated",
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486403000,
+        "operation" : {
+          "id" : "a",
+          "kind" : "ingest",
+          "text" : "a"
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+            "work" : [
+              "a",
+              "b",
+              "c"
+            ]
+          },
+          "items" : [
+            {
+              "copyCount" : 2,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "a",
+              "lastCopiedAt" : 1760486403000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486401000,
+              "id" : "b",
+              "lastCopiedAt" : 1760486401000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486402000,
+              "id" : "c",
+              "lastCopiedAt" : 1760486402000,
+              "protected" : true
+            }
+          ],
+          "orderGroups" : [
+            [
+              "a"
+            ],
+            [
+              "c"
+            ],
+            [
+              "b"
+            ]
+          ],
+          "protectedIDs" : [
+            "a",
+            "b",
+            "c"
+          ],
+          "quotaBytes" : 524288000,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486404000,
+        "operation" : {
+          "kind" : "advanceClock",
+          "milliseconds" : 1000
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+            "work" : [
+              "b",
+              "a",
+              "c"
+            ]
+          },
+          "items" : [
+            {
+              "copyCount" : 3,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "a",
+              "lastCopiedAt" : 1760486404000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 2,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486401000,
+              "id" : "b",
+              "lastCopiedAt" : 1760486404000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486402000,
+              "id" : "c",
+              "lastCopiedAt" : 1760486402000,
+              "protected" : true
+            }
+          ],
+          "orderGroups" : [
+            [
+              "a",
+              "b"
+            ],
+            [
+              "c"
+            ]
+          ],
+          "protectedIDs" : [
+            "a",
+            "b",
+            "c"
+          ],
+          "quotaBytes" : 524288000,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486404000,
+        "operation" : {
+          "ids" : [
+            "b",
+            "a",
+            "b"
+          ],
+          "kind" : "touch"
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+            "work" : [
+              "b",
+              "a",
+              "c"
+            ]
+          },
+          "items" : [
+            {
+              "copyCount" : 3,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "a",
+              "lastCopiedAt" : 1760486404000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 2,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486401000,
+              "id" : "b",
+              "lastCopiedAt" : 1760486404000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486402000,
+              "id" : "c",
+              "lastCopiedAt" : 1760486402000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486404000,
+              "id" : "ordinary",
+              "lastCopiedAt" : 1760486404000,
+              "protected" : false
+            }
+          ],
+          "orderGroups" : [
+            [
+              "a",
+              "b",
+              "ordinary"
+            ],
+            [
+              "c"
+            ]
+          ],
+          "protectedIDs" : [
+            "a",
+            "b",
+            "c"
+          ],
+          "quotaBytes" : 524288000,
+          "result" : "inserted",
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486404000,
+        "operation" : {
+          "id" : "ordinary",
+          "kind" : "ingest",
+          "text" : "ordinary"
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+            "work" : [
+              "b",
+              "a",
+              "c"
+            ]
+          },
+          "items" : [
+            {
+              "copyCount" : 3,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "a",
+              "lastCopiedAt" : 1760486404000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 2,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486401000,
+              "id" : "b",
+              "lastCopiedAt" : 1760486404000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486402000,
+              "id" : "c",
+              "lastCopiedAt" : 1760486402000,
+              "protected" : true
+            }
+          ],
+          "orderGroups" : [
+            [
+              "a",
+              "b"
+            ],
+            [
+              "c"
+            ]
+          ],
+          "protectedIDs" : [
+            "a",
+            "b",
+            "c"
+          ],
+          "quotaBytes" : 524288000,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1763078404000,
+        "operation" : {
+          "kind" : "advanceClock",
+          "milliseconds" : 2592000000
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+            "work" : [
+              "b",
+              "a",
+              "c"
+            ]
+          },
+          "items" : [
+            {
+              "copyCount" : 3,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "a",
+              "lastCopiedAt" : 1760486404000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 2,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486401000,
+              "id" : "b",
+              "lastCopiedAt" : 1760486404000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486402000,
+              "id" : "c",
+              "lastCopiedAt" : 1760486402000,
+              "protected" : true
+            }
+          ],
+          "orderGroups" : [
+            [
+              "a",
+              "b"
+            ],
+            [
+              "c"
+            ]
+          ],
+          "protectedIDs" : [
+            "a",
+            "b",
+            "c"
+          ],
+          "quotaBytes" : 524288000,
+          "removed" : 1,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1763078404000,
+        "operation" : {
+          "kind" : "expire"
+        }
+      }
+    ]
+  },
+  {
+    "initialNowMs" : 1760486400000,
+    "initialSettings" : {
+      "quotaBytes" : 524288000,
+      "retentionDays" : 30
+    },
+    "name" : "retention-boundaries",
+    "rules" : [
+      "AC19",
+      "AC20",
+      "AC27"
+    ],
+    "steps" : [
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "refresh",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : false
+            }
+          ],
+          "orderGroups" : [
+            [
+              "refresh"
+            ]
+          ],
+          "protectedIDs" : [
+
+          ],
+          "quotaBytes" : 524288000,
+          "result" : "inserted",
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486400000,
+        "operation" : {
+          "id" : "refresh",
+          "kind" : "ingest",
+          "text" : "refresh"
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "favorite",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : false
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "refresh",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : false
+            }
+          ],
+          "orderGroups" : [
+            [
+              "favorite",
+              "refresh"
+            ]
+          ],
+          "protectedIDs" : [
+
+          ],
+          "quotaBytes" : 524288000,
+          "result" : "inserted",
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486400000,
+        "operation" : {
+          "id" : "favorite",
+          "kind" : "ingest",
+          "text" : "favorite"
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "favorite",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "refresh",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : false
+            }
+          ],
+          "orderGroups" : [
+            [
+              "favorite",
+              "refresh"
+            ]
+          ],
+          "preview" : {
+            "affectedCount" : 0,
+            "needsConfirmation" : false
+          },
+          "protectedIDs" : [
+            "favorite"
+          ],
+          "quotaBytes" : 524288000,
+          "removed" : 0,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486400000,
+        "operation" : {
+          "confirm" : true,
+          "id" : "favorite",
+          "kind" : "favorite",
+          "value" : true
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "favorite",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "refresh",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : false
+            }
+          ],
+          "orderGroups" : [
+            [
+              "favorite",
+              "refresh"
+            ]
+          ],
+          "protectedIDs" : [
+            "favorite"
+          ],
+          "quotaBytes" : 524288000,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760572800000,
+        "operation" : {
+          "kind" : "advanceClock",
+          "milliseconds" : 86400000
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760572800000,
+              "id" : "expires",
+              "lastCopiedAt" : 1760572800000,
+              "protected" : false
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "favorite",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "refresh",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : false
+            }
+          ],
+          "orderGroups" : [
+            [
+              "expires"
+            ],
+            [
+              "favorite",
+              "refresh"
+            ]
+          ],
+          "protectedIDs" : [
+            "favorite"
+          ],
+          "quotaBytes" : 524288000,
+          "result" : "inserted",
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760572800000,
+        "operation" : {
+          "id" : "expires",
+          "kind" : "ingest",
+          "text" : "expires"
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760572800000,
+              "id" : "expires",
+              "lastCopiedAt" : 1760572800000,
+              "protected" : false
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "favorite",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "refresh",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : false
+            }
+          ],
+          "orderGroups" : [
+            [
+              "expires"
+            ],
+            [
+              "favorite",
+              "refresh"
+            ]
+          ],
+          "protectedIDs" : [
+            "favorite"
+          ],
+          "quotaBytes" : 524288000,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1762992000000,
+        "operation" : {
+          "kind" : "advanceClock",
+          "milliseconds" : 2419200000
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760572800000,
+              "id" : "expires",
+              "lastCopiedAt" : 1760572800000,
+              "protected" : false
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "favorite",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 2,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "refresh",
+              "lastCopiedAt" : 1762992000000,
+              "protected" : false
+            }
+          ],
+          "orderGroups" : [
+            [
+              "refresh"
+            ],
+            [
+              "expires"
+            ],
+            [
+              "favorite"
+            ]
+          ],
+          "protectedIDs" : [
+            "favorite"
+          ],
+          "quotaBytes" : 524288000,
+          "result" : "deduplicated",
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1762992000000,
+        "operation" : {
+          "id" : "refresh",
+          "kind" : "ingest",
+          "text" : "refresh"
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "favorite",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 2,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "refresh",
+              "lastCopiedAt" : 1762992000000,
+              "protected" : false
+            }
+          ],
+          "orderGroups" : [
+            [
+              "refresh"
+            ],
+            [
+              "favorite"
+            ]
+          ],
+          "protectedIDs" : [
+            "favorite"
+          ],
+          "quotaBytes" : 524288000,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1763164800000,
+        "operation" : {
+          "kind" : "advanceClock",
+          "milliseconds" : 172800000
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "favorite",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 2,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "refresh",
+              "lastCopiedAt" : 1762992000000,
+              "protected" : false
+            }
+          ],
+          "orderGroups" : [
+            [
+              "refresh"
+            ],
+            [
+              "favorite"
+            ]
+          ],
+          "preview" : {
+            "affectedCount" : 1,
+            "needsConfirmation" : true
+          },
+          "protectedIDs" : [
+            "favorite"
+          ],
+          "quotaBytes" : 524288000,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1763164800000,
+        "operation" : {
+          "confirm" : false,
+          "id" : "favorite",
+          "kind" : "favorite",
+          "value" : false
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 2,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "refresh",
+              "lastCopiedAt" : 1762992000000,
+              "protected" : false
+            }
+          ],
+          "orderGroups" : [
+            [
+              "refresh"
+            ]
+          ],
+          "preview" : {
+            "affectedCount" : 1,
+            "needsConfirmation" : true
+          },
+          "protectedIDs" : [
+
+          ],
+          "quotaBytes" : 524288000,
+          "removed" : 1,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1763164800000,
+        "operation" : {
+          "confirm" : true,
+          "id" : "favorite",
+          "kind" : "favorite",
+          "value" : false
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 2,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "refresh",
+              "lastCopiedAt" : 1762992000000,
+              "protected" : false
+            }
+          ],
+          "orderGroups" : [
+            [
+              "refresh"
+            ]
+          ],
+          "preview" : {
+            "affectedCount" : 2,
+            "needsConfirmation" : true
+          },
+          "protectedIDs" : [
+
+          ],
+          "quotaBytes" : 524288000,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1763164800000,
+        "operation" : {
+          "confirm" : false,
+          "days" : 1,
+          "kind" : "setRetention"
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+
+          ],
+          "orderGroups" : [
+
+          ],
+          "preview" : {
+            "affectedCount" : 2,
+            "needsConfirmation" : true
+          },
+          "protectedIDs" : [
+
+          ],
+          "quotaBytes" : 524288000,
+          "removed" : 2,
+          "retentionDays" : 1,
+          "settingsRevision" : 1,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1763164800000,
+        "operation" : {
+          "confirm" : true,
+          "days" : 1,
+          "kind" : "setRetention"
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+
+          ],
+          "orderGroups" : [
+
+          ],
+          "preview" : {
+            "affectedCount" : 0,
+            "needsConfirmation" : false
+          },
+          "protectedIDs" : [
+
+          ],
+          "quotaBytes" : 524288000,
+          "removed" : 0,
+          "retentionDays" : 0,
+          "settingsRevision" : 2,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1763164800000,
+        "operation" : {
+          "confirm" : true,
+          "days" : 0,
+          "kind" : "setRetention"
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1763164800000,
+              "id" : "forever",
+              "lastCopiedAt" : 1763164800000,
+              "protected" : false
+            }
+          ],
+          "orderGroups" : [
+            [
+              "forever"
+            ]
+          ],
+          "protectedIDs" : [
+
+          ],
+          "quotaBytes" : 524288000,
+          "result" : "inserted",
+          "retentionDays" : 0,
+          "settingsRevision" : 2,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1763164800000,
+        "operation" : {
+          "id" : "forever",
+          "kind" : "ingest",
+          "text" : "forever"
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1763164800000,
+              "id" : "forever",
+              "lastCopiedAt" : 1763164800000,
+              "protected" : false
+            }
+          ],
+          "orderGroups" : [
+            [
+              "forever"
+            ]
+          ],
+          "protectedIDs" : [
+
+          ],
+          "quotaBytes" : 524288000,
+          "retentionDays" : 0,
+          "settingsRevision" : 2,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1794787200000,
+        "operation" : {
+          "kind" : "advanceClock",
+          "milliseconds" : 31622400000
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1763164800000,
+              "id" : "forever",
+              "lastCopiedAt" : 1763164800000,
+              "protected" : false
+            }
+          ],
+          "orderGroups" : [
+            [
+              "forever"
+            ]
+          ],
+          "protectedIDs" : [
+
+          ],
+          "quotaBytes" : 524288000,
+          "removed" : 0,
+          "retentionDays" : 0,
+          "settingsRevision" : 2,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1794787200000,
+        "operation" : {
+          "kind" : "expire"
+        }
+      }
+    ]
+  },
+  {
+    "initialNowMs" : 1760486400000,
+    "initialSettings" : {
+      "quotaBytes" : 524288000,
+      "retentionDays" : 30
+    },
+    "name" : "undo-boundary",
+    "rules" : [
+      "5.6-undo"
+    ],
+    "steps" : [
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "a",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : false
+            }
+          ],
+          "orderGroups" : [
+            [
+              "a"
+            ]
+          ],
+          "protectedIDs" : [
+
+          ],
+          "quotaBytes" : 524288000,
+          "result" : "inserted",
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486400000,
+        "operation" : {
+          "id" : "a",
+          "kind" : "ingest",
+          "text" : "a"
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+
+          ],
+          "orderGroups" : [
+
+          ],
+          "preview" : {
+            "affectedCount" : 1,
+            "needsConfirmation" : false
+          },
+          "protectedIDs" : [
+
+          ],
+          "quotaBytes" : 524288000,
+          "removed" : 1,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : true
+        },
+        "nowMs" : 1760486400000,
+        "operation" : {
+          "confirm" : true,
+          "ids" : [
+            "a"
+          ],
+          "kind" : "delete"
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+
+          ],
+          "orderGroups" : [
+
+          ],
+          "protectedIDs" : [
+
+          ],
+          "quotaBytes" : 524288000,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : true
+        },
+        "nowMs" : 1760486429999,
+        "operation" : {
+          "kind" : "advanceClock",
+          "milliseconds" : 29999
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "a",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : false
+            }
+          ],
+          "orderGroups" : [
+            [
+              "a"
+            ]
+          ],
+          "protectedIDs" : [
+
+          ],
+          "quotaBytes" : 524288000,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486429999,
+        "operation" : {
+          "kind" : "undo"
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+
+          ],
+          "orderGroups" : [
+
+          ],
+          "preview" : {
+            "affectedCount" : 1,
+            "needsConfirmation" : false
+          },
+          "protectedIDs" : [
+
+          ],
+          "quotaBytes" : 524288000,
+          "removed" : 1,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : true
+        },
+        "nowMs" : 1760486429999,
+        "operation" : {
+          "confirm" : true,
+          "ids" : [
+            "a"
+          ],
+          "kind" : "delete"
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+
+          ],
+          "orderGroups" : [
+
+          ],
+          "protectedIDs" : [
+
+          ],
+          "quotaBytes" : 524288000,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486459999,
+        "operation" : {
+          "kind" : "advanceClock",
+          "milliseconds" : 30000
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "error" : "notFound",
+          "items" : [
+
+          ],
+          "orderGroups" : [
+
+          ],
+          "protectedIDs" : [
+
+          ],
+          "quotaBytes" : 524288000,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486459999,
+        "operation" : {
+          "kind" : "undo"
+        }
+      }
+    ]
+  },
+  {
+    "initialNowMs" : 1760486400000,
+    "initialSettings" : {
+      "quotaBytes" : 524288,
+      "retentionDays" : 30
+    },
+    "name" : "quota-reject-preserves-old",
+    "rules" : [
+      "AC13",
+      "AC17"
+    ],
+    "steps" : [
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "protected",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : false
+            }
+          ],
+          "orderGroups" : [
+            [
+              "protected"
+            ]
+          ],
+          "protectedIDs" : [
+
+          ],
+          "quotaBytes" : 524288,
+          "result" : "inserted",
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486400000,
+        "operation" : {
+          "generatedPayload" : {
+            "byte" : 1,
+            "byteCount" : 307200,
+            "format" : "image/png"
+          },
+          "id" : "protected",
+          "kind" : "ingest"
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "protected",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : true
+            }
+          ],
+          "orderGroups" : [
+            [
+              "protected"
+            ]
+          ],
+          "preview" : {
+            "affectedCount" : 0,
+            "needsConfirmation" : false
+          },
+          "protectedIDs" : [
+            "protected"
+          ],
+          "quotaBytes" : 524288,
+          "removed" : 0,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486400000,
+        "operation" : {
+          "confirm" : true,
+          "id" : "protected",
+          "kind" : "favorite",
+          "value" : true
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "protected",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : true
+            }
+          ],
+          "orderGroups" : [
+            [
+              "protected"
+            ]
+          ],
+          "protectedIDs" : [
+            "protected"
+          ],
+          "quotaBytes" : 524288,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486401000,
+        "operation" : {
+          "kind" : "advanceClock",
+          "milliseconds" : 1000
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486401000,
+              "id" : "ordinary",
+              "lastCopiedAt" : 1760486401000,
+              "protected" : false
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "protected",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : true
+            }
+          ],
+          "orderGroups" : [
+            [
+              "ordinary"
+            ],
+            [
+              "protected"
+            ]
+          ],
+          "protectedIDs" : [
+            "protected"
+          ],
+          "quotaBytes" : 524288,
+          "result" : "inserted",
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486401000,
+        "operation" : {
+          "generatedPayload" : {
+            "byte" : 2,
+            "byteCount" : 65536,
+            "format" : "image/png"
+          },
+          "id" : "ordinary",
+          "kind" : "ingest"
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "error" : "quotaExceeded",
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486401000,
+              "id" : "ordinary",
+              "lastCopiedAt" : 1760486401000,
+              "protected" : false
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "protected",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : true
+            }
+          ],
+          "orderGroups" : [
+            [
+              "ordinary"
+            ],
+            [
+              "protected"
+            ]
+          ],
+          "protectedIDs" : [
+            "protected"
+          ],
+          "quotaBytes" : 524288,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486401000,
+        "operation" : {
+          "expectError" : "quotaExceeded",
+          "generatedPayload" : {
+            "byte" : 3,
+            "byteCount" : 225280,
+            "format" : "image/png"
+          },
+          "id" : "rejected",
+          "kind" : "ingest"
+        }
+      }
+    ]
+  },
+  {
+    "initialNowMs" : 1760486400000,
+    "initialSettings" : {
+      "quotaBytes" : 524288,
+      "retentionDays" : 30
+    },
+    "name" : "failed-write-rolls-back-eviction",
+    "rules" : [
+      "AC26"
+    ],
+    "steps" : [
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "old",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : false
+            }
+          ],
+          "orderGroups" : [
+            [
+              "old"
+            ]
+          ],
+          "protectedIDs" : [
+
+          ],
+          "quotaBytes" : 524288,
+          "result" : "inserted",
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486400000,
+        "operation" : {
+          "generatedPayload" : {
+            "byte" : 4,
+            "byteCount" : 266240,
+            "format" : "image/png"
+          },
+          "id" : "old",
+          "kind" : "ingest"
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "old",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : false
+            }
+          ],
+          "orderGroups" : [
+            [
+              "old"
+            ]
+          ],
+          "protectedIDs" : [
+
+          ],
+          "quotaBytes" : 524288,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486400000,
+        "operation" : {
+          "enabled" : true,
+          "kind" : "fault",
+          "point" : "candidateWritten"
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "error" : "ioFailure",
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "old",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : false
+            }
+          ],
+          "orderGroups" : [
+            [
+              "old"
+            ]
+          ],
+          "protectedIDs" : [
+
+          ],
+          "quotaBytes" : 524288,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486400000,
+        "operation" : {
+          "expectError" : "ioFailure",
+          "generatedPayload" : {
+            "byte" : 5,
+            "byteCount" : 266240,
+            "format" : "image/png"
+          },
+          "id" : "new",
+          "kind" : "ingest"
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "old",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : false
+            }
+          ],
+          "orderGroups" : [
+            [
+              "old"
+            ]
+          ],
+          "protectedIDs" : [
+
+          ],
+          "quotaBytes" : 524288,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486400000,
+        "operation" : {
+          "enabled" : false,
+          "kind" : "fault",
+          "point" : "candidateWritten"
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "new",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : false
+            }
+          ],
+          "orderGroups" : [
+            [
+              "new"
+            ]
+          ],
+          "protectedIDs" : [
+
+          ],
+          "quotaBytes" : 524288,
+          "result" : "inserted",
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486400000,
+        "operation" : {
+          "generatedPayload" : {
+            "byte" : 5,
+            "byteCount" : 266240,
+            "format" : "image/png"
+          },
+          "id" : "new",
+          "kind" : "ingest"
+        }
+      }
+    ]
+  },
+  {
+    "initialNowMs" : 1760486400000,
+    "initialSettings" : {
+      "quotaBytes" : 524288000,
+      "retentionDays" : 30
+    },
+    "name" : "lower-quota-preview-confirm",
+    "rules" : [
+      "AC12",
+      "AC27"
+    ],
+    "steps" : [
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "image0",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : false
+            }
+          ],
+          "orderGroups" : [
+            [
+              "image0"
+            ]
+          ],
+          "protectedIDs" : [
+
+          ],
+          "quotaBytes" : 524288000,
+          "result" : "inserted",
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486400000,
+        "operation" : {
+          "generatedPayload" : {
+            "byte" : 10,
+            "byteCount" : 41943040,
+            "format" : "image/png"
+          },
+          "id" : "image0",
+          "kind" : "ingest"
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "image0",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : true
+            }
+          ],
+          "orderGroups" : [
+            [
+              "image0"
+            ]
+          ],
+          "preview" : {
+            "affectedCount" : 0,
+            "needsConfirmation" : false
+          },
+          "protectedIDs" : [
+            "image0"
+          ],
+          "quotaBytes" : 524288000,
+          "removed" : 0,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486400000,
+        "operation" : {
+          "confirm" : true,
+          "id" : "image0",
+          "kind" : "favorite",
+          "value" : true
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "image0",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : true
+            }
+          ],
+          "orderGroups" : [
+            [
+              "image0"
+            ]
+          ],
+          "protectedIDs" : [
+            "image0"
+          ],
+          "quotaBytes" : 524288000,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486401000,
+        "operation" : {
+          "kind" : "advanceClock",
+          "milliseconds" : 1000
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "image0",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486401000,
+              "id" : "image1",
+              "lastCopiedAt" : 1760486401000,
+              "protected" : false
+            }
+          ],
+          "orderGroups" : [
+            [
+              "image1"
+            ],
+            [
+              "image0"
+            ]
+          ],
+          "protectedIDs" : [
+            "image0"
+          ],
+          "quotaBytes" : 524288000,
+          "result" : "inserted",
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486401000,
+        "operation" : {
+          "generatedPayload" : {
+            "byte" : 11,
+            "byteCount" : 41943040,
+            "format" : "image/png"
+          },
+          "id" : "image1",
+          "kind" : "ingest"
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "image0",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486401000,
+              "id" : "image1",
+              "lastCopiedAt" : 1760486401000,
+              "protected" : true
+            }
+          ],
+          "orderGroups" : [
+            [
+              "image1"
+            ],
+            [
+              "image0"
+            ]
+          ],
+          "preview" : {
+            "affectedCount" : 0,
+            "needsConfirmation" : false
+          },
+          "protectedIDs" : [
+            "image0",
+            "image1"
+          ],
+          "quotaBytes" : 524288000,
+          "removed" : 0,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486401000,
+        "operation" : {
+          "confirm" : true,
+          "id" : "image1",
+          "kind" : "favorite",
+          "value" : true
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "image0",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486401000,
+              "id" : "image1",
+              "lastCopiedAt" : 1760486401000,
+              "protected" : true
+            }
+          ],
+          "orderGroups" : [
+            [
+              "image1"
+            ],
+            [
+              "image0"
+            ]
+          ],
+          "protectedIDs" : [
+            "image0",
+            "image1"
+          ],
+          "quotaBytes" : 524288000,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486402000,
+        "operation" : {
+          "kind" : "advanceClock",
+          "milliseconds" : 1000
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "image0",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486401000,
+              "id" : "image1",
+              "lastCopiedAt" : 1760486401000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486402000,
+              "id" : "image2",
+              "lastCopiedAt" : 1760486402000,
+              "protected" : false
+            }
+          ],
+          "orderGroups" : [
+            [
+              "image2"
+            ],
+            [
+              "image1"
+            ],
+            [
+              "image0"
+            ]
+          ],
+          "protectedIDs" : [
+            "image0",
+            "image1"
+          ],
+          "quotaBytes" : 524288000,
+          "result" : "inserted",
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486402000,
+        "operation" : {
+          "generatedPayload" : {
+            "byte" : 12,
+            "byteCount" : 41943040,
+            "format" : "image/png"
+          },
+          "id" : "image2",
+          "kind" : "ingest"
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "image0",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486401000,
+              "id" : "image1",
+              "lastCopiedAt" : 1760486401000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486402000,
+              "id" : "image2",
+              "lastCopiedAt" : 1760486402000,
+              "protected" : false
+            }
+          ],
+          "orderGroups" : [
+            [
+              "image2"
+            ],
+            [
+              "image1"
+            ],
+            [
+              "image0"
+            ]
+          ],
+          "protectedIDs" : [
+            "image0",
+            "image1"
+          ],
+          "quotaBytes" : 524288000,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486403000,
+        "operation" : {
+          "kind" : "advanceClock",
+          "milliseconds" : 1000
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "image0",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486401000,
+              "id" : "image1",
+              "lastCopiedAt" : 1760486401000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486402000,
+              "id" : "image2",
+              "lastCopiedAt" : 1760486402000,
+              "protected" : false
+            }
+          ],
+          "orderGroups" : [
+            [
+              "image2"
+            ],
+            [
+              "image1"
+            ],
+            [
+              "image0"
+            ]
+          ],
+          "preview" : {
+            "affectedCount" : 1,
+            "needsConfirmation" : true
+          },
+          "protectedIDs" : [
+            "image0",
+            "image1"
+          ],
+          "quotaBytes" : 524288000,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486403000,
+        "operation" : {
+          "bytes" : 104857600,
+          "confirm" : false,
+          "kind" : "setQuota"
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "image0",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486401000,
+              "id" : "image1",
+              "lastCopiedAt" : 1760486401000,
+              "protected" : true
+            }
+          ],
+          "orderGroups" : [
+            [
+              "image1"
+            ],
+            [
+              "image0"
+            ]
+          ],
+          "preview" : {
+            "affectedCount" : 1,
+            "needsConfirmation" : true
+          },
+          "protectedIDs" : [
+            "image0",
+            "image1"
+          ],
+          "quotaBytes" : 104857600,
+          "removed" : 1,
+          "retentionDays" : 30,
+          "settingsRevision" : 1,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486403000,
+        "operation" : {
+          "bytes" : 104857600,
+          "confirm" : true,
+          "kind" : "setQuota"
+        }
+      }
+    ]
+  },
+  {
+    "initialNowMs" : 1760486400000,
+    "initialSettings" : {
+      "quotaBytes" : 524288000,
+      "retentionDays" : 30
+    },
+    "name" : "protected-over-quota",
+    "rules" : [
+      "AC13",
+      "AC27"
+    ],
+    "steps" : [
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "protected0",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : false
+            }
+          ],
+          "orderGroups" : [
+            [
+              "protected0"
+            ]
+          ],
+          "protectedIDs" : [
+
+          ],
+          "quotaBytes" : 524288000,
+          "result" : "inserted",
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486400000,
+        "operation" : {
+          "generatedPayload" : {
+            "byte" : 20,
+            "byteCount" : 41943040,
+            "format" : "image/png"
+          },
+          "id" : "protected0",
+          "kind" : "ingest"
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "protected0",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : true
+            }
+          ],
+          "orderGroups" : [
+            [
+              "protected0"
+            ]
+          ],
+          "preview" : {
+            "affectedCount" : 0,
+            "needsConfirmation" : false
+          },
+          "protectedIDs" : [
+            "protected0"
+          ],
+          "quotaBytes" : 524288000,
+          "removed" : 0,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486400000,
+        "operation" : {
+          "confirm" : true,
+          "id" : "protected0",
+          "kind" : "favorite",
+          "value" : true
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "protected0",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : true
+            }
+          ],
+          "orderGroups" : [
+            [
+              "protected0"
+            ]
+          ],
+          "protectedIDs" : [
+            "protected0"
+          ],
+          "quotaBytes" : 524288000,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486401000,
+        "operation" : {
+          "kind" : "advanceClock",
+          "milliseconds" : 1000
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "protected0",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486401000,
+              "id" : "protected1",
+              "lastCopiedAt" : 1760486401000,
+              "protected" : false
+            }
+          ],
+          "orderGroups" : [
+            [
+              "protected1"
+            ],
+            [
+              "protected0"
+            ]
+          ],
+          "protectedIDs" : [
+            "protected0"
+          ],
+          "quotaBytes" : 524288000,
+          "result" : "inserted",
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486401000,
+        "operation" : {
+          "generatedPayload" : {
+            "byte" : 21,
+            "byteCount" : 41943040,
+            "format" : "image/png"
+          },
+          "id" : "protected1",
+          "kind" : "ingest"
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "protected0",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486401000,
+              "id" : "protected1",
+              "lastCopiedAt" : 1760486401000,
+              "protected" : true
+            }
+          ],
+          "orderGroups" : [
+            [
+              "protected1"
+            ],
+            [
+              "protected0"
+            ]
+          ],
+          "preview" : {
+            "affectedCount" : 0,
+            "needsConfirmation" : false
+          },
+          "protectedIDs" : [
+            "protected0",
+            "protected1"
+          ],
+          "quotaBytes" : 524288000,
+          "removed" : 0,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486401000,
+        "operation" : {
+          "confirm" : true,
+          "id" : "protected1",
+          "kind" : "favorite",
+          "value" : true
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "protected0",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486401000,
+              "id" : "protected1",
+              "lastCopiedAt" : 1760486401000,
+              "protected" : true
+            }
+          ],
+          "orderGroups" : [
+            [
+              "protected1"
+            ],
+            [
+              "protected0"
+            ]
+          ],
+          "protectedIDs" : [
+            "protected0",
+            "protected1"
+          ],
+          "quotaBytes" : 524288000,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486402000,
+        "operation" : {
+          "kind" : "advanceClock",
+          "milliseconds" : 1000
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "protected0",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486401000,
+              "id" : "protected1",
+              "lastCopiedAt" : 1760486401000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : false,
+              "firstCopiedAt" : 1760486402000,
+              "id" : "protected2",
+              "lastCopiedAt" : 1760486402000,
+              "protected" : false
+            }
+          ],
+          "orderGroups" : [
+            [
+              "protected2"
+            ],
+            [
+              "protected1"
+            ],
+            [
+              "protected0"
+            ]
+          ],
+          "protectedIDs" : [
+            "protected0",
+            "protected1"
+          ],
+          "quotaBytes" : 524288000,
+          "result" : "inserted",
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486402000,
+        "operation" : {
+          "generatedPayload" : {
+            "byte" : 22,
+            "byteCount" : 41943040,
+            "format" : "image/png"
+          },
+          "id" : "protected2",
+          "kind" : "ingest"
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "protected0",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486401000,
+              "id" : "protected1",
+              "lastCopiedAt" : 1760486401000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486402000,
+              "id" : "protected2",
+              "lastCopiedAt" : 1760486402000,
+              "protected" : true
+            }
+          ],
+          "orderGroups" : [
+            [
+              "protected2"
+            ],
+            [
+              "protected1"
+            ],
+            [
+              "protected0"
+            ]
+          ],
+          "preview" : {
+            "affectedCount" : 0,
+            "needsConfirmation" : false
+          },
+          "protectedIDs" : [
+            "protected0",
+            "protected1",
+            "protected2"
+          ],
+          "quotaBytes" : 524288000,
+          "removed" : 0,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486402000,
+        "operation" : {
+          "confirm" : true,
+          "id" : "protected2",
+          "kind" : "favorite",
+          "value" : true
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : true,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "protected0",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486401000,
+              "id" : "protected1",
+              "lastCopiedAt" : 1760486401000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486402000,
+              "id" : "protected2",
+              "lastCopiedAt" : 1760486402000,
+              "protected" : true
+            }
+          ],
+          "orderGroups" : [
+            [
+              "protected2"
+            ],
+            [
+              "protected1"
+            ],
+            [
+              "protected0"
+            ]
+          ],
+          "protectedIDs" : [
+            "protected0",
+            "protected1",
+            "protected2"
+          ],
+          "quotaBytes" : 524288000,
+          "retentionDays" : 30,
+          "settingsRevision" : 0,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486403000,
+        "operation" : {
+          "kind" : "advanceClock",
+          "milliseconds" : 1000
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : false,
+          "categoryOrder" : {
+
+          },
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "protected0",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486401000,
+              "id" : "protected1",
+              "lastCopiedAt" : 1760486401000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486402000,
+              "id" : "protected2",
+              "lastCopiedAt" : 1760486402000,
+              "protected" : true
+            }
+          ],
+          "orderGroups" : [
+            [
+              "protected2"
+            ],
+            [
+              "protected1"
+            ],
+            [
+              "protected0"
+            ]
+          ],
+          "preview" : {
+            "affectedCount" : 0,
+            "needsConfirmation" : true
+          },
+          "protectedIDs" : [
+            "protected0",
+            "protected1",
+            "protected2"
+          ],
+          "quotaBytes" : 104857600,
+          "removed" : 0,
+          "retentionDays" : 30,
+          "settingsRevision" : 1,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486403000,
+        "operation" : {
+          "bytes" : 104857600,
+          "confirm" : true,
+          "kind" : "setQuota"
+        }
+      },
+      {
+        "expected" : {
+          "canCapture" : false,
+          "categoryOrder" : {
+
+          },
+          "error" : "quotaExceeded",
+          "items" : [
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486400000,
+              "id" : "protected0",
+              "lastCopiedAt" : 1760486400000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486401000,
+              "id" : "protected1",
+              "lastCopiedAt" : 1760486401000,
+              "protected" : true
+            },
+            {
+              "copyCount" : 1,
+              "favorite" : true,
+              "firstCopiedAt" : 1760486402000,
+              "id" : "protected2",
+              "lastCopiedAt" : 1760486402000,
+              "protected" : true
+            }
+          ],
+          "orderGroups" : [
+            [
+              "protected2"
+            ],
+            [
+              "protected1"
+            ],
+            [
+              "protected0"
+            ]
+          ],
+          "protectedIDs" : [
+            "protected0",
+            "protected1",
+            "protected2"
+          ],
+          "quotaBytes" : 104857600,
+          "retentionDays" : 30,
+          "settingsRevision" : 1,
+          "tieBreak" : "actual-id-ascending",
+          "undoAvailable" : false
+        },
+        "nowMs" : 1760486403000,
+        "operation" : {
+          "expectError" : "quotaExceeded",
+          "id" : "blocked",
+          "kind" : "ingest",
+          "text" : "blocked"
+        }
+      }
+    ]
+  }
+]
+}

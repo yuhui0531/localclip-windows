@@ -1,0 +1,637 @@
+{
+  "metadata": {
+  "localOffsetSeconds" : 28800,
+  "macosCommit" : "c097591431c00982ad34186068064b40965c95fd",
+  "macosVersion" : "0.3.29",
+  "notes" : [
+    "apply is called even when applicable=false to preserve both public API behaviors; menu consumers must honor applicability."
+  ],
+  "nowMs" : 1760486400000,
+  "schemaVersion" : 1,
+  "sourceFunctions" : [
+    "TextTransform.isApplicable",
+    "TextTransform.apply"
+  ],
+  "timezone" : "Asia/Shanghai"
+},
+  "cases": [
+  {
+    "applicable" : true,
+    "input" : "let x = 1\r\n",
+    "output" : "```\r\nlet x = 1\r\n```",
+    "transform" : "markdownCodeBlock"
+  },
+  {
+    "applicable" : true,
+    "input" : "```code```",
+    "output" : "````\n```code```\n````",
+    "transform" : "markdownCodeBlock"
+  },
+  {
+    "applicable" : true,
+    "input" : "<html>Hi</html>",
+    "output" : "```\n<html>Hi</html>\n```",
+    "transform" : "markdownCodeBlock"
+  },
+  {
+    "applicable" : false,
+    "input" : "",
+    "output" : "```\n\n```",
+    "transform" : "markdownCodeBlock"
+  },
+  {
+    "applicable" : true,
+    "input" : "  a\r\n  b\r\n",
+    "output" : "a\r\nb\r\n",
+    "transform" : "dedent"
+  },
+  {
+    "applicable" : true,
+    "input" : "\ta\n\tb",
+    "output" : "a\nb",
+    "transform" : "dedent"
+  },
+  {
+    "applicable" : false,
+    "error" : "当前内容不适用“去公共缩进”",
+    "input" : "a\nb",
+    "transform" : "dedent"
+  },
+  {
+    "applicable" : false,
+    "error" : "当前内容不适用“去公共缩进”",
+    "input" : "",
+    "transform" : "dedent"
+  },
+  {
+    "applicable" : true,
+    "input" : " \r\n a  \r\n b\t\r\n",
+    "output" : " a\r\n b",
+    "transform" : "trimWhitespace"
+  },
+  {
+    "applicable" : true,
+    "input" : "  a  ",
+    "output" : "  a",
+    "transform" : "trimWhitespace"
+  },
+  {
+    "applicable" : true,
+    "input" : "\n\n",
+    "output" : "",
+    "transform" : "trimWhitespace"
+  },
+  {
+    "applicable" : false,
+    "input" : "",
+    "output" : "",
+    "transform" : "trimWhitespace"
+  },
+  {
+    "applicable" : true,
+    "input" : "$ echo a\r\n% pwd\r\n",
+    "output" : "echo a\r\npwd\r\n",
+    "transform" : "stripPrompt"
+  },
+  {
+    "applicable" : true,
+    "input" : "  $ hi\nplain",
+    "output" : "  hi\nplain",
+    "transform" : "stripPrompt"
+  },
+  {
+    "applicable" : false,
+    "error" : "当前内容不适用“去命令提示符”",
+    "input" : "plain",
+    "transform" : "stripPrompt"
+  },
+  {
+    "applicable" : false,
+    "error" : "当前内容不适用“去命令提示符”",
+    "input" : "",
+    "transform" : "stripPrompt"
+  },
+  {
+    "applicable" : true,
+    "input" : "1 a\r\n2 b\r\n",
+    "output" : "a\r\nb\r\n",
+    "transform" : "stripLineNumbers"
+  },
+  {
+    "applicable" : true,
+    "input" : "10 | a\n11 | b",
+    "output" : "a\nb",
+    "transform" : "stripLineNumbers"
+  },
+  {
+    "applicable" : false,
+    "error" : "当前内容不适用“去行号”",
+    "input" : "2 a\n1 b",
+    "transform" : "stripLineNumbers"
+  },
+  {
+    "applicable" : false,
+    "error" : "当前内容不适用“去行号”",
+    "input" : "",
+    "transform" : "stripLineNumbers"
+  },
+  {
+    "applicable" : true,
+    "input" : "{\r\n\"z\":1.00e+2,\"a\":[]\r\n}",
+    "output" : "{\n  \"z\": 1.00e+2,\n  \"a\": []\n}",
+    "transform" : "formatJSON"
+  },
+  {
+    "applicable" : true,
+    "input" : "[true,null,\"a\\nb\"]",
+    "output" : "[\n  true,\n  null,\n  \"a\\nb\"\n]",
+    "transform" : "formatJSON"
+  },
+  {
+    "applicable" : false,
+    "error" : "不是有效 JSON：第 1 行第 1 列",
+    "input" : "{bad}",
+    "transform" : "formatJSON"
+  },
+  {
+    "applicable" : false,
+    "error" : "不是有效 JSON",
+    "input" : "",
+    "transform" : "formatJSON"
+  },
+  {
+    "applicable" : true,
+    "input" : "{\r\n \"b\": 2, \"a\": 1\r\n}",
+    "output" : "{\"b\":2,\"a\":1}",
+    "transform" : "minifyJSON"
+  },
+  {
+    "applicable" : true,
+    "input" : " \"a b\" ",
+    "output" : "\"a b\"",
+    "transform" : "minifyJSON"
+  },
+  {
+    "applicable" : true,
+    "input" : "[1,]",
+    "output" : "[1,]",
+    "transform" : "minifyJSON"
+  },
+  {
+    "applicable" : false,
+    "error" : "不是有效 JSON",
+    "input" : "",
+    "transform" : "minifyJSON"
+  },
+  {
+    "applicable" : true,
+    "input" : "a\r\nb",
+    "output" : "\"a\\r\\nb\"",
+    "transform" : "quoteString"
+  },
+  {
+    "applicable" : true,
+    "input" : "\"\\\t\u0000",
+    "output" : "\"\\\"\\\\\\t\\u0000\"",
+    "transform" : "quoteString"
+  },
+  {
+    "applicable" : true,
+    "input" : "你好😀",
+    "output" : "\"你好😀\"",
+    "transform" : "quoteString"
+  },
+  {
+    "applicable" : false,
+    "input" : "",
+    "output" : "\"\"",
+    "transform" : "quoteString"
+  },
+  {
+    "applicable" : true,
+    "input" : "\"a\\r\\nb\"",
+    "output" : "a\r\nb",
+    "transform" : "unquoteString"
+  },
+  {
+    "applicable" : true,
+    "input" : "\"\\u4f60\\u597d\"",
+    "output" : "你好",
+    "transform" : "unquoteString"
+  },
+  {
+    "applicable" : false,
+    "error" : "不是有效的字符串字面量",
+    "input" : "'bad'",
+    "transform" : "unquoteString"
+  },
+  {
+    "applicable" : false,
+    "error" : "不是有效的字符串字面量",
+    "input" : "",
+    "transform" : "unquoteString"
+  },
+  {
+    "applicable" : true,
+    "input" : "a\r\nb",
+    "output" : "YQ0KYg==",
+    "transform" : "base64Encode"
+  },
+  {
+    "applicable" : true,
+    "input" : "你好😀",
+    "output" : "5L2g5aW98J+YgA==",
+    "transform" : "base64Encode"
+  },
+  {
+    "applicable" : true,
+    "input" : "\u0000",
+    "output" : "AA==",
+    "transform" : "base64Encode"
+  },
+  {
+    "applicable" : false,
+    "input" : "",
+    "output" : "",
+    "transform" : "base64Encode"
+  },
+  {
+    "applicable" : true,
+    "input" : "SGVsbG8=",
+    "output" : "Hello",
+    "transform" : "base64Decode"
+  },
+  {
+    "applicable" : true,
+    "input" : "5L2g5aW9",
+    "output" : "你好",
+    "transform" : "base64Decode"
+  },
+  {
+    "applicable" : false,
+    "error" : "Base64 解码结果不是文本",
+    "input" : "AA==",
+    "transform" : "base64Decode"
+  },
+  {
+    "applicable" : false,
+    "error" : "不是有效的 Base64",
+    "input" : "%%%%",
+    "transform" : "base64Decode"
+  },
+  {
+    "applicable" : true,
+    "input" : "SGVs\r\nbG8=",
+    "output" : "Hello",
+    "transform" : "base64Decode"
+  },
+  {
+    "applicable" : false,
+    "error" : "不是有效的 Base64",
+    "input" : "",
+    "transform" : "base64Decode"
+  },
+  {
+    "applicable" : true,
+    "input" : "a\r\nb",
+    "output" : "a%0D%0Ab",
+    "transform" : "urlEncode"
+  },
+  {
+    "applicable" : true,
+    "input" : "你好 &?=/+",
+    "output" : "%E4%BD%A0%E5%A5%BD%20%26%3F%3D%2F%2B",
+    "transform" : "urlEncode"
+  },
+  {
+    "applicable" : true,
+    "input" : "-._~!",
+    "output" : "-._~%21",
+    "transform" : "urlEncode"
+  },
+  {
+    "applicable" : false,
+    "input" : "",
+    "output" : "",
+    "transform" : "urlEncode"
+  },
+  {
+    "applicable" : true,
+    "input" : "a%0D%0Ab",
+    "output" : "a\r\nb",
+    "transform" : "urlDecode"
+  },
+  {
+    "applicable" : true,
+    "input" : "a+b%20c",
+    "output" : "a b c",
+    "transform" : "urlDecode"
+  },
+  {
+    "applicable" : false,
+    "error" : "URL 解码失败：百分号编码无效",
+    "input" : "%GG",
+    "transform" : "urlDecode"
+  },
+  {
+    "applicable" : true,
+    "input" : "%E4%BD%A0",
+    "output" : "你",
+    "transform" : "urlDecode"
+  },
+  {
+    "applicable" : false,
+    "error" : "URL 解码失败：百分号编码无效",
+    "input" : "",
+    "transform" : "urlDecode"
+  },
+  {
+    "applicable" : true,
+    "input" : "HTTPServer_name\r\nnext-ID",
+    "output" : "httpServerName\r\nnextId",
+    "transform" : "camelCase"
+  },
+  {
+    "applicable" : true,
+    "input" : "  hello-world",
+    "output" : "  helloWorld",
+    "transform" : "camelCase"
+  },
+  {
+    "applicable" : true,
+    "input" : "中文_名字",
+    "output" : "中文名字",
+    "transform" : "camelCase"
+  },
+  {
+    "applicable" : false,
+    "input" : "",
+    "output" : "",
+    "transform" : "camelCase"
+  },
+  {
+    "applicable" : true,
+    "input" : "HTTPServer\r\nmyURL",
+    "output" : "http_server\r\nmy_url",
+    "transform" : "snakeCase"
+  },
+  {
+    "applicable" : true,
+    "input" : "some-ID2Name",
+    "output" : "some_id2_name",
+    "transform" : "snakeCase"
+  },
+  {
+    "applicable" : true,
+    "input" : "  hello world",
+    "output" : "  hello_world",
+    "transform" : "snakeCase"
+  },
+  {
+    "applicable" : false,
+    "input" : "",
+    "output" : "",
+    "transform" : "snakeCase"
+  },
+  {
+    "applicable" : true,
+    "input" : "helloWorld\r\nHTTPServer",
+    "output" : "hello-world\r\nhttp-server",
+    "transform" : "kebabCase"
+  },
+  {
+    "applicable" : true,
+    "input" : "  one_two",
+    "output" : "  one-two",
+    "transform" : "kebabCase"
+  },
+  {
+    "applicable" : true,
+    "input" : "中文名字",
+    "output" : "中文名字",
+    "transform" : "kebabCase"
+  },
+  {
+    "applicable" : false,
+    "input" : "",
+    "output" : "",
+    "transform" : "kebabCase"
+  },
+  {
+    "applicable" : true,
+    "input" : "a\r\nb",
+    "output" : "A\r\nB",
+    "transform" : "uppercase"
+  },
+  {
+    "applicable" : true,
+    "input" : "Straße",
+    "output" : "STRASSE",
+    "transform" : "uppercase"
+  },
+  {
+    "applicable" : true,
+    "input" : "你好",
+    "output" : "你好",
+    "transform" : "uppercase"
+  },
+  {
+    "applicable" : false,
+    "input" : "",
+    "output" : "",
+    "transform" : "uppercase"
+  },
+  {
+    "applicable" : true,
+    "input" : "A\r\nB",
+    "output" : "a\r\nb",
+    "transform" : "lowercase"
+  },
+  {
+    "applicable" : true,
+    "input" : "İΣ",
+    "output" : "i̇σ",
+    "transform" : "lowercase"
+  },
+  {
+    "applicable" : true,
+    "input" : "你好",
+    "output" : "你好",
+    "transform" : "lowercase"
+  },
+  {
+    "applicable" : false,
+    "input" : "",
+    "output" : "",
+    "transform" : "lowercase"
+  },
+  {
+    "applicable" : true,
+    "input" : "item10\r\nitem2\r\nitem1\r\n",
+    "output" : "item1\r\nitem2\r\nitem10\r\n",
+    "transform" : "sortLines"
+  },
+  {
+    "applicable" : true,
+    "input" : "b\na\n",
+    "output" : "a\nb\n",
+    "transform" : "sortLines"
+  },
+  {
+    "applicable" : false,
+    "error" : "当前内容不适用“行排序”",
+    "input" : "one",
+    "transform" : "sortLines"
+  },
+  {
+    "applicable" : false,
+    "error" : "当前内容不适用“行排序”",
+    "input" : "",
+    "transform" : "sortLines"
+  },
+  {
+    "applicable" : true,
+    "input" : "a\r\nb\r\na\r\n",
+    "output" : "a\r\nb\r\n",
+    "transform" : "uniqueLines"
+  },
+  {
+    "applicable" : true,
+    "input" : "é\né\n",
+    "output" : "é\n",
+    "transform" : "uniqueLines"
+  },
+  {
+    "applicable" : false,
+    "error" : "当前内容不适用“行去重”",
+    "input" : "one",
+    "transform" : "uniqueLines"
+  },
+  {
+    "applicable" : false,
+    "error" : "当前内容不适用“行去重”",
+    "input" : "",
+    "transform" : "uniqueLines"
+  },
+  {
+    "applicable" : true,
+    "input" : "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmaXh0dXJlIn0.signature",
+    "output" : "{\n  \"sub\": \"fixture\"\n}",
+    "transform" : "jwtPayload"
+  },
+  {
+    "applicable" : true,
+    "input" : "eyJhbGciOiJub25lIn0.eyJhIjoxfQ.",
+    "output" : "{\n  \"a\": 1\n}",
+    "transform" : "jwtPayload"
+  },
+  {
+    "applicable" : false,
+    "error" : "不是完整的 JWT",
+    "input" : "bad",
+    "transform" : "jwtPayload"
+  },
+  {
+    "applicable" : false,
+    "error" : "不是完整的 JWT",
+    "input" : "",
+    "transform" : "jwtPayload"
+  },
+  {
+    "applicable" : true,
+    "input" : "1700000000",
+    "output" : "2023-11-15T06:13:20+08:00",
+    "transform" : "timestampToISO"
+  },
+  {
+    "applicable" : true,
+    "input" : "1700000000123",
+    "output" : "2023-11-15T06:13:20.123+08:00",
+    "transform" : "timestampToISO"
+  },
+  {
+    "applicable" : false,
+    "error" : "不是 10 位秒或 13 位毫秒时间戳",
+    "input" : "123",
+    "transform" : "timestampToISO"
+  },
+  {
+    "applicable" : false,
+    "error" : "不是 10 位秒或 13 位毫秒时间戳",
+    "input" : "",
+    "transform" : "timestampToISO"
+  },
+  {
+    "applicable" : true,
+    "input" : "2023-11-14T22:13:20Z",
+    "output" : "1700000000",
+    "transform" : "isoToTimestamp"
+  },
+  {
+    "applicable" : true,
+    "input" : "2023-11-14T22:13:20.123Z",
+    "output" : "1700000000123",
+    "transform" : "isoToTimestamp"
+  },
+  {
+    "applicable" : false,
+    "error" : "不是 ISO 8601 时间",
+    "input" : "not-date",
+    "transform" : "isoToTimestamp"
+  },
+  {
+    "applicable" : false,
+    "error" : "不是 ISO 8601 时间",
+    "input" : "",
+    "transform" : "isoToTimestamp"
+  },
+  {
+    "applicable" : true,
+    "input" : "#abc",
+    "output" : "rgb(170, 187, 204)",
+    "transform" : "colorToRGB"
+  },
+  {
+    "applicable" : true,
+    "input" : "#12345680",
+    "output" : "rgba(18, 52, 86, 0.502)",
+    "transform" : "colorToRGB"
+  },
+  {
+    "applicable" : false,
+    "error" : "不是可识别的颜色值",
+    "input" : "rgb(999,0,0)",
+    "transform" : "colorToRGB"
+  },
+  {
+    "applicable" : false,
+    "error" : "不是可识别的颜色值",
+    "input" : "",
+    "transform" : "colorToRGB"
+  },
+  {
+    "applicable" : true,
+    "input" : "rgb(1, 2, 3)",
+    "output" : "#010203",
+    "transform" : "colorToHex"
+  },
+  {
+    "applicable" : true,
+    "input" : "hsla(120, 100%, 50%, .5)",
+    "output" : "#00FF0080",
+    "transform" : "colorToHex"
+  },
+  {
+    "applicable" : false,
+    "error" : "不是可识别的颜色值",
+    "input" : "not-color",
+    "transform" : "colorToHex"
+  },
+  {
+    "applicable" : false,
+    "error" : "不是可识别的颜色值",
+    "input" : "",
+    "transform" : "colorToHex"
+  }
+]
+}

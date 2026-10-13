@@ -1,0 +1,292 @@
+{
+  "metadata": {
+  "localOffsetSeconds" : 28800,
+  "macosCommit" : "c097591431c00982ad34186068064b40965c95fd",
+  "macosVersion" : "0.3.29",
+  "notes" : [
+    "TIFF has no Windows mapping; DIBV5 is covered by Windows-specific tests, never mislabeled TIFF."
+  ],
+  "nowMs" : 1760486400000,
+  "schemaVersion" : 1,
+  "sourceFunctions" : [
+    "ClipboardPayload.kind"
+  ],
+  "timezone" : "Asia/Shanghai"
+},
+  "cases": [
+  {
+    "items" : [
+      [
+
+      ]
+    ],
+    "kind" : "text",
+    "types" : [
+      [
+
+      ]
+    ]
+  },
+  {
+    "items" : [
+      [
+        {
+          "dataBase64" : "dGV4dA==",
+          "type" : "text/plain"
+        }
+      ]
+    ],
+    "kind" : "text",
+    "types" : [
+      [
+        "text/plain"
+      ]
+    ]
+  },
+  {
+    "items" : [
+      [
+        {
+          "dataBase64" : "aHR0cHM6Ly9leGFtcGxlLmNvbQ==",
+          "type" : "text/uri"
+        }
+      ]
+    ],
+    "kind" : "url",
+    "types" : [
+      [
+        "text/uri"
+      ]
+    ]
+  },
+  {
+    "items" : [
+      [
+        {
+          "dataBase64" : "PGI+eDwvYj4=",
+          "type" : "text/html"
+        }
+      ]
+    ],
+    "kind" : "richText",
+    "types" : [
+      [
+        "text/html"
+      ]
+    ]
+  },
+  {
+    "items" : [
+      [
+        {
+          "dataBase64" : "e1xydGYxIHh9",
+          "type" : "text/rtf"
+        }
+      ]
+    ],
+    "kind" : "richText",
+    "types" : [
+      [
+        "text/rtf"
+      ]
+    ]
+  },
+  {
+    "items" : [
+      [
+        {
+          "dataBase64" : "AAH/",
+          "type" : "image/png"
+        }
+      ]
+    ],
+    "kind" : "image",
+    "types" : [
+      [
+        "image/png"
+      ]
+    ]
+  },
+  {
+    "items" : [
+      [
+        {
+          "dataBase64" : "/9j/",
+          "type" : "image/jpeg"
+        }
+      ]
+    ],
+    "kind" : "image",
+    "types" : [
+      [
+        "image/jpeg"
+      ]
+    ]
+  },
+  {
+    "items" : [
+      [
+        {
+          "dataBase64" : "AQ==",
+          "type" : "image/png"
+        },
+        {
+          "dataBase64" : "Ag==",
+          "type" : "image/jpeg"
+        }
+      ]
+    ],
+    "kind" : "image",
+    "types" : [
+      [
+        "image/png",
+        "image/jpeg"
+      ]
+    ]
+  },
+  {
+    "items" : [
+      [
+        {
+          "dataBase64" : "eA==",
+          "type" : "text/plain"
+        },
+        {
+          "dataBase64" : "Aw==",
+          "type" : "image/png"
+        }
+      ]
+    ],
+    "kind" : "mixed",
+    "types" : [
+      [
+        "text/plain",
+        "image/png"
+      ]
+    ]
+  },
+  {
+    "items" : [
+      [
+        {
+          "dataBase64" : "ZmlsZTovLy9DOi9maXh0dXJlcy9hLnBuZw==",
+          "type" : "text/uri-list"
+        }
+      ]
+    ],
+    "kind" : "file",
+    "types" : [
+      [
+        "text/uri-list"
+      ]
+    ]
+  },
+  {
+    "items" : [
+      [
+        {
+          "dataBase64" : "ZXhhbXBsZS5jb20=",
+          "type" : "text/plain"
+        }
+      ]
+    ],
+    "kind" : "url",
+    "types" : [
+      [
+        "text/plain"
+      ]
+    ]
+  },
+  {
+    "items" : [
+      [
+        {
+          "dataBase64" : "UkVBRE1FLm1k",
+          "type" : "text/plain"
+        }
+      ]
+    ],
+    "kind" : "text",
+    "types" : [
+      [
+        "text/plain"
+      ]
+    ]
+  },
+  {
+    "items" : [
+      [
+        {
+          "dataBase64" : "YQ==",
+          "type" : "text/plain"
+        }
+      ],
+      [
+        {
+          "dataBase64" : "Yg==",
+          "type" : "text/plain"
+        }
+      ]
+    ],
+    "kind" : "text",
+    "types" : [
+      [
+        "text/plain"
+      ],
+      [
+        "text/plain"
+      ]
+    ]
+  },
+  {
+    "items" : [
+      [
+        {
+          "dataBase64" : "ZmlsZTovLy9DOi9maXh0dXJlcy9hLnBuZw==",
+          "type" : "text/uri-list"
+        }
+      ],
+      [
+        {
+          "dataBase64" : "ZmlsZTovLy9DOi9maXh0dXJlcy9hLnBuZw==",
+          "type" : "text/uri-list"
+        }
+      ]
+    ],
+    "kind" : "file",
+    "types" : [
+      [
+        "text/uri-list"
+      ],
+      [
+        "text/uri-list"
+      ]
+    ]
+  },
+  {
+    "items" : [
+      [
+        {
+          "dataBase64" : "ZmlsZTovLy9DOi9maXh0dXJlcy9hLnBuZw==",
+          "type" : "text/uri-list"
+        }
+      ],
+      [
+        {
+          "dataBase64" : "dGV4dA==",
+          "type" : "text/plain"
+        }
+      ]
+    ],
+    "kind" : "mixed",
+    "types" : [
+      [
+        "text/uri-list"
+      ],
+      [
+        "text/plain"
+      ]
+    ]
+  }
+]
+}

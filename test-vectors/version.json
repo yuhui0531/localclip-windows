@@ -1,0 +1,78 @@
+{
+  "metadata": {
+  "localOffsetSeconds" : 28800,
+  "macosCommit" : "c097591431c00982ad34186068064b40965c95fd",
+  "macosVersion" : "0.3.29",
+  "notes" : [
+
+  ],
+  "nowMs" : 1760486400000,
+  "schemaVersion" : 1,
+  "sourceFunctions" : [
+    "AppVersion.isNewer"
+  ],
+  "timezone" : "Asia/Shanghai"
+},
+  "cases": [
+  {
+    "candidate" : "v0.3.29-51",
+    "current" : "0.3.28",
+    "newer" : true
+  },
+  {
+    "candidate" : "v0.3.29-52",
+    "current" : "0.3.29-51",
+    "newer" : false
+  },
+  {
+    "candidate" : "0.3.28",
+    "current" : "0.3.29",
+    "newer" : false
+  },
+  {
+    "candidate" : "1.0",
+    "current" : "1.0.0",
+    "newer" : false
+  },
+  {
+    "candidate" : "1.10",
+    "current" : "1.9",
+    "newer" : true
+  },
+  {
+    "candidate" : "V2.0+build",
+    "current" : "1.99",
+    "newer" : true
+  },
+  {
+    "candidate" : "vv1.2",
+    "current" : "1.1",
+    "newer" : true
+  },
+  {
+    "candidate" : "",
+    "current" : "0",
+    "newer" : false
+  },
+  {
+    "candidate" : "1.foo.1",
+    "current" : "1.0.0",
+    "newer" : true
+  },
+  {
+    "candidate" : "1..2",
+    "current" : "1.1",
+    "newer" : true
+  },
+  {
+    "candidate" : "01.02",
+    "current" : "1.2",
+    "newer" : false
+  },
+  {
+    "candidate" : "2-beta",
+    "current" : "1.9",
+    "newer" : true
+  }
+]
+}

@@ -1,0 +1,2492 @@
+{
+  "metadata": {
+  "localOffsetSeconds" : 28800,
+  "macosCommit" : "c097591431c00982ad34186068064b40965c95fd",
+  "macosVersion" : "0.3.29",
+  "notes" : [
+    "Random category IDs are replaced consistently by fixture aliases; parser receives actual public-store categories."
+  ],
+  "nowMs" : 1760486400000,
+  "schemaVersion" : 1,
+  "sourceFunctions" : [
+    "SearchQueryParser.parse",
+    "HistoryStore.createCategory"
+  ],
+  "timezone" : "Asia/Shanghai"
+},
+  "cases": [
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "labels" : [
+
+      ],
+      "literal" : "",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : ""
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "labels" : [
+
+      ],
+      "literal" : "需求",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "需求"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "kind" : "image",
+      "labels" : [
+        "类型 图片"
+      ],
+      "literal" : "",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "type:image"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "labels" : [
+        "来源 Notepad"
+      ],
+      "literal" : "需求",
+      "problems" : [
+
+      ],
+      "sourceAppID" : "fixture.notepad"
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "app:notepad 需求"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+        "category-work"
+      ],
+      "favorites" : false,
+      "from" : 1759881600000,
+      "labels" : [
+        "最近 7 天",
+        "分类 工作"
+      ],
+      "literal" : "",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "in:工作 after:7d"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "labels" : [
+
+      ],
+      "literal" : "type:url",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "\"type:url\""
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "labels" : [
+
+      ],
+      "literal" : "",
+      "problems" : [
+        "未找到来源 不存在"
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "app:不存在"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "kind" : "text",
+      "labels" : [
+        "类型 文本"
+      ],
+      "literal" : "",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "type:text"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "kind" : "url",
+      "labels" : [
+        "类型 链接"
+      ],
+      "literal" : "",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "type:link"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "kind" : "richText",
+      "labels" : [
+        "类型 富文本"
+      ],
+      "literal" : "",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "type:rich"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "kind" : "richText",
+      "labels" : [
+        "类型 富文本"
+      ],
+      "literal" : "",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "type:richtext"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "kind" : "image",
+      "labels" : [
+        "类型 图片"
+      ],
+      "literal" : "",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "type:img"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "kind" : "file",
+      "labels" : [
+        "类型 文件"
+      ],
+      "literal" : "",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "type:file"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "kind" : "mixed",
+      "labels" : [
+        "类型 混合"
+      ],
+      "literal" : "",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "type:mixed"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "kind" : "text",
+      "labels" : [
+        "类型 文本"
+      ],
+      "literal" : "",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "type:文本"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "kind" : "url",
+      "labels" : [
+        "类型 链接"
+      ],
+      "literal" : "",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "type:链接"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "kind" : "richText",
+      "labels" : [
+        "类型 富文本"
+      ],
+      "literal" : "",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "type:富文本"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "kind" : "image",
+      "labels" : [
+        "类型 图片"
+      ],
+      "literal" : "",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "type:图片"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "kind" : "file",
+      "labels" : [
+        "类型 文件"
+      ],
+      "literal" : "",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "type:文件"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "kind" : "mixed",
+      "labels" : [
+        "类型 混合"
+      ],
+      "literal" : "",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "type:混合"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : true,
+      "labels" : [
+        "收藏"
+      ],
+      "literal" : "",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "is:fav"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : true,
+      "labels" : [
+        "收藏"
+      ],
+      "literal" : "",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "is:favorite"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : true,
+      "labels" : [
+        "收藏"
+      ],
+      "literal" : "",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "is:favorites"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : true,
+      "labels" : [
+        "收藏"
+      ],
+      "literal" : "",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "is:收藏"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "labels" : [
+
+      ],
+      "literal" : "is:bad",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "is:bad"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "kind" : "image",
+      "labels" : [
+        "类型 图片"
+      ],
+      "literal" : "X",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "TYPE:IMAGE X"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "labels" : [
+
+      ],
+      "literal" : "type:",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "type:"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "labels" : [
+
+      ],
+      "literal" : "type::url",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "type::url"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "labels" : [
+
+      ],
+      "literal" : "prefix:type:url",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "prefix:type:url"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "labels" : [
+        "来源 Code"
+      ],
+      "literal" : "",
+      "problems" : [
+
+      ],
+      "sourceAppID" : "fixture.code"
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "app:Code"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "labels" : [
+
+      ],
+      "literal" : "",
+      "problems" : [
+        "来源“co”匹配多个：Code、Code Insiders"
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "app:co"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "labels" : [
+        "来源 Notepad"
+      ],
+      "literal" : "",
+      "problems" : [
+
+      ],
+      "sourceAppID" : "fixture.notepad"
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "app:fixture.notepad"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "labels" : [
+        "来源 未知"
+      ],
+      "literal" : "",
+      "problems" : [
+
+      ],
+      "sourceAppID" : ""
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "app:未知"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+        "category-personal"
+      ],
+      "favorites" : false,
+      "labels" : [
+        "分类 Personal"
+      ],
+      "literal" : "",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "in:personal"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "labels" : [
+
+      ],
+      "literal" : "",
+      "problems" : [
+        "未找到分类 missing"
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "in:missing"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+        "category-personal",
+        "category-work"
+      ],
+      "favorites" : false,
+      "labels" : [
+        "分类 工作、Personal"
+      ],
+      "literal" : "",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "in:工作 in:Personal"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "from" : 1791907200000,
+      "labels" : [
+        "从 2026-10-14"
+      ],
+      "literal" : "",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "after:2026-10-14"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "labels" : [
+        "早于 2026-10-14"
+      ],
+      "literal" : "",
+      "problems" : [
+
+      ],
+      "until" : 1791907200000
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "before:2026-10-14"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "from" : 1709136000000,
+      "labels" : [
+        "从 2024-02-29"
+      ],
+      "literal" : "",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "after:2024-02-29"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "labels" : [
+
+      ],
+      "literal" : "after:2023-02-29",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "after:2023-02-29"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "from" : 1760486400000,
+      "labels" : [
+        "最近 0 天",
+        "7 天前"
+      ],
+      "literal" : "",
+      "problems" : [
+
+      ],
+      "until" : 1759881600000
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "after:0d before:7d"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "from" : 896572800000,
+      "labels" : [
+        "最近 9999 天"
+      ],
+      "literal" : "",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "after:9999d"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "labels" : [
+
+      ],
+      "literal" : "after:10000d",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "after:10000d"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "labels" : [
+
+      ],
+      "literal" : "before:-1d",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "before:-1d"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "labels" : [
+
+      ],
+      "literal" : "after:bad",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "after:bad"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "kind" : "url",
+      "labels" : [
+        "类型 链接"
+      ],
+      "literal" : " a   b ",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : " a  type:url  b "
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "kind" : "url",
+      "labels" : [
+        "类型 链接"
+      ],
+      "literal" : "a\t\tb",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "a\ttype:url\tb"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "labels" : [
+
+      ],
+      "literal" : "app:notepad literal",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "\"app:notepad\" literal"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "kind" : "image",
+      "labels" : [
+        "类型 文本",
+        "类型 图片"
+      ],
+      "literal" : "",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "type:text type:image"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "labels" : [
+        "来源 Notepad"
+      ],
+      "literal" : "",
+      "problems" : [
+        "来源“co”匹配多个：Code、Code Insiders"
+      ],
+      "sourceAppID" : "fixture.notepad"
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "app:co app:notepad"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+        "category-work"
+      ],
+      "favorites" : false,
+      "labels" : [
+        "分类 工作、工作"
+      ],
+      "literal" : "",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "in:工作 in:工作"
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "labels" : [
+
+      ],
+      "literal" : "https://example.com % _ * \"",
+      "problems" : [
+
+      ]
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "https://example.com % _ * \""
+  },
+  {
+    "categories" : [
+      {
+        "id" : "category-work",
+        "name" : "工作"
+      },
+      {
+        "id" : "category-personal",
+        "name" : "Personal"
+      }
+    ],
+    "expected" : {
+      "categoryIDs" : [
+
+      ],
+      "favorites" : false,
+      "labels" : [
+        "来源 Notepad"
+      ],
+      "literal" : "a\n\nb",
+      "problems" : [
+
+      ],
+      "sourceAppID" : "fixture.notepad"
+    },
+    "localOffsetSeconds" : 28800,
+    "nowMs" : 1760486400000,
+    "sources" : [
+      {
+        "name" : "Notepad",
+        "sourceAppID" : "fixture.notepad"
+      },
+      {
+        "name" : "Code",
+        "sourceAppID" : "fixture.code"
+      },
+      {
+        "name" : "Code Insiders",
+        "sourceAppID" : "fixture.code-insiders"
+      },
+      {
+        "name" : "未知",
+        "sourceAppID" : null
+      }
+    ],
+    "text" : "a\napp:notepad\nb"
+  }
+]
+}

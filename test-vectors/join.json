@@ -1,0 +1,291 @@
+{
+  "metadata": {
+  "localOffsetSeconds" : 28800,
+  "macosCommit" : "c097591431c00982ad34186068064b40965c95fd",
+  "macosVersion" : "0.3.29",
+  "notes" : [
+    "These are pure-text joins; original-format newline composition requires separate rich-text integration tests."
+  ],
+  "nowMs" : 1760486400000,
+  "schemaVersion" : 1,
+  "sourceFunctions" : [
+    "JoinStyle.join"
+  ],
+  "timezone" : "Asia/Shanghai"
+},
+  "cases": [
+  {
+    "output" : " one \ntwo\r\nnext\nO'Brien",
+    "style" : "newline",
+    "values" : [
+      " one ",
+      "two\r\nnext",
+      "O'Brien"
+    ]
+  },
+  {
+    "output" : "",
+    "style" : "newline",
+    "values" : [
+
+    ]
+  },
+  {
+    "output" : "",
+    "style" : "newline",
+    "values" : [
+      ""
+    ]
+  },
+  {
+    "output" : " a\r\n\n b\n",
+    "style" : "newline",
+    "values" : [
+      " a\r\n",
+      " b\n"
+    ]
+  },
+  {
+    "output" : "你好\n\"\\\t",
+    "style" : "newline",
+    "values" : [
+      "你好",
+      "\"\\\t"
+    ]
+  },
+  {
+    "output" : " one \n\ntwo\r\nnext\n\nO'Brien",
+    "style" : "blankLine",
+    "values" : [
+      " one ",
+      "two\r\nnext",
+      "O'Brien"
+    ]
+  },
+  {
+    "output" : "",
+    "style" : "blankLine",
+    "values" : [
+
+    ]
+  },
+  {
+    "output" : "",
+    "style" : "blankLine",
+    "values" : [
+      ""
+    ]
+  },
+  {
+    "output" : " a\r\n\n\n b\n",
+    "style" : "blankLine",
+    "values" : [
+      " a\r\n",
+      " b\n"
+    ]
+  },
+  {
+    "output" : "你好\n\n\"\\\t",
+    "style" : "blankLine",
+    "values" : [
+      "你好",
+      "\"\\\t"
+    ]
+  },
+  {
+    "output" : "one, two\r\nnext, O'Brien",
+    "style" : "comma",
+    "values" : [
+      " one ",
+      "two\r\nnext",
+      "O'Brien"
+    ]
+  },
+  {
+    "output" : "",
+    "style" : "comma",
+    "values" : [
+
+    ]
+  },
+  {
+    "output" : "",
+    "style" : "comma",
+    "values" : [
+      ""
+    ]
+  },
+  {
+    "output" : "a, b",
+    "style" : "comma",
+    "values" : [
+      " a\r\n",
+      " b\n"
+    ]
+  },
+  {
+    "output" : "你好, \"\\",
+    "style" : "comma",
+    "values" : [
+      "你好",
+      "\"\\\t"
+    ]
+  },
+  {
+    "output" : "one two\r\nnext O'Brien",
+    "style" : "space",
+    "values" : [
+      " one ",
+      "two\r\nnext",
+      "O'Brien"
+    ]
+  },
+  {
+    "output" : "",
+    "style" : "space",
+    "values" : [
+
+    ]
+  },
+  {
+    "output" : "",
+    "style" : "space",
+    "values" : [
+      ""
+    ]
+  },
+  {
+    "output" : "a b",
+    "style" : "space",
+    "values" : [
+      " a\r\n",
+      " b\n"
+    ]
+  },
+  {
+    "output" : "你好 \"\\",
+    "style" : "space",
+    "values" : [
+      "你好",
+      "\"\\\t"
+    ]
+  },
+  {
+    "output" : "'one', 'two\r\nnext', 'O''Brien'",
+    "style" : "sqlList",
+    "values" : [
+      " one ",
+      "two\r\nnext",
+      "O'Brien"
+    ]
+  },
+  {
+    "output" : "",
+    "style" : "sqlList",
+    "values" : [
+
+    ]
+  },
+  {
+    "output" : "''",
+    "style" : "sqlList",
+    "values" : [
+      ""
+    ]
+  },
+  {
+    "output" : "'a', 'b'",
+    "style" : "sqlList",
+    "values" : [
+      " a\r\n",
+      " b\n"
+    ]
+  },
+  {
+    "output" : "'你好', '\"\\'",
+    "style" : "sqlList",
+    "values" : [
+      "你好",
+      "\"\\\t"
+    ]
+  },
+  {
+    "output" : "[\"one\", \"two\\r\\nnext\", \"O'Brien\"]",
+    "style" : "jsonArray",
+    "values" : [
+      " one ",
+      "two\r\nnext",
+      "O'Brien"
+    ]
+  },
+  {
+    "output" : "[]",
+    "style" : "jsonArray",
+    "values" : [
+
+    ]
+  },
+  {
+    "output" : "[\"\"]",
+    "style" : "jsonArray",
+    "values" : [
+      ""
+    ]
+  },
+  {
+    "output" : "[\"a\", \"b\"]",
+    "style" : "jsonArray",
+    "values" : [
+      " a\r\n",
+      " b\n"
+    ]
+  },
+  {
+    "output" : "[\"你好\", \"\\\"\\\\\"]",
+    "style" : "jsonArray",
+    "values" : [
+      "你好",
+      "\"\\\t"
+    ]
+  },
+  {
+    "output" : "- one\n- two\n  next\n- O'Brien",
+    "style" : "markdownList",
+    "values" : [
+      " one ",
+      "two\r\nnext",
+      "O'Brien"
+    ]
+  },
+  {
+    "output" : "",
+    "style" : "markdownList",
+    "values" : [
+
+    ]
+  },
+  {
+    "output" : "- ",
+    "style" : "markdownList",
+    "values" : [
+      ""
+    ]
+  },
+  {
+    "output" : "- a\n- b",
+    "style" : "markdownList",
+    "values" : [
+      " a\r\n",
+      " b\n"
+    ]
+  },
+  {
+    "output" : "- 你好\n- \"\\",
+    "style" : "markdownList",
+    "values" : [
+      "你好",
+      "\"\\\t"
+    ]
+  }
+]
+}

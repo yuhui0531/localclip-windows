@@ -1,0 +1,709 @@
+{
+  "metadata": {
+  "localOffsetSeconds" : 28800,
+  "macosCommit" : "c097591431c00982ad34186068064b40965c95fd",
+  "macosVersion" : "0.3.29",
+  "notes" : [
+    "Timestamp badge uses the reference API's current-year behavior; full inspection uses fixed nowMs.",
+    "Filename observations preserve macOS behavior, including Windows-invalid characters and reserved names; Windows policy requires product resolution before save_as implementation.",
+    "Windows .url and DIBV5 export have no equivalent public ContentInspector API; test in Windows-specific cases."
+  ],
+  "nowMs" : 1760486400000,
+  "schemaVersion" : 1,
+  "sourceFunctions" : [
+    "ContentInspector.inspect",
+    "ContentInspector.inspectFull",
+    "ContentInspector.exportFormat",
+    "ContentInspector.sanitizedFileName",
+    "ContentInspector.exportBaseName"
+  ],
+  "timezone" : "Asia/Shanghai"
+},
+  "cases": [
+  {
+    "nowMs" : 1760486400000,
+    "operation" : "inspect",
+    "text" : "",
+    "truncated" : false
+  },
+  {
+    "actions" : [
+      {
+        "title" : "Markdown 代码块后粘贴",
+        "transform" : "markdownCodeBlock"
+      }
+    ],
+    "kind" : "文本",
+    "nowMs" : 1760486400000,
+    "operation" : "inspect",
+    "rows" : [
+      {
+        "block" : false,
+        "label" : "行数",
+        "value" : "1"
+      },
+      {
+        "block" : false,
+        "label" : "字符",
+        "value" : "5"
+      }
+    ],
+    "text" : "plain",
+    "truncated" : false
+  },
+  {
+    "actions" : [
+      {
+        "title" : "转为 ISO 8601 后粘贴",
+        "transform" : "timestampToISO"
+      }
+    ],
+    "badge" : "2023-11-15 06:13",
+    "kind" : "时间戳",
+    "nowMs" : 1760486400000,
+    "operation" : "inspect",
+    "rows" : [
+      {
+        "block" : false,
+        "label" : "单位",
+        "value" : "秒"
+      },
+      {
+        "block" : false,
+        "label" : "本地时间",
+        "value" : "2023-11-15 06:13:20"
+      },
+      {
+        "block" : false,
+        "label" : "UTC",
+        "value" : "2023-11-14 22:13:20 UTC"
+      },
+      {
+        "block" : false,
+        "label" : "ISO 8601",
+        "value" : "2023-11-15T06:13:20+08:00"
+      },
+      {
+        "block" : false,
+        "label" : "相对",
+        "value" : "1年前"
+      }
+    ],
+    "text" : "1700000000",
+    "truncated" : false
+  },
+  {
+    "actions" : [
+      {
+        "title" : "转为 ISO 8601 后粘贴",
+        "transform" : "timestampToISO"
+      }
+    ],
+    "badge" : "2023-11-15 06:13",
+    "kind" : "时间戳",
+    "nowMs" : 1760486400000,
+    "operation" : "inspect",
+    "rows" : [
+      {
+        "block" : false,
+        "label" : "单位",
+        "value" : "毫秒"
+      },
+      {
+        "block" : false,
+        "label" : "本地时间",
+        "value" : "2023-11-15 06:13:20"
+      },
+      {
+        "block" : false,
+        "label" : "UTC",
+        "value" : "2023-11-14 22:13:20 UTC"
+      },
+      {
+        "block" : false,
+        "label" : "ISO 8601",
+        "value" : "2023-11-15T06:13:20+08:00"
+      },
+      {
+        "block" : false,
+        "label" : "相对",
+        "value" : "1年前"
+      }
+    ],
+    "text" : "1700000000123",
+    "truncated" : false
+  },
+  {
+    "actions" : [
+      {
+        "title" : "Markdown 代码块后粘贴",
+        "transform" : "markdownCodeBlock"
+      }
+    ],
+    "kind" : "文本",
+    "nowMs" : 1760486400000,
+    "operation" : "inspect",
+    "rows" : [
+      {
+        "block" : false,
+        "label" : "行数",
+        "value" : "1"
+      },
+      {
+        "block" : false,
+        "label" : "字符",
+        "value" : "3"
+      }
+    ],
+    "text" : "123",
+    "truncated" : false
+  },
+  {
+    "actions" : [
+
+    ],
+    "badge" : "UUID v4",
+    "kind" : "UUID",
+    "nowMs" : 1760486400000,
+    "operation" : "inspect",
+    "rows" : [
+      {
+        "block" : false,
+        "label" : "版本",
+        "value" : "v4"
+      }
+    ],
+    "text" : "550e8400-e29b-41d4-a716-446655440000",
+    "truncated" : false
+  },
+  {
+    "actions" : [
+
+    ],
+    "badge" : "UUID",
+    "kind" : "UUID",
+    "nowMs" : 1760486400000,
+    "operation" : "inspect",
+    "rows" : [
+      {
+        "block" : false,
+        "label" : "版本",
+        "value" : "未知"
+      }
+    ],
+    "text" : "550e8400-e29b-01d4-a716-446655440000",
+    "truncated" : false
+  },
+  {
+    "actions" : [
+      {
+        "title" : "转为 rgb() 后粘贴",
+        "transform" : "colorToRGB"
+      },
+      {
+        "title" : "转为 hex 后粘贴",
+        "transform" : "colorToHex"
+      }
+    ],
+    "badge" : "#AABBCC",
+    "kind" : "颜色",
+    "nowMs" : 1760486400000,
+    "operation" : "inspect",
+    "rows" : [
+      {
+        "block" : false,
+        "label" : "HEX",
+        "value" : "#AABBCC"
+      },
+      {
+        "block" : false,
+        "label" : "RGB",
+        "value" : "rgb(170, 187, 204)"
+      },
+      {
+        "block" : false,
+        "label" : "HSL",
+        "value" : "hsl(210, 25%, 73%)"
+      }
+    ],
+    "text" : "#abc",
+    "truncated" : false
+  },
+  {
+    "actions" : [
+      {
+        "title" : "转为 rgb() 后粘贴",
+        "transform" : "colorToRGB"
+      },
+      {
+        "title" : "转为 hex 后粘贴",
+        "transform" : "colorToHex"
+      }
+    ],
+    "badge" : "#12345680",
+    "kind" : "颜色",
+    "nowMs" : 1760486400000,
+    "operation" : "inspect",
+    "rows" : [
+      {
+        "block" : false,
+        "label" : "HEX",
+        "value" : "#12345680"
+      },
+      {
+        "block" : false,
+        "label" : "RGB",
+        "value" : "rgba(18, 52, 86, 0.502)"
+      },
+      {
+        "block" : false,
+        "label" : "HSL",
+        "value" : "hsla(210, 65%, 20%, 0.502)"
+      }
+    ],
+    "text" : "#12345680",
+    "truncated" : false
+  },
+  {
+    "actions" : [
+      {
+        "title" : "转为 rgb() 后粘贴",
+        "transform" : "colorToRGB"
+      },
+      {
+        "title" : "转为 hex 后粘贴",
+        "transform" : "colorToHex"
+      }
+    ],
+    "badge" : "#010203",
+    "kind" : "颜色",
+    "nowMs" : 1760486400000,
+    "operation" : "inspect",
+    "rows" : [
+      {
+        "block" : false,
+        "label" : "HEX",
+        "value" : "#010203"
+      },
+      {
+        "block" : false,
+        "label" : "RGB",
+        "value" : "rgb(1, 2, 3)"
+      },
+      {
+        "block" : false,
+        "label" : "HSL",
+        "value" : "hsl(210, 50%, 1%)"
+      }
+    ],
+    "text" : "rgb(1, 2, 3)",
+    "truncated" : false
+  },
+  {
+    "actions" : [
+      {
+        "title" : "转为 rgb() 后粘贴",
+        "transform" : "colorToRGB"
+      },
+      {
+        "title" : "转为 hex 后粘贴",
+        "transform" : "colorToHex"
+      }
+    ],
+    "badge" : "#00FF00",
+    "kind" : "颜色",
+    "nowMs" : 1760486400000,
+    "operation" : "inspect",
+    "rows" : [
+      {
+        "block" : false,
+        "label" : "HEX",
+        "value" : "#00FF00"
+      },
+      {
+        "block" : false,
+        "label" : "RGB",
+        "value" : "rgb(0, 255, 0)"
+      },
+      {
+        "block" : false,
+        "label" : "HSL",
+        "value" : "hsl(120, 100%, 50%)"
+      }
+    ],
+    "text" : "hsl(120, 100%, 50%)",
+    "truncated" : false
+  },
+  {
+    "actions" : [
+      {
+        "title" : "解码后粘贴",
+        "transform" : "base64Decode"
+      }
+    ],
+    "badge" : "Base64",
+    "kind" : "Base64",
+    "nowMs" : 1760486400000,
+    "operation" : "inspect",
+    "rows" : [
+      {
+        "block" : true,
+        "label" : "解码",
+        "value" : "Hello world!"
+      }
+    ],
+    "text" : "SGVsbG8gd29ybGQh",
+    "truncated" : false
+  },
+  {
+    "actions" : [
+      {
+        "title" : "Markdown 代码块后粘贴",
+        "transform" : "markdownCodeBlock"
+      }
+    ],
+    "kind" : "文本",
+    "nowMs" : 1760486400000,
+    "operation" : "inspect",
+    "rows" : [
+      {
+        "block" : false,
+        "label" : "行数",
+        "value" : "1"
+      },
+      {
+        "block" : false,
+        "label" : "字符",
+        "value" : "16"
+      }
+    ],
+    "text" : "0123456789abcdef",
+    "truncated" : false
+  },
+  {
+    "actions" : [
+      {
+        "title" : "格式化后粘贴",
+        "transform" : "formatJSON"
+      }
+    ],
+    "kind" : "JSON",
+    "nowMs" : 1760486400000,
+    "operation" : "inspect",
+    "rows" : [
+      {
+        "block" : false,
+        "label" : "合法",
+        "value" : "是"
+      },
+      {
+        "block" : false,
+        "label" : "顶层",
+        "value" : "对象，1 个键"
+      }
+    ],
+    "text" : "{\"a\":1}",
+    "truncated" : false
+  },
+  {
+    "actions" : [
+      {
+        "title" : "格式化后粘贴",
+        "transform" : "formatJSON"
+      }
+    ],
+    "kind" : "JSON",
+    "nowMs" : 1760486400000,
+    "operation" : "inspect",
+    "rows" : [
+      {
+        "block" : false,
+        "label" : "合法",
+        "value" : "是"
+      },
+      {
+        "block" : false,
+        "label" : "顶层",
+        "value" : "数组，2 个元素"
+      }
+    ],
+    "text" : "[1,2]",
+    "truncated" : false
+  },
+  {
+    "actions" : [
+      {
+        "title" : "Markdown 代码块后粘贴",
+        "transform" : "markdownCodeBlock"
+      }
+    ],
+    "kind" : "文本",
+    "nowMs" : 1760486400000,
+    "operation" : "inspect",
+    "rows" : [
+      {
+        "block" : false,
+        "label" : "行数",
+        "value" : "1"
+      },
+      {
+        "block" : false,
+        "label" : "字符",
+        "value" : "5"
+      }
+    ],
+    "text" : "{bad}",
+    "truncated" : false
+  },
+  {
+    "actions" : [
+
+    ],
+    "kind" : "链接",
+    "nowMs" : 1760486400000,
+    "operation" : "inspect",
+    "rows" : [
+      {
+        "block" : false,
+        "label" : "协议",
+        "value" : "https"
+      },
+      {
+        "block" : false,
+        "label" : "主机",
+        "value" : "example.com"
+      },
+      {
+        "block" : false,
+        "label" : "路径",
+        "value" : "/a"
+      },
+      {
+        "block" : false,
+        "label" : "?b",
+        "value" : "1"
+      }
+    ],
+    "text" : "https://example.com/a?b=1",
+    "truncated" : false
+  },
+  {
+    "actions" : [
+      {
+        "title" : "粘贴 Payload JSON",
+        "transform" : "jwtPayload"
+      }
+    ],
+    "badge" : "JWT",
+    "kind" : "JWT",
+    "note" : "未验证签名",
+    "nowMs" : 1760486400000,
+    "operation" : "inspect",
+    "rows" : [
+      {
+        "block" : true,
+        "label" : "Header",
+        "value" : "{\n  \"alg\": \"HS256\"\n}"
+      },
+      {
+        "block" : true,
+        "label" : "Payload",
+        "value" : "{\n  \"sub\": \"fixture\"\n}"
+      }
+    ],
+    "text" : "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmaXh0dXJlIn0.signature",
+    "truncated" : false
+  },
+  {
+    "actions" : [
+      {
+        "title" : "Markdown 代码块后粘贴",
+        "transform" : "markdownCodeBlock"
+      }
+    ],
+    "kind" : "文本",
+    "nowMs" : 1760486400000,
+    "operation" : "inspect",
+    "rows" : [
+      {
+        "block" : false,
+        "label" : "行数",
+        "value" : "3"
+      },
+      {
+        "block" : false,
+        "label" : "字符",
+        "value" : "15"
+      }
+    ],
+    "text" : "# Title\n- a\n- b",
+    "truncated" : false
+  },
+  {
+    "actions" : [
+      {
+        "title" : "Markdown 代码块后粘贴",
+        "transform" : "markdownCodeBlock"
+      }
+    ],
+    "kind" : "文本",
+    "nowMs" : 1760486400000,
+    "operation" : "inspect",
+    "rows" : [
+      {
+        "block" : false,
+        "label" : "行数",
+        "value" : "2"
+      },
+      {
+        "block" : false,
+        "label" : "字符",
+        "value" : "11"
+      }
+    ],
+    "text" : "line1\r\nline2",
+    "truncated" : false
+  },
+  {
+    "exportFormat" : "swift",
+    "language" : "swift",
+    "mode" : "plain",
+    "operation" : "exportFormat",
+    "text" : "let x = 1",
+    "types" : [
+
+    ]
+  },
+  {
+    "exportFormat" : "md",
+    "mode" : "plain",
+    "operation" : "exportFormat",
+    "text" : "# Title\n- a\n- b",
+    "types" : [
+
+    ]
+  },
+  {
+    "exportFormat" : "rtf",
+    "mode" : "original",
+    "operation" : "exportFormat",
+    "originalType" : "text/rtf",
+    "text" : "rich",
+    "types" : [
+      "text/rtf",
+      "text/html"
+    ]
+  },
+  {
+    "exportFormat" : "html",
+    "mode" : "original",
+    "operation" : "exportFormat",
+    "originalType" : "text/html",
+    "text" : "html",
+    "types" : [
+      "text/html"
+    ]
+  },
+  {
+    "exportFormat" : "txt",
+    "mode" : "plain",
+    "operation" : "exportFormat",
+    "text" : "plain",
+    "types" : [
+
+    ]
+  },
+  {
+    "exportFormat" : "swift",
+    "language" : "swift",
+    "markup" : "<pre>code</pre>",
+    "mode" : "plain",
+    "operation" : "exportFormat",
+    "text" : "let x = 1",
+    "types" : [
+      "text/html"
+    ]
+  },
+  {
+    "exportFormat" : "rtf",
+    "language" : "swift",
+    "mode" : "original",
+    "operation" : "exportFormat",
+    "originalType" : "text/rtf",
+    "text" : "let x = 1",
+    "types" : [
+      "text/rtf"
+    ]
+  },
+  {
+    "exportFormat" : "html",
+    "language" : "xml",
+    "mode" : "plain",
+    "operation" : "exportFormat",
+    "text" : "<html>Hi</html>",
+    "types" : [
+
+    ]
+  },
+  {
+    "copiedAt" : 1760486400000,
+    "exportBaseName" : "title",
+    "operation" : "fileName",
+    "sanitizedFileName" : "title",
+    "text" : "title"
+  },
+  {
+    "copiedAt" : 1760486400000,
+    "exportBaseName" : "-a-b-",
+    "operation" : "fileName",
+    "sanitizedFileName" : "-a-b-",
+    "text" : "../a:b\n"
+  },
+  {
+    "copiedAt" : 1760486400000,
+    "exportBaseName" : "LocalClip-20251015-080000",
+    "operation" : "fileName",
+    "text" : ""
+  },
+  {
+    "copiedAt" : 1760486400000,
+    "exportBaseName" : "LocalClip-20251015-080000",
+    "operation" : "fileName",
+    "text" : "..."
+  },
+  {
+    "copiedAt" : 1760486400000,
+    "exportBaseName" : "你好",
+    "operation" : "fileName",
+    "sanitizedFileName" : "你好",
+    "text" : " 你好 "
+  },
+  {
+    "copiedAt" : 1760486400000,
+    "exportBaseName" : "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+    "operation" : "fileName",
+    "sanitizedFileName" : "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+    "text" : "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀"
+  },
+  {
+    "copiedAt" : 1760486400000,
+    "exportBaseName" : "back\\slash*?<>|",
+    "operation" : "fileName",
+    "sanitizedFileName" : "back\\slash*?<>|",
+    "text" : "back\\slash*?<>|"
+  },
+  {
+    "copiedAt" : 1760486400000,
+    "exportBaseName" : "CON",
+    "operation" : "fileName",
+    "sanitizedFileName" : "CON",
+    "text" : "CON"
+  },
+  {
+    "copiedAt" : 1760486400000,
+    "exportBaseName" : "LocalClip-20251015-080000",
+    "operation" : "exportBaseName",
+    "text" : ""
+  }
+]
+}
