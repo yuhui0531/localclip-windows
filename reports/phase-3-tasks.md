@@ -10,4 +10,8 @@ Windows CI remains required. Reference stage-start status: empty.
 - [x] P3-05 — Thumbnail protocol/cache, safe rich preview, themes/privacy; W-UI-7/10/11/15/16.
 - [x] P3-06 — Details, transforms/merge/export/inspection, queue/OCR feedback; W-UI-13/14, WAC20–23/25.
 - [x] P3-07 — Settings/storage/category/preview/undo flows; §5.6/5.12, AC01–27.
-- [ ] P3-08 — Typecheck, frontend/Rust build, Windows artifact, full performance/acceptance table, report and PR.
+- [x] P3-08 — Typecheck, frontend/Rust build, Windows artifact, full performance/acceptance table, report and PR.
+
+P3-08 closes the approved manual-test delivery work. The complete performance and
+desktop acceptance ledger remains open; a checked task does not mark those gates passed.
+Final fixed-binary native smoke evidence is linked from the Phase 4 report.

@@ -1,0 +1,9 @@
+Delivers x64 and ARM64 MSI/manual executables and a backend-only updater with explicit installation, signature/version/architecture guards and a serialized pre-install database snapshot. MSI uninstall preserves current-user history by default and offers an unchecked deletion option.
+
+The owner approved an unsigned manual-test installer because signing keys are unavailable. Both installer builds passed in [run 38509027331](https://github.com/yuhui0531/localclip-windows/actions/runs/38509027331); signing was explicitly skipped, and installation through the updater is disabled. Both MSI hashes and PE/MSI architectures were verified. The ARM64 MSI installed successfully; its executable hash matched. Test uninstallation returned exit 0 and preserved the generated custom-directory files. Real WebView2 IPC passed search/detail/usage/delete-undo/thumbnails with generated capture-paused data, and direct updater installation returned `signedUpdatesDisabled`. Final Windows/macOS [CI 38509029498](https://github.com/yuhui0531/localclip-windows/actions/runs/38509029498) passed. The native ARM64 hidden-memory diagnostic exceeded the target (536 MiB summed working sets / 186 MiB private committed); results and workload limitations are retained. Production signed updates (including full-manifest authentication), WAC24, Windows 10/clean Windows 11 lifecycle, target-app receipt and full performance acceptance remain open.
+
+[Phase 4 report](https://github.com/yuhui0531/localclip-windows/blob/feat/phase-4-release/reports/phase-4.md) · [Manual checklist](https://github.com/yuhui0531/localclip-windows/blob/feat/phase-4-release/reports/manual-testing.md)
+
+Stacked on Phase 3 PR #4. No tag, public release or merge was performed. The reference repository was left untouched; external modifications remain recorded.
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)

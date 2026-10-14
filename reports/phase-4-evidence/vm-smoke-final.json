@@ -1,0 +1,17 @@
+{
+  "update": {
+    "current": "0.1.0",
+    "downloaded": false,
+    "installationEnabled": false,
+    "latest": null
+  },
+  "installError": "signedUpdatesDisabled",
+  "capturePaused": true,
+  "searchCount": 3,
+  "detailItems": 1,
+  "storageNonzero": true,
+  "undoAvailable": true,
+  "undoRestored": true,
+  "thumbnail": true,
+  "renderedCards": 8
+}

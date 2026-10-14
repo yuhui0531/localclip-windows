@@ -1,0 +1,20 @@
+[
+  {
+    "architecture": "arm64",
+    "file": "LocalClip_0.1.0_arm64.msi",
+    "bytes": 9904128,
+    "MiB": 9.445,
+    "sha256": "347cd2f987cdada97c4f555766105ab99bea7495caa040073b20c2b267f02b56",
+    "peMachine": "0xaa64",
+    "signed": false
+  },
+  {
+    "architecture": "x64",
+    "file": "LocalClip_0.1.0_x64.msi",
+    "bytes": 10915840,
+    "MiB": 10.41,
+    "sha256": "cd60708a14583d09a1eacd449a6682e24c9c515155e302408c3c5c2f40287ef7",
+    "peMachine": "0x8664",
+    "signed": false
+  }
+]

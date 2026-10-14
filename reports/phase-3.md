@@ -55,7 +55,10 @@ the list; 8 cards rendered. [Metadata](phase-3-evidence/vm-smoke-initial.json) a
 The same check found thumbnail requests returned 404. Wry converts the Windows
 custom-protocol host to `localhost`, and convertFileSrc encodes the path separator.
 The route now validates and decodes both native forms, with a regression test.
-A final fixed-binary VM check is pending; the initial failure is retained.
+The final ARM64 MSI built from cef3ad2 passed the same real IPC checks, including
+thumbnail bytes and eight rendered cards. See [final metadata](phase-4-evidence/vm-smoke-final.json)
+and [final screenshot](phase-4-evidence/vm-native-final.png). The initial failure is retained.
+Phase 3 final commit 031a2f6 also passed both platforms in CI run 38508574932.
 
 ## Acceptance ledger — not passed by implementation alone
 
@@ -90,9 +93,14 @@ Available VM has 8 GiB and does not meet that condition.
 | Search input → painted results | P95 <100 ms | Keyboard event → first result frame including debounce; 0 samples, unexecuted |
 | Clipboard update → visible history | P95 <300 ms | WM_CLIPBOARDUPDATE → frontend render; 0 samples, unexecuted |
 | First search after commit vs hot cache | Gap <20% | Core service timings, ≥60 samples, retained in Phase 1 reports; failures remain open; not GUI evidence |
-| Hidden idle CPU | <0.1% / 10 min | Full process tree, 0 samples, unexecuted |
-| Hidden resident memory | <150 MB after 5 min | Includes WebView2, 0 samples, unexecuted |
-| Installer | <15 MB excluding WebView2 | Phase 4 MSI measurement pending |
+| Hidden idle CPU | <0.1% / 10 min | Ten-minute paused 120-record x64-emulation diagnostic: 0.0391% of 4 CPUs; required workload unexecuted |
+| Hidden resident memory | <150 MB after 5 min | x64-emulation process-tree summed working sets: 596,590,592 bytes; private committed bytes: 237,223,936; above target, not qualifying hardware/workload |
+| Installer | <15 MB excluding WebView2 | ARM64 9,904,128 bytes; x64 10,915,840 bytes; both below target |
+
+Resource diagnostic evidence: [raw aggregate samples](phase-3-evidence/vm-resource-smoke.json).
+Working-set sums include shared pages more than once; private bytes are committed,
+not resident memory. Capture was paused and the VM has 8 GiB. The native ARM64
+comparison is recorded in Phase 4. Neither sample closes the PRD performance gate.
 
 ## Deviations and limits
 

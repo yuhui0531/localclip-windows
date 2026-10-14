@@ -1,0 +1,22 @@
+build (aarch64-pc-windows-msvc, arm64, amd64_arm64)	Build application	2026-10-14T04:07:22.6522929Z     Finished `release` profile [optimized] target(s) in 7m 41s
+build (aarch64-pc-windows-msvc, arm64, amd64_arm64)	Build application	2026-10-14T04:07:22.8342302Z        Built application at: D:\a\localclip-windows\localclip-windows\target\aarch64-pc-windows-msvc\release\localclip.exe
+build (aarch64-pc-windows-msvc, arm64, amd64_arm64)	Sign executable when configured	2026-10-14T04:07:23.4552146Z UNSIGNED manual-test artifact: code-signing certificate is not configured.
+build (aarch64-pc-windows-msvc, arm64, amd64_arm64)	Run actions/upload-artifact@v4	2026-10-14T04:07:25.2549050Z Finished uploading artifact content to blob storage!
+build (aarch64-pc-windows-msvc, arm64, amd64_arm64)	Bundle MSI	2026-10-14T04:07:27.3368078Z      Running candle for "D:\\a\\localclip-windows\\localclip-windows\\target\\aarch64-pc-windows-msvc\\release\\wix\\arm64\\main.wxs"
+build (aarch64-pc-windows-msvc, arm64, amd64_arm64)	Bundle MSI	2026-10-14T04:07:31.7135398Z      Running light to produce D:\a\localclip-windows\localclip-windows\target\aarch64-pc-windows-msvc\release\bundle\msi\LocalClip_0.1.0_arm64_en-US.msi
+build (aarch64-pc-windows-msvc, arm64, amd64_arm64)	Bundle MSI	2026-10-14T04:07:56.5966449Z     Finished 1 bundle at:
+build (aarch64-pc-windows-msvc, arm64, amd64_arm64)	Prepare and sign MSI	2026-10-14T04:07:56.6559842Z ^[[36;1m} else { Write-Host 'UPDATER DISABLED: private secret or committed public key is absent.' }^[[0m
+build (aarch64-pc-windows-msvc, arm64, amd64_arm64)	Prepare and sign MSI	2026-10-14T04:07:57.1872489Z UNSIGNED manual-test artifact: code-signing certificate is not configured.
+build (aarch64-pc-windows-msvc, arm64, amd64_arm64)	Prepare and sign MSI	2026-10-14T04:07:57.1911348Z UPDATER DISABLED: private secret or committed public key is absent.
+build (aarch64-pc-windows-msvc, arm64, amd64_arm64)	Run actions/upload-artifact@v4	2026-10-14T04:07:59.5643195Z Finished uploading artifact content to blob storage!
+build (x86_64-pc-windows-msvc, x64, amd64)	Build application	2026-10-14T04:07:54.2966340Z     Finished `release` profile [optimized] target(s) in 8m 00s
+build (x86_64-pc-windows-msvc, x64, amd64)	Build application	2026-10-14T04:07:54.4683357Z        Built application at: D:\a\localclip-windows\localclip-windows\target\x86_64-pc-windows-msvc\release\localclip.exe
+build (x86_64-pc-windows-msvc, x64, amd64)	Sign executable when configured	2026-10-14T04:07:55.1154531Z UNSIGNED manual-test artifact: code-signing certificate is not configured.
+build (x86_64-pc-windows-msvc, x64, amd64)	Run actions/upload-artifact@v4	2026-10-14T04:07:57.0189217Z Finished uploading artifact content to blob storage!
+build (x86_64-pc-windows-msvc, x64, amd64)	Bundle MSI	2026-10-14T04:07:59.1929845Z      Running candle for "D:\\a\\localclip-windows\\localclip-windows\\target\\x86_64-pc-windows-msvc\\release\\wix\\x64\\main.wxs"
+build (x86_64-pc-windows-msvc, x64, amd64)	Bundle MSI	2026-10-14T04:08:02.1430822Z      Running light to produce D:\a\localclip-windows\localclip-windows\target\x86_64-pc-windows-msvc\release\bundle\msi\LocalClip_0.1.0_x64_en-US.msi
+build (x86_64-pc-windows-msvc, x64, amd64)	Bundle MSI	2026-10-14T04:08:11.4390722Z     Finished 1 bundle at:
+build (x86_64-pc-windows-msvc, x64, amd64)	Prepare and sign MSI	2026-10-14T04:08:11.4927280Z ^[[36;1m} else { Write-Host 'UPDATER DISABLED: private secret or committed public key is absent.' }^[[0m
+build (x86_64-pc-windows-msvc, x64, amd64)	Prepare and sign MSI	2026-10-14T04:08:11.9534531Z UNSIGNED manual-test artifact: code-signing certificate is not configured.
+build (x86_64-pc-windows-msvc, x64, amd64)	Prepare and sign MSI	2026-10-14T04:08:11.9571203Z UPDATER DISABLED: private secret or committed public key is absent.
+build (x86_64-pc-windows-msvc, x64, amd64)	Run actions/upload-artifact@v4	2026-10-14T04:08:13.9905050Z Finished uploading artifact content to blob storage!

@@ -1,0 +1,25 @@
+{
+  "after": {
+    "cpuSeconds": 4.6875,
+    "workingSetBytes": 562118656,
+    "privateBytes": 195493888,
+    "count": 8,
+    "at": 1791951922626
+  },
+  "hiddenFiveMinutes": {
+    "cpuSeconds": 4.6875,
+    "workingSetBytes": 562118656,
+    "privateBytes": 195493888,
+    "count": 8,
+    "at": 1791951922626
+  },
+  "before": {
+    "cpuSeconds": 3.453125,
+    "workingSetBytes": 571834368,
+    "privateBytes": 202993664,
+    "count": 8,
+    "at": 1791951622286
+  },
+  "idleCpuPercent": 0.10286458333333333,
+  "boundary": "generated 120 records, capture paused, Windows 11 ARM64 VM 4CPU/8GiB, native ARM64 MSI app; not PRD benchmark"
+}

@@ -145,7 +145,8 @@ prove full target-app receipt, mixed-DPI behavior or clean-install compatibility
 Windows 10 22H2 and clean Win11 lifecycle acceptance, Word/browser/terminal/chat paste
 matrix, real password-manager/Ditto coexistence, OCR/language-pack acceptance and
 WAC24 remain open. Full PRD performance thresholds remain unaccepted; earlier failed
-cold-cache measurements are retained. Heterogeneous image/text merges are rejected
+cold-cache measurements are retained. The available ARM64 VM also exceeded the
+hidden-memory target; its generated-data diagnostic is recorded in Phase 4. Heterogeneous image/text merges are rejected
 instead of silently losing formats. HTML-only/RTF-only mixed merges use plain text
 for the other representation. A pinned panel hides after output per §5.15 and the
 pinned macOS behavior, despite WAC22's conflicting visibility wording.
