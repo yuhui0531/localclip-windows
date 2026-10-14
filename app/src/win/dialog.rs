@@ -48,7 +48,7 @@ fn choose(
         }
     };
     if !success.as_bool() {
-        return if unsafe { CommDlgExtendedError() } == 0 {
+        return if unsafe { CommDlgExtendedError().0 } == 0 {
             Ok(None)
         } else {
             Err("dialogUnavailable")

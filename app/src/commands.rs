@@ -71,7 +71,7 @@ fn change(store: &HistoryStore, action: Change) -> Result<Value> {
         json!({"token":p.token,"affectedCount":p.affected_count,"needsConfirmation":p.requires_confirmation,"message":format!("将移除 {} 条记录",p.affected_count),"estimatedReclaimBytes":p.estimated_reclaim_bytes}),
     )
 }
-fn perform(app: &tauri::AppHandle, request: &Value) -> Result<Value> {
+fn perform_output(app: &tauri::AppHandle, request: &Value) -> Result<Value> {
     let state = app.state::<AppState>();
     let ids = ids(request)?;
     let settings = state.runtime.store.settings().map_err(error)?;
@@ -214,7 +214,7 @@ fn dispatch(app: &tauri::AppHandle, name: &str, request: Value) -> Result<Value>
             let items = payload.items.iter().map(|i|json!({"types":i.representations.iter().map(|r|&r.format).collect::<Vec<_>>(),"plainText":if hide {None} else {i.plain_text.as_deref()},"html":if hide {None} else {i.representation("text/html").and_then(|b|std::str::from_utf8(b).ok())},"hasImage":i.representations.iter().any(|r|r.format.starts_with("image/")) || i.file_path().is_some_and(|p|localclip_core::domain::is_image_file(&p))})).collect::<Vec<_>>();
             Ok(json!({"categoryIDs":s["categoryIDs"],"summary":s,"items":items}))
         }
-        "perform" => perform(app, &request),
+        "perform" => perform_output(app, &request),
         "transform_menu" => {
             if hide {
                 return Ok(json!([]));
