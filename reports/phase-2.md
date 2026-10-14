@@ -57,7 +57,10 @@ keyboard hook, fs/shell/http plugin or telemetry was introduced.
   It prints only counts and fails on matches or unreadable files. Cross-chunk positive
   control and a clean negative control passed locally. The Windows test also runs it.
 - Final implementation CI [38502268546](https://github.com/yuhui0531/localclip-windows/actions/runs/38502268546)
-  is pending at this report revision. Final native build evidence will be appended.
+  completed successfully on macOS and Windows. Windows workspace/shell Clippy, serial native
+  tests, core vectors/WAC16, Release demo and Release Tauri shell builds all passed.
+  The documentation-only head `8bee7ec` also passed both platforms in runs
+  `38502413562` and `38502421968`.
 
 ## Deferred acceptance (not passed)
 

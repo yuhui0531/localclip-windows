@@ -13,7 +13,7 @@ reference `git status --porcelain`: empty. No PR has been merged.
 - [x] P2-07 — Local WinRT OCR, language failures, cancellation and no result persistence (§5.16; WAC23).
 - [x] P2-08 — Headless `localclip-demo capture|paste <id>|ocr <id>` and metadata-only logs (§13).
 - [ ] P2-09 — **Desktop portions deferred by product approval; automated subset executed.** Serial Windows integration tests, data-directory privacy scanner and actual WAC01/02/04–07/10–13/23 evidence (§8/12/13).
-- [ ] P2-10 — Workspace Clippy, clean reference end check, report and separate PR (§13).
+- [x] P2-10 — Workspace Clippy, clean reference end check, report and separate PR (§13).
 
 Product decision (2026-10-14): "Build for my manual testing; defer unavailable
 desktop gates." Continue implementation/build through later phases while marking
@@ -21,3 +21,5 @@ unavailable desktop tests unexecuted. This changes the original strict phase gat
 it does not turn missing tests into passes. The VM supports guest commands but
 pauses between uses; required third-party acceptance apps were not found in the
 checked locations/packages.
+
+Final native implementation CI `38502268546`: both platforms green; Release shell and demo built. Phase 2 PR: https://github.com/yuhui0531/localclip-windows/pull/3.
