@@ -17,6 +17,14 @@ use windows::Win32::{
 
 static LAST: Mutex<Option<Target>> = Mutex::new(None);
 pub fn recent() -> Option<Target> {
+    // 前台事件发生时，应用可能还未恢复子控件焦点；同窗口内切换控件也不触发它。
+    // 打开面板之前重新取焦点，已在面板内时才使用保存的外部目标。by AI.Coding
+    if let Some(target) = Target::capture(unsafe { GetForegroundWindow() }) {
+        if let Ok(mut last) = LAST.lock() {
+            *last = Some(target);
+        }
+        return Some(target);
+    }
     LAST.lock().ok().and_then(|v| *v)
 }
 unsafe extern "system" fn changed(
