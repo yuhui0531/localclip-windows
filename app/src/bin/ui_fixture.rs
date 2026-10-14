@@ -1,9 +1,12 @@
+//! 仅生成测试历史，保持采集暂停。by AI.Coding
 use localclip_core::{
     domain::{Item, Payload, Representation, Settings, Source},
     store::{HistoryStore, Options, Snapshot},
 };
 use std::{io::Cursor, path::PathBuf, sync::Arc};
+/// 可选第二个参数引用由测试驱动创建的 Windows 文件，用于真实拖出验收。
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let file_url = std::env::args().nth(2);
     let root = PathBuf::from(
         std::env::args()
             .nth(1)
@@ -43,7 +46,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             3 => format!("function generated{i}() {{ return true; }}"),
             _ => format!("测试便笺 {i}\r\n保留换行与中文。"),
         };
-        let payload = if i == 1 {
+        let payload = if i == 0 && file_url.is_some() {
+            // 文件只由外部测试驱动在隔离目录创建，不读取个人文件。
+            Payload {
+                items: vec![Item {
+                    representations: vec![Representation {
+                        format: "text/uri-list".into(),
+                        data: file_url.as_ref().unwrap().as_bytes().to_vec(),
+                    }],
+                    declared_types: vec!["text/uri-list".into()],
+                    plain_text: None,
+                }],
+            }
+        } else if i == 1 {
             let picture = image::RgbaImage::from_fn(240, 160, |x, y| {
                 image::Rgba([(x % 256) as u8, (y % 256) as u8, 130, 255])
             });

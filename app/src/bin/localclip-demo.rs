@@ -37,6 +37,7 @@ fn run() -> Result<(), &'static str> {
     let runtime = Runtime::open(
         &root,
         Arc::new(|status| println!("capture-status={status}")),
+        Arc::new(|| {}),
     )?;
     let result = match command {
         "capture" => {

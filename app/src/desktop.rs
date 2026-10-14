@@ -1,3 +1,4 @@
+//! 桌面面板及原生交互协调。by AI.Coding
 use crate::{
     queue::Queue,
     runtime::Runtime,
@@ -369,12 +370,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
                 return;
             }
             if let tauri::WindowEvent::Focused(false) = event {
-                let state = window.state::<AppState>();
-                if !state.pinned.load(std::sync::atomic::Ordering::SeqCst)
-                    && !state.modal.load(std::sync::atomic::Ordering::SeqCst)
-                {
-                    hide_panel(window.app_handle());
-                }
+                dismiss_if_deactivated(window.app_handle());
             }
             if let tauri::WindowEvent::CloseRequested { api, .. } = event {
                 api.prevent_close();
@@ -414,8 +410,18 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
                 .find(|v| v[0] == "--data-dir")
                 .map(|v| std::path::PathBuf::from(&v[1]))
                 .unwrap_or(app.path().local_data_dir()?.join("LocalClip/History"));
-            let runtime = Runtime::open(&root, Arc::new(move |reason| status(&handle, reason)))
-                .map_err(std::io::Error::other)?;
+            let foreground_handle = app.handle().clone();
+            let runtime = Runtime::open(
+                &root,
+                Arc::new(move |reason| status(&handle, reason)),
+                Arc::new(move || {
+                    // WebView2 的 LostFocus 不等价于顶层窗口失活；使用现有 WinEventHook。
+                    let handle = foreground_handle.clone();
+                    let _ = foreground_handle
+                        .run_on_main_thread(move || dismiss_if_deactivated(&handle));
+                }),
+            )
+            .map_err(std::io::Error::other)?;
             let settings = runtime
                 .store
                 .settings()
@@ -496,6 +502,8 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
                     tauri::WebviewUrl::App("index.html".into()),
                 )
                 .title("LocalClip")
+                // Windows 默认拦截器会阻断卡片的 HTML dragstart。
+                .disable_drag_drop_handler()
                 .visible(false)
                 .decorations(false)
                 .always_on_top(true)
@@ -542,6 +550,24 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
             }
         });
     Ok(())
+}
+
+/// 在执行隐藏时复核真实前台，避免排队的旧事件隐藏刚重新打开的面板。
+pub fn dismiss_if_deactivated(app: &tauri::AppHandle) {
+    use std::sync::atomic::Ordering;
+    use windows::Win32::UI::WindowsAndMessaging::GetForegroundWindow;
+    let Some(state) = app.try_state::<AppState>() else {
+        return;
+    };
+    if state.pinned.load(Ordering::SeqCst) || state.modal.load(Ordering::SeqCst) {
+        return;
+    }
+    let foreground = unsafe { GetForegroundWindow() };
+    // 同进程的面板、子窗口或对话框之间切换不应触发收起。
+    if !foreground.is_invalid() && crate::win::source::window_pid(foreground) != std::process::id()
+    {
+        hide_panel(app);
+    }
 }
 
 pub fn hide_panel(app: &tauri::AppHandle) {

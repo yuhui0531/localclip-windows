@@ -1,3 +1,4 @@
+//! Windows 采集与前台事件生命周期。by AI.Coding
 use crate::win::{
     clipboard::Result,
     foreground::Tracker,
@@ -26,7 +27,12 @@ impl Drop for Runtime {
     }
 }
 impl Runtime {
-    pub fn open(root: &Path, notify: Arc<dyn Fn(&'static str) + Send + Sync>) -> Result<Self> {
+    /// 将前台变化独立传递给面板，避免把窗口事件当作采集状态。
+    pub fn open(
+        root: &Path,
+        notify: Arc<dyn Fn(&'static str) + Send + Sync>,
+        foreground_changed: Arc<dyn Fn() + Send + Sync>,
+    ) -> Result<Self> {
         std::fs::create_dir_all(root).map_err(|_| "storageUnavailable")?;
         let disk_root = root.to_owned();
         let store = Arc::new(
@@ -96,7 +102,7 @@ impl Runtime {
                 Err(_) => maintenance_notify("storageUnavailable"),
             }),
         )?;
-        let tracker = Tracker::start()?;
+        let tracker = Tracker::start(foreground_changed)?;
         Ok(Self {
             root: root.to_owned(),
             store,

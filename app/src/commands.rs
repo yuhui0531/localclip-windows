@@ -1,3 +1,4 @@
+//! 显式 IPC 命令与原生交互边界。by AI.Coding
 use crate::{
     desktop::{self, AppState},
     output,
@@ -100,10 +101,34 @@ fn perform_output(app: &tauri::AppHandle, request: &Value) -> Result<Value> {
         return Err("invalidRequest".into());
     }
     if request["drag"].as_bool() == Some(true) {
-        state.modal.store(true, Ordering::SeqCst);
-        let result =
-            crate::win::drag::export_drag(payload, request["language"].as_str().map(String::from));
+        // 原生拖拽必须回到拥有窗口输入队列的 UI STA，不能从后台线程启动。
+        if state.modal.swap(true, Ordering::SeqCst) {
+            return Err("interactionBusy".into());
+        }
+        let language = request["language"].as_str().map(String::from);
+        let drag_app = app.clone();
+        let result = (|| {
+            let (tx, rx) = std::sync::mpsc::channel();
+            app.run_on_main_thread(move || {
+                let result = drag_app
+                    .get_webview_window("main")
+                    .and_then(|w| w.hwnd().ok())
+                    .ok_or("dragUnavailable")
+                    .and_then(|h| {
+                        crate::win::drag::export_drag(
+                            windows::Win32::Foundation::HWND(h.0),
+                            payload,
+                            language,
+                        )
+                    });
+                let _ = tx.send(result);
+            })
+            .map_err(|_| "dragUnavailable")?;
+            rx.recv().map_err(|_| "dragUnavailable")?
+        })();
         state.modal.store(false, Ordering::SeqCst);
+        // 拖动期间抑制的失焦不会再重发，因此结束后重新检查。
+        desktop::dismiss_if_deactivated(app);
         if result.map_err(String::from)? {
             state.runtime.store.touch(ids).map_err(error)?;
             changed(app, "used");
