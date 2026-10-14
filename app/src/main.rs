@@ -1,6 +1,19 @@
 #![cfg_attr(windows, windows_subsystem = "windows")]
 #[cfg(windows)]
 fn main() {
+    if std::env::args().nth(1).as_deref() == Some("--uninstall-history-confirmed") {
+        // This flag is used only by the MSI's explicitly checked removal option.
+        let Some(local) = std::env::var_os("LOCALAPPDATA") else {
+            std::process::exit(1);
+        };
+        let history = std::path::PathBuf::from(local).join("LocalClip/History");
+        let result = if history.exists() {
+            std::fs::remove_dir_all(history)
+        } else {
+            Ok(())
+        };
+        std::process::exit(if result.is_ok() { 0 } else { 1 });
+    }
     if std::env::args().nth(1).as_deref() == Some("--clipboard-read") {
         let _ = localclip_app::win::clipboard::worker_main();
         return;

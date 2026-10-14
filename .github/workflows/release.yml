@@ -1,0 +1,107 @@
+name: Windows installers
+on:
+  push:
+    tags: ['v*']
+    branches: ['feat/phase-4-release']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: installers-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: x86_64-pc-windows-msvc
+            arch: x64
+            vcarch: amd64
+          - target: aarch64-pc-windows-msvc
+            arch: arm64
+            vcarch: amd64_arm64
+    runs-on: windows-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: ${{ matrix.vcarch }}
+      - name: Rust target
+        run: rustup toolchain install 1.90.0 --profile minimal --target ${{ matrix.target }}
+      - name: Frontend dependencies
+        run: npm ci --prefix ui --no-audit --no-fund
+      - name: Build application
+        working-directory: app
+        run: ../ui/node_modules/.bin/tauri build --ci --no-bundle --no-sign --features desktop --target ${{ matrix.target }}
+      - name: Sign executable when configured
+        env:
+          CODESIGN_PFX_BASE64: ${{ secrets.WINDOWS_CODESIGN_PFX_BASE64 }}
+          CODESIGN_PFX_PASSWORD: ${{ secrets.WINDOWS_CODESIGN_PFX_PASSWORD }}
+        run: ./scripts/sign-windows.ps1 -File 'target/${{ matrix.target }}/release/localclip.exe'
+      - name: Bundle MSI
+        working-directory: app
+        run: ../ui/node_modules/.bin/tauri bundle --ci --no-sign --no-binary-patching --features desktop --bundles msi --target ${{ matrix.target }}
+      - name: Prepare and sign MSI
+        env:
+          CODESIGN_PFX_BASE64: ${{ secrets.WINDOWS_CODESIGN_PFX_BASE64 }}
+          CODESIGN_PFX_PASSWORD: ${{ secrets.WINDOWS_CODESIGN_PFX_PASSWORD }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.WINDOWS_UPDATER_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.WINDOWS_UPDATER_KEY_PASSWORD }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          New-Item -ItemType Directory -Force artifacts | Out-Null
+          $version = (Get-Content app/tauri.conf.json | ConvertFrom-Json).version
+          if ('${{ github.ref_type }}' -eq 'tag' -and '${{ github.ref_name }}' -ne "v$version") { throw 'Tag must match application version' }
+          $source = Get-ChildItem 'target/${{ matrix.target }}/release/bundle/msi/*.msi' | Select-Object -First 1
+          if (-not $source) { throw 'MSI missing' }
+          $msi = "artifacts/LocalClip_$($version)_${{ matrix.arch }}.msi"
+          Copy-Item $source.FullName $msi
+          ./scripts/sign-windows.ps1 -File $msi
+          $signature = ''
+          if ($env:TAURI_SIGNING_PRIVATE_KEY -and ([string](Get-Content app/updater-public-key.txt -Raw)).Trim()) {
+            ./ui/node_modules/.bin/tauri signer sign --app-version $version $msi
+            if ($LASTEXITCODE -ne 0) { throw 'Updater signing failed' }
+            $signature = (Get-Content "$msi.sig" -Raw).Trim()
+          } else { Write-Host 'UPDATER DISABLED: private secret or committed public key is absent.' }
+          $hash = (Get-FileHash $msi -Algorithm SHA256).Hash.ToLower()
+          "$hash  $([IO.Path]::GetFileName($msi))" | Set-Content "artifacts/SHA256SUMS-${{ matrix.arch }}.txt"
+          @{version=$version;arch='${{ matrix.arch }}';file=[IO.Path]::GetFileName($msi);sha256=$hash;bytes=(Get-Item $msi).Length;signature=$signature} | ConvertTo-Json | Set-Content "artifacts/metadata-${{ matrix.arch }}.json"
+          Copy-Item 'target/${{ matrix.target }}/release/localclip.exe' 'artifacts/localclip-${{ matrix.arch }}.exe'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: LocalClip-manual-${{ matrix.arch }}
+          path: artifacts/*
+          if-no-files-found: error
+  publish:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: LocalClip-manual-*
+          merge-multiple: true
+          path: artifacts
+      - name: Assemble signed update manifest
+        run: |
+          python3 - <<'PYCODE'
+          import json, pathlib
+          root=pathlib.Path('artifacts'); entries=[json.loads(p.read_text(encoding='utf-8-sig')) for p in root.glob('metadata-*.json')]
+          if len(entries)!=2: raise SystemExit('Both architectures required')
+          if all(e['signature'] for e in entries):
+              platforms={('windows-x86_64' if e['arch']=='x64' else 'windows-aarch64'):{'signature':e['signature'],'url':'https://github.com/yuhui0531/localclip-windows/releases/download/v'+e['version']+'/'+e['file']} for e in entries}
+              (root/'latest.json').write_text(json.dumps({'version':entries[0]['version'],'platforms':platforms},indent=2))
+          else:
+              (root/'MANUAL-TEST-ONLY.txt').write_text('Unsigned manual-test build. Automatic installation is disabled. Desktop and signed-update acceptance remain open.')
+          PYCODE
+      - name: Create draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create '${{ github.ref_name }}' artifacts/* --repo '${{ github.repository }}' --draft --title 'LocalClip ${{ github.ref_name }}' --notes 'Windows MSI artifacts. Review signing metadata and acceptance reports before publishing.'

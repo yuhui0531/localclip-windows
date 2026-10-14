@@ -629,6 +629,25 @@ impl HistoryStore {
             .unwrap_or(0);
         self.read(|db|{let database=used_bytes(db)?;let all=scalar(db,"SELECT COALESCE(SUM(byteCount),0) FROM blobs",[])? as u64;let protected=scalar(db,&format!("SELECT COALESCE(SUM(byteCount),0) FROM blobs WHERE EXISTS(SELECT 1 FROM representations JOIN clips ON clips.id=representations.clipID WHERE blobDigest=blobs.digest AND {PROTECTED})"),[])? as u64;Ok(Usage{database,wal,protected_payload:protected,ordinary_payload:all-protected,common:database.saturating_sub(all)})})
     }
+    // Queue the snapshot on the sole writer, excluding concurrent mutations.
+    pub fn snapshot(&self, destination: PathBuf) -> Result<()> {
+        self.write(move |writer| {
+            if destination.exists() {
+                return Err(StoreError::IoFailure);
+            }
+            writer.db.execute(
+                "VACUUM INTO ?",
+                [destination.to_str().ok_or(StoreError::IoFailure)?],
+            )?;
+            std::fs::OpenOptions::new()
+                .read(true)
+                .write(true)
+                .open(&destination)
+                .and_then(|file| file.sync_all())
+                .map_err(|_| StoreError::IoFailure)?;
+            Ok(())
+        })
+    }
     pub fn integrity_check(&self) -> Result<String> {
         self.read(|db| Ok(db.query_row("PRAGMA integrity_check", [], |r| r.get(0))?))
     }

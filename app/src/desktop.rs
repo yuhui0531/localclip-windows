@@ -323,7 +323,9 @@ fn idle_watch(app: tauri::AppHandle, queue: Arc<(Mutex<Queue>, Condvar)>) {
     });
 }
 pub fn run() -> Result<(), Box<dyn std::error::Error>> {
+    let startup_began = std::time::Instant::now();
     tauri::Builder::default()
+        .manage(crate::update::State::default())
         .invoke_handler(tauri::generate_handler![
             crate::commands::search,
             crate::commands::clip_detail,
@@ -352,7 +354,9 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
             crate::commands::usage,
             crate::commands::capture_status,
             crate::commands::pause,
-            crate::commands::resume
+            crate::commands::resume,
+            crate::update::update_check,
+            crate::update::update_install
         ])
         .register_asynchronous_uri_scheme_protocol("localclip", |context, request, responder| {
             let app = context.app_handle().clone();
@@ -380,6 +384,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         .plugin(tauri_plugin_single_instance::init(|app, _, _| {
             request_panel(app, false)
         }))
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_autostart::Builder::new().build())
         .plugin(
             tauri_plugin_global_shortcut::Builder::new()
@@ -401,7 +406,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
                 })
                 .build(),
         )
-        .setup(|app| {
+        .setup(move |app| {
             let handle = app.handle().clone();
             let root = std::env::args()
                 .collect::<Vec<_>>()
@@ -436,10 +441,14 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
                 .text("resume", "恢复采集")
                 .separator()
                 .text("settings", "设置")
+                .text("updates", "检查更新")
                 .text("stopQueue", "结束粘贴队列")
                 .separator()
                 .text("quit", "退出")
                 .build()?;
+            if let Some(item) = menu.get("updates").and_then(|v| v.as_menuitem().cloned()) {
+                *app.state::<crate::update::State>().menu.lock().unwrap() = Some(item);
+            }
             TrayIconBuilder::with_id("main")
                 .icon(icon("ready"))
                 .tooltip("LocalClip")
@@ -448,7 +457,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
                     let action = event.id.as_ref();
                     match action {
                         "history" => request_panel(app, false),
-                        "settings" => request_panel(app, true),
+                        "settings" | "updates" => request_panel(app, true),
                         "stopQueue" => stop_queue(app),
                         "quit" => app.exit(0),
                         "pause15" | "pause60" | "pause" | "resume" => {
@@ -517,6 +526,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
             }
             status(app.handle(), "ready");
             idle_watch(app.handle().clone(), queue);
+            crate::update::startup(app.handle(), startup_began);
             Ok(())
         })
         .build(tauri::generate_context!())?

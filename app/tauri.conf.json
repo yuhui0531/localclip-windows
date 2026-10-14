@@ -10,15 +10,22 @@
     }
   },
   "bundle": {
-    "active": false,
+    "active": true,
     "targets": [
       "msi"
     ],
     "windows": {
       "webviewInstallMode": {
         "type": "downloadBootstrapper"
-      }
-    }
+      },
+      "wix": {
+        "template": "installer/main.wxs",
+        "language": "en-US",
+        "upgradeCode": "48126e85-cad0-4a2e-a6b2-388d3833d730"
+      },
+      "allowDowngrades": false
+    },
+    "publisher": "LocalClip"
   },
   "build": {
     "frontendDist": "../ui/dist",
@@ -30,6 +37,18 @@
     "beforeBuildCommand": {
       "script": "npm run build",
       "cwd": "../ui"
+    }
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "",
+      "endpoints": [
+        "https://github.com/yuhui0531/localclip-windows/releases/latest/download/latest.json"
+      ],
+      "windows": {
+        "installMode": "passive"
+      },
+      "requireSignedVersion": true
     }
   }
 }

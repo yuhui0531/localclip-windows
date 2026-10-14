@@ -10,3 +10,7 @@ pub mod commands;
 pub mod output;
 #[cfg(all(windows, feature = "desktop"))]
 pub mod thumbs;
+
+#[cfg(all(windows, feature = "desktop"))]
+pub mod update;
+pub mod update_policy;

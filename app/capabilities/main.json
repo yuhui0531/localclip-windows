@@ -34,6 +34,8 @@
     "allow-usage",
     "allow-capture-status",
     "allow-pause",
-    "allow-resume"
+    "allow-resume",
+    "allow-update-check",
+    "allow-update-install"
   ]
 }

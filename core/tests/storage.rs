@@ -463,3 +463,22 @@ fn image_and_file_filters_intersect_without_losing_image_files() {
         vec![image_file.as_str()]
     );
 }
+
+#[test]
+fn update_snapshot_is_consistent_and_never_overwrites_existing_backup() {
+    let f = Fixture::new(Settings::default());
+    let store = f.store.as_ref().unwrap();
+    let destination = f.root.join("snapshot.sqlite");
+    store.snapshot(destination.clone()).unwrap();
+    let db = rusqlite::Connection::open(&destination).unwrap();
+    assert_eq!(
+        db.query_row("PRAGMA integrity_check", [], |r| r.get::<_, String>(0))
+            .unwrap(),
+        "ok"
+    );
+    drop(db);
+    let before = std::fs::read(&destination).unwrap();
+    assert!(store.snapshot(destination.clone()).is_err());
+    assert_eq!(std::fs::read(destination).unwrap(), before);
+    assert_eq!(store.integrity_check().unwrap(), "ok");
+}
