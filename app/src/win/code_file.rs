@@ -14,8 +14,8 @@ use std::{
 use windows::Win32::{
     Foundation::{HANDLE, HWND},
     Storage::FileSystem::*,
-    System::Com::*,
-    UI::{Accessibility::*, WindowsAndMessaging::*},
+    System::{Com::*, Variant::*},
+    UI::{Accessibility::*, Input::KeyboardAndMouse::IsWindowEnabled, WindowsAndMessaging::*},
 };
 
 struct LockedFile {
@@ -140,10 +140,54 @@ impl Drop for Apartment {
     }
 }
 pub struct TextTarget {
-    automation: IUIAutomation2,
-    element: IUIAutomationElement,
+    automation: Option<(IUIAutomation2, IUIAutomationElement)>,
     target: Target,
-    _apartment: Apartment,
+    _apartment: Option<Apartment>,
+}
+fn class_name(window: HWND) -> String {
+    let mut class = [0u16; 256];
+    let len = unsafe { GetClassNameW(window, &mut class) };
+    String::from_utf16_lossy(&class[..len.max(0) as usize]).to_lowercase()
+}
+/// 原生 Edit/RichEdit 的窗口样式可确认可写性，不依赖 UIA 代理是否可用。
+fn native_edit(target: Target) -> Option<bool> {
+    unsafe {
+        let window = HWND(target.focus as *mut _);
+        let class = class_name(window);
+        if !(class == "edit"
+            || class.starts_with("richedit")
+            || class.starts_with("windowsforms10.edit."))
+        {
+            return None;
+        }
+        let style = GetWindowLongPtrW(window, GWL_STYLE);
+        Some(
+            GetAncestor(window, GA_ROOT).0 as isize == target.window
+                && IsWindowEnabled(window).as_bool()
+                && style & (0x0800 | 0x0020) == 0,
+        ) // ES_READONLY | ES_PASSWORD
+    }
+}
+/// 多行控件通常只提供 TextPattern；仅取只读属性，不读取目标正文。
+unsafe fn writable(element: &IUIAutomationElement) -> Option<bool> {
+    unsafe {
+        if let Ok(value) =
+            element.GetCurrentPatternAs::<IUIAutomationValuePattern>(UIA_ValuePatternId)
+        {
+            return Some(!value.CurrentIsReadOnly().ok()?.as_bool());
+        }
+        let pattern: IUIAutomationTextPattern =
+            element.GetCurrentPatternAs(UIA_TextPatternId).ok()?;
+        let mut attribute = pattern
+            .DocumentRange()
+            .ok()?
+            .GetAttributeValue(UIA_IsReadOnlyAttributeId)
+            .ok()?;
+        let result = (attribute.Anonymous.Anonymous.vt == VT_BOOL)
+            .then(|| attribute.Anonymous.Anonymous.Anonymous.boolVal.0 == 0);
+        let _ = VariantClear(&mut attribute);
+        result
+    }
 }
 impl TextTarget {
     /// 不读取目标正文；只查询角色、焦点、密码及只读标记。未知目标保留文件。
@@ -162,10 +206,16 @@ impl TextTarget {
             return None;
         }
         unsafe {
-            let mut class = [0u16; 256];
-            let len = GetClassNameW(HWND(target.window as *mut _), &mut class);
-            if String::from_utf16_lossy(&class[..len.max(0) as usize]) == "#32770" {
+            if class_name(HWND(target.window as *mut _)) == "#32770" {
                 return None;
+            }
+            if let Some(editable) = native_edit(target) {
+                let result = Self {
+                    automation: None,
+                    target,
+                    _apartment: None,
+                };
+                return (editable && result.is_current()).then_some(result);
             }
             CoInitializeEx(None, COINIT_MULTITHREADED).ok().ok()?;
             let apartment = Apartment;
@@ -175,10 +225,9 @@ impl TextTarget {
             automation.SetTransactionTimeout(200).ok()?;
             let element = automation.GetFocusedElement().ok()?;
             let result = Self {
-                automation,
-                element,
+                automation: Some((automation, element)),
                 target,
-                _apartment: apartment,
+                _apartment: Some(apartment),
             };
             result.is_current().then_some(result)
         }
@@ -189,28 +238,88 @@ impl TextTarget {
                 if Target::capture(GetForegroundWindow())? != self.target {
                     return None;
                 }
-                let current = self.automation.GetFocusedElement().ok()?;
-                if !self
-                    .automation
-                    .CompareElements(&current, &self.element)
+                let Some((automation, element)) = &self.automation else {
+                    return native_edit(self.target);
+                };
+                let current = automation.GetFocusedElement().ok()?;
+                if !automation
+                    .CompareElements(&current, element)
                     .ok()?
                     .as_bool()
                 {
                     return None;
                 }
                 let kind = current.CurrentControlType().ok()?;
-                let value: IUIAutomationValuePattern =
-                    current.GetCurrentPatternAs(UIA_ValuePatternId).ok()?;
                 Some(
                     [UIA_EditControlTypeId, UIA_DocumentControlTypeId].contains(&kind)
                         && current.CurrentProcessId().ok()? as u32 == self.target.pid
                         && current.CurrentHasKeyboardFocus().ok()?.as_bool()
                         && current.CurrentIsEnabled().ok()?.as_bool()
                         && !current.CurrentIsPassword().ok()?.as_bool()
-                        && !value.CurrentIsReadOnly().ok()?.as_bool(),
+                        && writable(&current) == Some(true),
                 )
             }
         })()
         .unwrap_or(false)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use windows::core::w;
+    #[test]
+    fn native_text_controls_reject_readonly_password_and_nontext() {
+        unsafe {
+            let root = CreateWindowExW(
+                WINDOW_EX_STYLE(0),
+                w!("STATIC"),
+                w!("Generated test"),
+                WINDOW_STYLE(0),
+                0,
+                0,
+                300,
+                100,
+                None,
+                None,
+                None,
+                None,
+            )
+            .unwrap();
+            let edit = CreateWindowExW(
+                WINDOW_EX_STYLE(0),
+                w!("EDIT"),
+                w!(""),
+                WS_CHILD,
+                0,
+                0,
+                200,
+                80,
+                Some(root),
+                None,
+                None,
+                None,
+            )
+            .unwrap();
+            let target = Target {
+                window: root.0 as isize,
+                focus: edit.0 as isize,
+                pid: 0,
+                created: 0,
+            };
+            assert_eq!(native_edit(target), Some(true));
+            for style in [0x0800, 0x0020, WS_DISABLED.0] {
+                SetWindowLongPtrW(edit, GWL_STYLE, (WS_CHILD.0 | style) as isize);
+                assert_eq!(native_edit(target), Some(false));
+            }
+            assert_eq!(
+                native_edit(Target {
+                    focus: root.0 as isize,
+                    ..target
+                }),
+                None
+            );
+            DestroyWindow(root).unwrap();
+        }
     }
 }
