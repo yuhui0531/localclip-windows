@@ -16,7 +16,7 @@ in the phase report says otherwise.
 - [ ] WAC17–20: link kinds, prefix errors/quoted literals, image-file intersection, transforms/joins without extra history.
 - [ ] WAC21/22: queue order/deleted item/modifier timeout, pinned recent-target paste (post-output hide discrepancy documented).
 - [ ] WAC23: local bilingual OCR and missing-language prompt; scan history/WAL for OCR output.
-- [ ] WAC25: Swift/Markdown/RTF/URL/DIBV5 save-as and collision numbering; physical drag drop/cancel and temporary-file cleanup.
+- [ ] WAC25: Swift/Markdown/RTF/URL/DIBV5 save-as and collision numbering; physical drag drop/cancel and virtual-file export without temporary source paths.
 - [ ] AC01–27: execute the complete inherited cases, especially protected quota/expiry previews, cancellation and undo.
 - [ ] Uninstall: default retains generated history; explicitly checked removal deletes current user's history only; backups remain.
 - [ ] WAC24 (keys required): disposable signing keys and test releases; correct signature installs only after explicit click and snapshot; tampered, wrong-architecture and downgrade packages rejected; failed startup permits manual recovery.
@@ -44,3 +44,17 @@ file paths, search terms or OCR text should be included in diagnostic logs.
 - [ ] Restart LocalClip and confirm the smart-paste setting persists; existing
   history and preferences must remain available. Broader target coverage remains
   manual even when the controlled receiver tests pass.
+
+
+## 0.1.3 text drag checks
+
+- [ ] Drag a text history card into an existing generated Notepad document. Its
+  body must be inserted, existing text retained, and no new exported-file tab opened.
+- [ ] Drag the same card into an empty generated Explorer folder. The exported file
+  must preserve its content and inferred extension; cancel another drag with Escape
+  and confirm no destination file is created.
+- [ ] Drag an existing file card into that folder. The original source must remain
+  present and the destination copy must have identical bytes.
+- [ ] Recheck image/code/link exports, pinned/unpinned focus hiding, wheel navigation,
+  syntax highlighting and smart code-file paste. Protocol tests do not replace these
+  desktop target checks. See the linked 0.1.3 report for executed evidence.

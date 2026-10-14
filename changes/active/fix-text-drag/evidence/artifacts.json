@@ -1,0 +1,24 @@
+[
+  {
+    "arch": "arm64",
+    "version": "0.1.3",
+    "msiSha256": "070560e012583abc902e5164055fa67818adef0d11976514deb502e8d6275665",
+    "bytes": 9805824,
+    "exeSha256": "0cda00860d3be2fa24e8580174dc78a1384f5a190c0db65a946a1db9267c596e",
+    "machine": "0xaa64",
+    "signaturePresent": false,
+    "buildCommit": "3f2600d42f11045bd7806380b9a38df4b907355b",
+    "buildRun": 38533089887
+  },
+  {
+    "arch": "x64",
+    "version": "0.1.3",
+    "msiSha256": "2b31d48df6e3e6b0b20bd6f34183aa3f63564be6f01373b3108fd91e8976dd37",
+    "bytes": 10969088,
+    "exeSha256": "fc67318103cf89a05499380160c3deeea2fc581cd9040d9f9522f60c1f224593",
+    "machine": "0x8664",
+    "signaturePresent": false,
+    "buildCommit": "3f2600d42f11045bd7806380b9a38df4b907355b",
+    "buildRun": 38533089887
+  }
+]

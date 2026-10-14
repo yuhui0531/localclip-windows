@@ -1,0 +1,28 @@
+{
+    "exeSha256":  "0cda00860d3be2fa24e8580174dc78a1384f5a190c0db65a946a1db9267c596e",
+    "cases":  [
+                  {
+                      "case":  "cancel",
+                      "files":  [
+                                    null
+                                ],
+                      "passed":  true
+                  },
+                  {
+                      "case":  "text",
+                      "files":  [
+                                    "LocalClip.txt"
+                                ],
+                      "passed":  true
+                  },
+                  {
+                      "case":  "file",
+                      "files":  [
+                                    "LocalClip.txt",
+                                    "sample.rs"
+                                ],
+                      "passed":  true
+                  }
+              ],
+    "sourcePreserved":  true
+}

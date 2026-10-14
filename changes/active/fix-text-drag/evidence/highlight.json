@@ -1,0 +1,8 @@
+{
+    "hidden":  true,
+    "before":  {
+                   "previews":  2,
+                   "coloredTokens":  10
+               },
+    "restored":  true
+}

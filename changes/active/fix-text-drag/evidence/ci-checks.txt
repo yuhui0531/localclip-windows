@@ -1,0 +1,44 @@
+CI run 38534274285: SUCCESS; tests commit 93b979fa360b4a6cb9f68543ae80d3837fe6e32a. Shipping code unchanged from 3f2600d.
+core (macos-latest)	Clippy	2026-10-14T08:20:09.0766100Z     Finished `dev` profile [unoptimized + debuginfo] target(s) in 27.33s
+core (macos-latest)	Core vectors and storage	2026-10-14T08:20:33.2873440Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (macos-latest)	Core vectors and storage	2026-10-14T08:20:33.2933270Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (macos-latest)	Core vectors and storage	2026-10-14T08:20:33.2934910Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (macos-latest)	Core vectors and storage	2026-10-14T08:21:27.5083790Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 54.20s
+core (macos-latest)	Core vectors and storage	2026-10-14T08:21:27.5314050Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (macos-latest)	Core vectors and storage	2026-10-14T08:21:27.7049690Z test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.16s
+core (macos-latest)	Core vectors and storage	2026-10-14T08:22:14.1211330Z test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 46.38s
+core (macos-latest)	Core vectors and storage	2026-10-14T08:22:15.0432010Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (macos-latest)	Build test utilities	2026-10-14T08:23:37.3338760Z     Finished `release` profile [optimized] target(s) in 1m 22s
+core (macos-latest)	Release service benchmark	2026-10-14T08:23:38.7037190Z     Finished `release` profile [optimized] target(s) in 0.95s
+core (windows-latest)	Clippy	2026-10-14T08:20:37.7089878Z     Finished `dev` profile [unoptimized + debuginfo] target(s) in 44.87s
+core (windows-latest)	Windows shell Clippy	2026-10-14T08:22:07.9152452Z     Finished `dev` profile [unoptimized + debuginfo] target(s) in 1m 29s
+core (windows-latest)	Core vectors and storage	2026-10-14T08:22:32.4733566Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (windows-latest)	Core vectors and storage	2026-10-14T08:22:32.4810903Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (windows-latest)	Core vectors and storage	2026-10-14T08:22:32.4886443Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (windows-latest)	Core vectors and storage	2026-10-14T08:22:45.2866089Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 12.79s
+core (windows-latest)	Core vectors and storage	2026-10-14T08:22:45.2966351Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (windows-latest)	Core vectors and storage	2026-10-14T08:22:45.6748611Z test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.37s
+core (windows-latest)	Core vectors and storage	2026-10-14T08:23:01.5029135Z test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 15.82s
+core (windows-latest)	Core vectors and storage	2026-10-14T08:23:01.5939993Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (windows-latest)	Windows adapter tests (serial)	2026-10-14T08:23:39.1659982Z test win::drag::tests::exports_keep_empty_code_image_and_link_bytes ... ok
+core (windows-latest)	Windows adapter tests (serial)	2026-10-14T08:23:39.1672899Z test win::drag::tests::real_files_still_offer_original_paths ... ok
+core (windows-latest)	Windows adapter tests (serial)	2026-10-14T08:23:39.1678105Z test win::drag::tests::text_drop_offers_body_and_virtual_file_without_a_temporary_path ... ok
+core (windows-latest)	Windows adapter tests (serial)	2026-10-14T08:23:39.1678681Z test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+core (windows-latest)	Windows adapter tests (serial)	2026-10-14T08:23:39.1772702Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (windows-latest)	Windows adapter tests (serial)	2026-10-14T08:23:39.1849612Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (windows-latest)	Windows adapter tests (serial)	2026-10-14T08:23:40.4020598Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.21s
+core (windows-latest)	Windows adapter tests (serial)	2026-10-14T08:23:40.5206457Z test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.11s
+core (windows-latest)	Windows adapter tests (serial)	2026-10-14T08:23:40.5318775Z test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (windows-latest)	Windows adapter tests (serial)	2026-10-14T08:23:40.5474092Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (windows-latest)	Windows adapter tests (serial)	2026-10-14T08:23:40.5881634Z test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+core (windows-latest)	Windows adapter tests (serial)	2026-10-14T08:23:40.5991816Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (windows-latest)	Windows adapter tests (serial)	2026-10-14T08:23:40.6088003Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (windows-latest)	Windows adapter tests (serial)	2026-10-14T08:23:40.7370407Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (windows-latest)	Desktop unit tests	2026-10-14T08:25:14.8541510Z test win::drag::tests::exports_keep_empty_code_image_and_link_bytes ... ok
+core (windows-latest)	Desktop unit tests	2026-10-14T08:25:14.8556317Z test win::drag::tests::real_files_still_offer_original_paths ... ok
+core (windows-latest)	Desktop unit tests	2026-10-14T08:25:14.8561312Z test win::drag::tests::text_drop_offers_body_and_virtual_file_without_a_temporary_path ... ok
+core (windows-latest)	Desktop unit tests	2026-10-14T08:25:14.8561885Z test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+core (windows-latest)	Build test utilities	2026-10-14T08:26:17.2554645Z     Finished `release` profile [optimized] target(s) in 1m 02s
+core (windows-latest)	Build Windows demo	2026-10-14T08:26:54.4825153Z     Finished `release` profile [optimized] target(s) in 36.89s
+core (windows-latest)	Build Windows application	2026-10-14T08:31:29.4628173Z     Finished `release` profile [optimized] target(s) in 4m 28s
+core (windows-latest)	Release service benchmark	2026-10-14T08:31:29.9898315Z     Finished `release` profile [optimized] target(s) in 0.18s

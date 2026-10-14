@@ -1,6 +1,6 @@
 # Phase 4 — Manual-test installers and guarded updater
 
-**Latest manual build: 0.1.2.** See the [history wheel/code-feature fix and evidence](../changes/active/fix-history-wheel-code/debug-log-2026-10-14-history-wheel-code.md). The [0.1.1 drag/focus native regression](../changes/active/fix-drag-focus/debug-log-2026-10-14-drag-focus.md) and 0.1.0 evidence below remain historical records; they are not substituted for current-version runtime acceptance.
+**Latest manual build: 0.1.3.** See the [text-drag fix and current acceptance status](../changes/active/fix-text-drag/debug-log-2026-10-14-text-drag.md). The [0.1.2 history wheel/code-feature evidence](../changes/active/fix-history-wheel-code/debug-log-2026-10-14-history-wheel-code.md), [0.1.1 drag/focus native regression](../changes/active/fix-drag-focus/debug-log-2026-10-14-drag-focus.md) and 0.1.0 evidence below remain historical records; they are not substituted for current-version runtime acceptance.
 
 The owner explicitly approved **“Deliver manual-test installer; signing keys are
 not ready.”** Installer signing and WAC24 remain open. No production keys were
