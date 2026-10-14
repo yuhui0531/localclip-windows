@@ -9,7 +9,7 @@ use std::{
     time::Duration,
 };
 use windows::Win32::{
-    Foundation::{HANDLE, HGLOBAL},
+    Foundation::HANDLE,
     System::{DataExchange::*, Memory::*},
 };
 
