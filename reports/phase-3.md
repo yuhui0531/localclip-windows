@@ -1,6 +1,8 @@
 # Phase 3 — Windows history UI
 
-Base: Phase 2 PR #3. Windows build verification is in progress.
+Base: Phase 2 PR #3. Implementation 1fba1a8 passed Windows and macOS CI run
+[38507070100](https://github.com/yuhui0531/localclip-windows/actions/runs/38507070100),
+including native rich-text merge, Release Tauri app build and the core suites.
 
 ## Scope and approved acceptance deferral
 
@@ -29,7 +31,7 @@ TypeScript, Vite, Tauri API/CLI and highlight.js; the latter's license is retain
 - Windows run 38505776476 passed both Clippy checks, core vectors/storage and serial
   native adapter tests. Its old frontend hook failed because Tauri resolves the
   frontend working directory differently from its Rust crate. Explicit hook cwd
-  fixes that issue in 837afc3; the replacement run is 38506436983.
+  fixes that issue in 837afc3; replacement run 38506436983 passed both platforms.
 - Synthetic Chromium/Playwright checks: generated 120 records, 8 initial DOM cards,
   18 DOM cards after virtual scrolling, no page errors. Search, detail and storage
   views, light/dark themes and the minimum 220 px panel were exercised. Evidence:
@@ -40,6 +42,20 @@ TypeScript, Vite, Tauri API/CLI and highlight.js; the latter's license is retain
 - The test harness injects Tauri's official mock IPC into the preview browser only;
   shipped sources contain no fixture/mock switch. A separate generated SQLite
   fixture tool leaves capture paused for native VM testing.
+
+## Native VM smoke check
+
+The x64 Release executable from 837afc3 ran under emulation in the ARM64 Parallels
+Windows 11 VM. A generated 120-record database remained capture-paused throughout.
+WebView2's test-only remote-debugging environment enabled real IPC assertions:
+search returned 3 requested records; details and usage loaded; delete/undo restored
+the list; 8 cards rendered. [Metadata](phase-3-evidence/vm-smoke-initial.json) and
+[screenshot](phase-3-evidence/vm-native.png) contain only generated data.
+
+The same check found thumbnail requests returned 404. Wry converts the Windows
+custom-protocol host to `localhost`, and convertFileSrc encodes the path separator.
+The route now validates and decodes both native forms, with a regression test.
+A final fixed-binary VM check is pending; the initial failure is retained.
 
 ## Acceptance ledger — not passed by implementation alone
 
