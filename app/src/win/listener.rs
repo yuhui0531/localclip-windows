@@ -24,6 +24,7 @@ enum Command {
 struct State {
     policy: Policy,
     captured: Captured,
+    maintenance: Arc<dyn Fn() + Send + Sync>,
     receipt: Option<Receipt>,
     commands: mpsc::Receiver<Command>,
     last_sequence: u32,
@@ -72,6 +73,10 @@ unsafe extern "system" fn procedure(window: HWND, message: u32, w: WPARAM, l: LP
                 }
                 LRESULT(0)
             }
+            WM_TIMER if w.0 == 2 => {
+                (state.maintenance)();
+                LRESULT(0)
+            }
             WM_APP => {
                 while let Ok(Command::Copy(payload, reply)) = state.commands.try_recv() {
                     let result = clipboard::write(window, &payload).map(|(receipt, missing)| {
@@ -85,6 +90,7 @@ unsafe extern "system" fn procedure(window: HWND, message: u32, w: WPARAM, l: LP
             WM_CLOSE => {
                 let _ = RemoveClipboardFormatListener(window);
                 let _ = KillTimer(Some(window), 1);
+                let _ = KillTimer(Some(window), 2);
                 let _ = DestroyWindow(window);
                 PostQuitMessage(0);
                 LRESULT(0)
@@ -94,13 +100,18 @@ unsafe extern "system" fn procedure(window: HWND, message: u32, w: WPARAM, l: LP
     }
 }
 impl Listener {
-    pub fn start(policy: Policy, captured: Captured) -> Result<Self> {
+    pub fn start(
+        policy: Policy,
+        captured: Captured,
+        maintenance: Arc<dyn Fn() + Send + Sync>,
+    ) -> Result<Self> {
         let (commands, rx) = mpsc::channel();
         let (ready, received) = mpsc::channel();
         let thread = std::thread::spawn(move || unsafe {
             let mut state = Box::new(State {
                 policy,
                 captured,
+                maintenance,
                 receipt: None,
                 commands: rx,
                 last_sequence: GetClipboardSequenceNumber(),
@@ -144,6 +155,7 @@ impl Listener {
                 let _ = ready.send(Err("accessUnavailable"));
                 return;
             }
+            SetTimer(Some(window), 2, 60_000, None);
             let _ = ready.send(Ok(window.0 as isize));
             let mut message = MSG::default();
             while GetMessageW(&mut message, None, 0, 0).0 > 0 {

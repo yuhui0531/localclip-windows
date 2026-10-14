@@ -21,7 +21,7 @@ pub fn decode_html(bytes: &[u8]) -> Option<Vec<u8>> {
     fn offset(bytes: &[u8], key: &[u8]) -> Option<i64> {
         let head = &bytes[..bytes.len().min(65536)];
         let start = head.windows(key.len()).position(|w| w == key)?;
-        if start != 0 && head[start - 1] != b'\n' {
+        if start != 0 && !matches!(head[start - 1], b'\r' | b'\n') {
             return None;
         }
         let tail = &head[start + key.len()..];

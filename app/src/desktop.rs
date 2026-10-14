@@ -93,12 +93,17 @@ fn icon(status: &str) -> tauri::image::Image<'static> {
     tauri::image::Image::new_owned(pixels, 16, 16)
 }
 fn status(app: &tauri::AppHandle, reason: &'static str) {
+    let display = app
+        .try_state::<AppState>()
+        .and_then(|s| s.runtime.store.settings().ok())
+        .filter(|s| !s.capture_enabled || s.pause_until.is_some_and(|until| until > now()))
+        .map_or(reason, |_| "paused");
     if let Some(tray) = app.tray_by_id("main") {
-        let _ = tray.set_icon(Some(icon(reason)));
-        let _ = tray.set_tooltip(Some(format!("LocalClip · {reason}")));
+        let _ = tray.set_icon(Some(icon(display)));
+        let _ = tray.set_tooltip(Some(format!("LocalClip · {display}")));
     }
-    let _ = app.emit("captureStateChanged", json!({"status":reason}));
-    if matches!(reason, "inserted" | "deduplicated") {
+    let _ = app.emit("captureStateChanged", json!({"status":display}));
+    if matches!(reason, "inserted" | "deduplicated" | "expired") {
         let _ = app.emit("clipsChanged", json!({"reason":reason}));
     }
 }
@@ -174,6 +179,12 @@ fn queue_next(app: &tauri::AppHandle) {
                 queue.next_item()
             };
             let Some((index, id)) = next else {
+                if !skipped.is_empty() {
+                    let _ = app.emit(
+                        "outputFeedback",
+                        json!({"status":"queueSkipped","skipped":skipped}),
+                    );
+                }
                 break;
             };
             let payload = match state.runtime.store.payload(&id) {
@@ -201,6 +212,13 @@ fn queue_next(app: &tauri::AppHandle) {
             } else {
                 payload
             };
+            // Serialize replacement with dispatch so a superseded queue cannot send later.
+            let Ok(queue_guard) = state.queue.0.lock() else {
+                return;
+            };
+            if queue_guard.generation != generation {
+                return;
+            }
             let result = state.runtime.output(
                 payload,
                 target,
@@ -208,6 +226,7 @@ fn queue_next(app: &tauri::AppHandle) {
                 released,
                 || {},
             );
+            drop(queue_guard);
             let reason = match result {
                 Ok(result) => {
                     if matches!(result.status, "commandSent" | "copied" | "modifiersHeld") {

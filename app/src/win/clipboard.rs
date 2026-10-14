@@ -372,15 +372,25 @@ pub fn capture(settings: &Settings, now: i64, receipt: &mut Option<Receipt>) -> 
                 Payload {
                     items: paths
                         .into_iter()
-                        .map(|path| {
+                        .enumerate()
+                        .map(|(index, path)| {
+                            let mut representations = if index == 0 {
+                                std::mem::take(&mut item.representations)
+                            } else {
+                                Vec::new()
+                            };
+                            representations.push(Representation {
+                                format: "text/uri-list".into(),
+                                data: formats::path_to_url(&path)
+                                    .ok_or("unsupported")?
+                                    .into_bytes(),
+                            });
                             Ok(Item {
-                                representations: vec![Representation {
-                                    format: "text/uri-list".into(),
-                                    data: formats::path_to_url(&path)
-                                        .ok_or("unsupported")?
-                                        .into_bytes(),
-                                }],
-                                declared_types: vec!["text/uri-list".into()],
+                                declared_types: representations
+                                    .iter()
+                                    .map(|r| r.format.clone())
+                                    .collect(),
+                                representations,
                                 plain_text: Some(path),
                             })
                         })
@@ -467,11 +477,15 @@ pub fn write(window: HWND, payload: &Payload) -> Result<(Receipt, usize)> {
             registered("Preferred DropEffect")?,
             1u32.to_le_bytes().to_vec(),
         ));
-    } else {
-        if payload.items.len() != 1 {
-            return Err("unsupported");
-        }
+    } else if payload.items.len() != 1 {
+        return Err("unsupported");
+    }
+    // File lists can coexist with image representations; preserve every saved format.
+    {
         for (id, neutral) in mapping()? {
+            if neutral == "text/uri-list" {
+                continue;
+            }
             if let Some(bytes) = payload.items[0].representation(neutral) {
                 let data = match neutral {
                     "text/plain" | "text/uri" => formats::encode_utf16(

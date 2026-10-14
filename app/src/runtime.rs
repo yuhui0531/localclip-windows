@@ -57,6 +57,9 @@ impl Runtime {
             )
             .map_err(|_| "storageUnavailable")?,
         );
+        store.expire().map_err(|_| "storageUnavailable")?;
+        let maintenance = store.clone();
+        let maintenance_notify = notify.clone();
         let policy = store.clone();
         let writer = store.clone();
         let listener = Listener::start(
@@ -79,6 +82,11 @@ impl Runtime {
                     Err(reason) => reason,
                 };
                 notify(status);
+            }),
+            Arc::new(move || match maintenance.expire() {
+                Ok(result) if result.removed > 0 => maintenance_notify("expired"),
+                Ok(_) => maintenance_notify("ready"),
+                Err(_) => maintenance_notify("storageUnavailable"),
             }),
         )?;
         let tracker = Tracker::start()?;

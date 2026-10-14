@@ -14,6 +14,15 @@ fn html_offsets_count_utf8_bytes_and_keep_fragment() {
     let fragment = "<b>中文 🙂</b>\r\nnext";
     let bytes = encode_html(fragment.as_bytes()).unwrap();
     assert_eq!(decode_html(&bytes), Some(fragment.as_bytes().to_vec()));
+    let header =
+        "Version:1.0\rStartHTML:-1\rEndHTML:-1\rStartFragment:0000000089\rEndFragment:0000000093\r";
+    let header = header
+        .replace("0000000089", &format!("{:010}", header.len()))
+        .replace("0000000093", &format!("{:010}", header.len() + 4));
+    assert_eq!(
+        decode_html(format!("{header}test").as_bytes()),
+        Some(b"test".to_vec())
+    );
     let bad = b"Version:1.0\r\nStartHTML:0000000000\r\nEndHTML:9999999999\r\nStartFragment:0000000000\r\nEndFragment:9999999999\r\n";
     assert!(decode_html(bad).is_none());
     assert!(decode_html(b"<b>no header</b>").is_none());
