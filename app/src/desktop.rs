@@ -114,6 +114,18 @@ pub fn status(app: &tauri::AppHandle, reason: &'static str) {
         let _ = tray.set_tooltip(Some(format!("LocalClip · {display}")));
     }
     let _ = app.emit("capture-status", json!({"state":display}));
+    if matches!(reason, "inserted" | "deduplicated")
+        && app
+            .try_state::<AppState>()
+            .and_then(|s| s.runtime.store.settings().ok())
+            .is_some_and(|s| s.preferences.capture_sounds)
+    {
+        unsafe {
+            let _ = windows::Win32::System::Diagnostics::Debug::MessageBeep(
+                windows::Win32::UI::WindowsAndMessaging::MB_OK,
+            );
+        }
+    }
     if matches!(reason, "inserted" | "deduplicated" | "expired") {
         let revision = app
             .try_state::<AppState>()

@@ -233,3 +233,28 @@ impl Target {
         }
     }
 }
+
+pub fn running_applications() -> Vec<(String, String)> {
+    unsafe extern "system" fn collect(window: HWND, parameter: LPARAM) -> BOOL {
+        unsafe {
+            if IsWindowVisible(window).as_bool() {
+                let mut pid = 0;
+                GetWindowThreadProcessId(window, Some(&mut pid));
+                if pid != std::process::id() {
+                    (&mut *(parameter.0 as *mut std::collections::BTreeSet<u32>)).insert(pid);
+                }
+            }
+        }
+        BOOL(1)
+    }
+    let mut ids = std::collections::BTreeSet::new();
+    unsafe {
+        let _ = EnumWindows(Some(collect), LPARAM(&mut ids as *mut _ as isize));
+    }
+    let applications: std::collections::BTreeMap<String, String> = ids
+        .into_iter()
+        .filter_map(process)
+        .map(|p| (p.path, p.name))
+        .collect();
+    applications.into_iter().collect()
+}

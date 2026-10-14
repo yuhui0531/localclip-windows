@@ -139,6 +139,15 @@ impl Runtime {
         if cancelled.load(std::sync::atomic::Ordering::SeqCst) {
             return Err("cancelled");
         }
+        if self
+            .store
+            .settings()
+            .map_err(|_| "storageUnavailable")?
+            .preferences
+            .hide_contents
+        {
+            return Err("contentsHidden");
+        }
         if result.text.is_empty() {
             return Ok((0, result.missing_languages));
         }

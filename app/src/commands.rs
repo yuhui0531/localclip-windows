@@ -425,6 +425,14 @@ fn dispatch(app: &tauri::AppHandle, name: &str, request: Value) -> Result<Value>
         "settings" => {
             let mut doc = settings_document(&settings);
             doc["autostart"] = json!(app.autolaunch().is_enabled().unwrap_or(false));
+            if request["runningApps"].as_bool() == Some(true) {
+                doc["runningApps"] = json!(
+                    crate::win::source::running_applications()
+                        .into_iter()
+                        .map(|(id, name)| json!({"id":id,"name":name}))
+                        .collect::<Vec<_>>()
+                );
+            }
             Ok(doc)
         }
         "update_settings" => {

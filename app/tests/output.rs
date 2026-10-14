@@ -7,3 +7,29 @@ fn output_preserves_selection_order_and_never_silently_drops_nontext() {
     assert_eq!(result.plain_text().unwrap(), "[\"b\", \"a\"]");
     assert!(compose(vec![], true, "newline", None, None, 0).is_err());
 }
+
+#[test]
+fn original_merge_rejects_unrepresentable_image_and_text_without_dropping_images() {
+    use localclip_core::domain::{Item, Representation};
+    let image = Payload {
+        items: vec![Item {
+            representations: vec![Representation {
+                format: "image/png".into(),
+                data: vec![1, 2, 3],
+            }],
+            declared_types: vec!["image/png".into()],
+            plain_text: None,
+        }],
+    };
+    assert!(
+        compose(
+            vec![Payload::text("text"), image],
+            false,
+            "newline",
+            None,
+            None,
+            0
+        )
+        .is_err()
+    );
+}
