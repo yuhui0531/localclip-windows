@@ -118,23 +118,29 @@ pub fn output_with_code_files(
         let window = HWND(target.window as *mut _);
         let _ = SetForegroundWindow(window);
         let start = Instant::now();
-        while GetForegroundWindow() != window {
+        loop {
+            let mut focus = GUITHREADINFO {
+                cbSize: std::mem::size_of::<GUITHREADINFO>() as u32,
+                ..Default::default()
+            };
+            // 前台 HWND 可先于子控件恢复；两者都吻合后才继续。by AI.Coding
+            if GetForegroundWindow() == window
+                && GetGUIThreadInfo(GetWindowThreadProcessId(window, None), &mut focus).is_ok()
+                && focus.hwndFocus.0 as isize == target.focus
+            {
+                break;
+            }
             if start.elapsed() >= Duration::from_millis(150) {
-                return result("focusNotRestored");
+                return result(if GetForegroundWindow() == window {
+                    "focusChanged"
+                } else {
+                    "focusNotRestored"
+                });
             }
             std::thread::sleep(Duration::from_millis(5));
         }
         if target.validate().is_none() {
             return result("targetUnavailable");
-        }
-        let mut focus = GUITHREADINFO {
-            cbSize: std::mem::size_of::<GUITHREADINFO>() as u32,
-            ..Default::default()
-        };
-        if GetGUIThreadInfo(GetWindowThreadProcessId(window, None), &mut focus).is_err()
-            || focus.hwndFocus.0 as isize != target.focus
-        {
-            return result("focusChanged");
         }
         // 文件句柄存活到 SendInput 完成，转换不适用于复制、拖出或未知输入控件。
         let eligible = code_files_allowed()
