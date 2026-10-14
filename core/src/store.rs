@@ -91,6 +91,7 @@ pub struct SearchRequest {
     pub literal: String,
     pub favorites: bool,
     pub kind: Option<Kind>,
+    pub kind_intersection: Option<Kind>,
     pub categories: BTreeSet<String>,
     pub source_app_id: Option<String>,
     pub from: Option<i64>,
@@ -105,6 +106,7 @@ impl SearchRequest {
                 self.literal,
                 self.favorites,
                 self.kind.map(Kind::as_str),
+                self.kind_intersection.map(Kind::as_str),
                 self.categories,
                 self.source_app_id,
                 self.from,
@@ -332,7 +334,7 @@ impl HistoryStore {
     }
     pub fn sources(&self) -> Result<Vec<Source>> {
         self.read(|db| {
-            let mut stmt = db.prepare("SELECT DISTINCT sourceAppID,sourceName,sourceBasis FROM clips ORDER BY sourceName,sourceAppID")?;
+            let mut stmt = db.prepare("SELECT sourceAppID,sourceName,MIN(sourceBasis) FROM clips GROUP BY sourceAppID,sourceName ORDER BY sourceName,sourceAppID")?;
             Ok(stmt.query_map([], |r| Ok(Source { app_id:r.get(0)?,name:r.get(1)?,basis:r.get(2)? }))?.collect::<std::result::Result<_, _>>()?)
         })
     }
@@ -1096,7 +1098,7 @@ fn search_db(db: &Connection, request: SearchRequest, now: i64) -> Result<Search
     if request.favorites {
         clauses.push("isFavorite=1".into());
     }
-    if let Some(kind) = request.kind {
+    for kind in request.kind.into_iter().chain(request.kind_intersection) {
         if kind == Kind::Image {
             clauses.push("(kind='image' OR (kind='file' AND EXISTS(SELECT 1 FROM text_content WHERE clipID=clips.id) AND NOT EXISTS(SELECT 1 FROM text_content WHERE clipID=clips.id AND clip_image_path(plainText)=0)))".into());
         } else {

@@ -56,7 +56,13 @@ impl Runtime {
                     ..Default::default()
                 },
             )
-            .map_err(|_| "storageUnavailable")?,
+            .map_err(|e| {
+                if e == StoreError::IncompatibleSchema {
+                    "incompatibleSchema"
+                } else {
+                    "storageUnavailable"
+                }
+            })?,
         );
         store.expire().map_err(|_| "storageUnavailable")?;
         let maintenance = store.clone();

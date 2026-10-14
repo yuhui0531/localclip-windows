@@ -58,10 +58,9 @@ fn thumbnail(payload: &Payload) -> Option<Vec<u8>> {
             )?;
             if localclip_core::domain::is_image_file(&path)
                 && std::fs::metadata(&path).ok()?.len() <= 50 * 1_048_576
+                && let Ok(bytes) = std::fs::read(path)
             {
-                if let Ok(bytes) = std::fs::read(path) {
-                    candidates.push(bytes);
-                }
+                candidates.push(bytes);
             }
         }
         for bytes in candidates {

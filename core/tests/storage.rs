@@ -431,3 +431,35 @@ fn detail_metadata_uses_visibility_and_category_order() {
     ));
     assert!(f.store().summary(&id).is_ok());
 }
+
+#[test]
+fn image_and_file_filters_intersect_without_losing_image_files() {
+    let f = Fixture::new(Settings::default());
+    let file = |path: &str| Payload {
+        items: vec![Item {
+            representations: vec![Representation {
+                format: "text/uri-list".into(),
+                data: format!("file:///C:/{path}").into_bytes(),
+            }],
+            declared_types: vec!["text/uri-list".into()],
+            plain_text: Some(format!("C:\\{path}")),
+        }],
+    };
+    let Ingest::Inserted(image_file) = f.ingest(file("test.png")) else {
+        panic!("insert")
+    };
+    f.ingest(file("test.txt"));
+    let page = f
+        .store()
+        .search(SearchRequest {
+            kind: Some(localclip_core::domain::Kind::Image),
+            kind_intersection: Some(localclip_core::domain::Kind::File),
+            page_size: 50,
+            ..Default::default()
+        })
+        .unwrap();
+    assert_eq!(
+        page.items.iter().map(|s| s.id.as_str()).collect::<Vec<_>>(),
+        vec![image_file.as_str()]
+    );
+}

@@ -142,10 +142,9 @@ fn dispatch(app: &tauri::AppHandle, name: &str, request: Value) -> Result<Value>
             let parsed = query::parse(text, &sources, &cats, now(), offset());
             let explicit_kind = request["kind"].as_str().and_then(Kind::parse);
             let explicit_source = request["sourceAppID"].as_str().filter(|v| !v.is_empty());
-            let contradiction = explicit_kind.zip(parsed.kind).is_some_and(|(a, b)| a != b)
-                || explicit_source
-                    .zip(parsed.source_app_id.as_deref())
-                    .is_some_and(|(a, b)| a != b);
+            let contradiction = explicit_source
+                .zip(parsed.source_app_id.as_deref())
+                .is_some_and(|(a, b)| a != b);
             let mut categories = parsed.category_ids;
             if let Some(list) = request["categoryIDs"].as_array() {
                 for id in list {
@@ -179,6 +178,11 @@ fn dispatch(app: &tauri::AppHandle, name: &str, request: Value) -> Result<Value>
                     favorites: request["favoritesOnly"].as_bool().unwrap_or(false)
                         || parsed.favorites,
                     kind: explicit_kind.or(parsed.kind),
+                    kind_intersection: if explicit_kind.is_some() {
+                        parsed.kind
+                    } else {
+                        None
+                    },
                     categories,
                     source_app_id: explicit_source.map(String::from).or(parsed.source_app_id),
                     from: request["from"]
@@ -290,6 +294,7 @@ fn dispatch(app: &tauri::AppHandle, name: &str, request: Value) -> Result<Value>
             Ok(Value::Null)
         }
         "ocr_copy" => {
+            let id = string(&request, "id")?;
             let cancel = Arc::new(std::sync::atomic::AtomicBool::new(false));
             {
                 let mut task = state.ocr.lock().map_err(|_| "ocrUnavailable")?;
@@ -306,9 +311,7 @@ fn dispatch(app: &tauri::AppHandle, name: &str, request: Value) -> Result<Value>
                         .collect()
                 })
                 .unwrap_or_else(|| vec!["zh-Hans".into(), "zh-Hant".into(), "en-US".into()]);
-            let result = state
-                .runtime
-                .ocr(string(&request, "id")?, &languages, &cancel);
+            let result = state.runtime.ocr(id, &languages, &cancel);
             if let Ok(mut task) = state.ocr.lock() {
                 *task = None;
             }
@@ -342,7 +345,7 @@ fn dispatch(app: &tauri::AppHandle, name: &str, request: Value) -> Result<Value>
                 .summary(id)
                 .map_err(error)
                 .and_then(|s| summary(store, s, hide))
-                .or_else(|_| Ok(Value::Null))
+                .or(Ok(Value::Null))
         }
         "set_title" => {
             let id = string(&request, "id")?;

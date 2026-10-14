@@ -5,7 +5,21 @@ fn main() {
         let _ = localclip_app::win::clipboard::worker_main();
         return;
     }
-    if localclip_app::desktop::run().is_err() {
+    if let Err(error) = localclip_app::desktop::run() {
+        use windows::{
+            Win32::UI::WindowsAndMessaging::{MB_ICONERROR, MB_OK, MessageBoxW},
+            core::w,
+        };
+        let message = if error.to_string().contains("incompatibleSchema") {
+            w!("数据版本不兼容。LocalClip 没有修改或覆盖历史，请使用兼容版本。")
+        } else {
+            w!(
+                "LocalClip 无法启动。请确认数据目录可写、磁盘空间充足，并已安装 Microsoft Edge WebView2 运行时。历史数据不会被覆盖。"
+            )
+        };
+        unsafe {
+            let _ = MessageBoxW(None, message, w!("LocalClip"), MB_OK | MB_ICONERROR);
+        }
         std::process::exit(1);
     }
 }

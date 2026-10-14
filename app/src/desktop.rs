@@ -104,10 +104,10 @@ pub fn status(app: &tauri::AppHandle, reason: &'static str) {
         .and_then(|s| s.runtime.store.settings().ok())
         .filter(|s| !s.capture_enabled || s.pause_until.is_some_and(|until| until > now()))
         .map_or(reason, |_| "paused");
-    if let Some(state) = app.try_state::<AppState>() {
-        if let Ok(mut capture) = state.capture.lock() {
-            *capture = json!({"state":display,"lastSkip":if matches!(reason,"ready"|"inserted"|"deduplicated"|"expired"|"selfWrite") {serde_json::Value::Null} else {json!({"reason":reason,"atMs":now()})}});
-        }
+    if let Some(state) = app.try_state::<AppState>()
+        && let Ok(mut capture) = state.capture.lock()
+    {
+        *capture = json!({"state":display,"lastSkip":if matches!(reason,"ready"|"inserted"|"deduplicated"|"expired"|"selfWrite") {serde_json::Value::Null} else {json!({"reason":reason,"atMs":now()})}});
     }
     if let Some(tray) = app.tray_by_id("main") {
         let _ = tray.set_icon(Some(icon(display)));
@@ -525,10 +525,10 @@ pub fn hide_panel(app: &tauri::AppHandle) {
     if let Some(window) = app.get_webview_window("main") {
         let _ = window.hide();
     }
-    if let Some(state) = app.try_state::<AppState>() {
-        if let Ok(mut cache) = state.thumbs.lock() {
-            cache.clear();
-        }
+    if let Some(state) = app.try_state::<AppState>()
+        && let Ok(mut cache) = state.thumbs.lock()
+    {
+        cache.clear();
     }
 }
 fn position_panel(app: &tauri::AppHandle, window: &tauri::WebviewWindow) {
@@ -562,18 +562,18 @@ pub fn feedback(app: &tauri::AppHandle, value: serde_json::Value) {
         .fetch_add(1, std::sync::atomic::Ordering::SeqCst)
         + 1;
     if let Some(window) = app.get_webview_window("feedback") {
-        if let Ok(cursor) = app.cursor_position() {
-            if let Ok(Some(monitor)) = app.monitor_from_point(cursor.x, cursor.y) {
-                let area = monitor.work_area();
-                let scale = monitor.scale_factor();
-                let width = (660.0 * scale) as u32;
-                let height = (74.0 * scale) as u32;
-                let _ = window.set_size(tauri::PhysicalSize::new(width, height));
-                let _ = window.set_position(tauri::PhysicalPosition::new(
-                    area.position.x + (area.size.width.saturating_sub(width) / 2) as i32,
-                    area.position.y + area.size.height as i32 - height as i32,
-                ));
-            }
+        if let Ok(cursor) = app.cursor_position()
+            && let Ok(Some(monitor)) = app.monitor_from_point(cursor.x, cursor.y)
+        {
+            let area = monitor.work_area();
+            let scale = monitor.scale_factor();
+            let width = (660.0 * scale) as u32;
+            let height = (74.0 * scale) as u32;
+            let _ = window.set_size(tauri::PhysicalSize::new(width, height));
+            let _ = window.set_position(tauri::PhysicalPosition::new(
+                area.position.x + (area.size.width.saturating_sub(width) / 2) as i32,
+                area.position.y + area.size.height as i32 - height as i32,
+            ));
         }
         let _ = window.show();
     }
@@ -586,10 +586,9 @@ pub fn feedback(app: &tauri::AppHandle, value: serde_json::Value) {
             .feedback_generation
             .load(std::sync::atomic::Ordering::SeqCst)
             == generation
+            && let Some(window) = app.get_webview_window("feedback")
         {
-            if let Some(window) = app.get_webview_window("feedback") {
-                let _ = window.hide();
-            }
+            let _ = window.hide();
         }
     });
 }
