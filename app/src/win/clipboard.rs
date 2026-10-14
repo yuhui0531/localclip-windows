@@ -524,7 +524,9 @@ pub fn write_checked(
         .collect::<Result<Vec<_>>>()?;
     {
         let _open = open(window)?;
-        if expected.is_some_and(|sequence| unsafe { GetClipboardSequenceNumber() } != sequence) {
+        if expected.is_some_and(|sequence| unsafe {
+            GetClipboardSequenceNumber() != sequence || GetClipboardOwner().ok() != Some(window)
+        }) {
             return Err("clipboardChanged");
         }
         unsafe {

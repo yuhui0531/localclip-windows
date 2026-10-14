@@ -39,6 +39,18 @@ fn conditional_clipboard_write_preserves_newer_copy() {
         )
         .is_ok()
     );
+    // 序号是在写入关闭后读取的；若随后别人已持有剪贴板，也不能据此覆盖。by AI.Coding
+    let other = MessageWindow::new().unwrap();
+    let (newer, _) = clipboard::write(other.0, &Payload::text("generated other owner")).unwrap();
+    assert!(matches!(
+        clipboard::write_checked(
+            window.0,
+            &Payload::text("stale owner"),
+            Some(newer.sequence)
+        ),
+        Err("clipboardChanged")
+    ));
+    assert_eq!(unsafe { GetClipboardSequenceNumber() }, newer.sequence);
     unsafe {
         OpenClipboard(Some(window.0)).unwrap();
         EmptyClipboard().unwrap();
