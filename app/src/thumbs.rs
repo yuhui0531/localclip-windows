@@ -92,16 +92,7 @@ fn thumbnail(payload: &Payload) -> Option<Vec<u8>> {
 }
 pub fn response(app: &tauri::AppHandle, uri: &tauri::http::Uri) -> tauri::http::Response<Vec<u8>> {
     let result = (|| {
-        if uri.host() != Some("thumb") && uri.host() != Some("localclip.localhost") {
-            return None;
-        }
-        let id = uri
-            .path()
-            .strip_prefix("/thumb/")
-            .or_else(|| uri.path().strip_prefix('/'))?;
-        if id.is_empty() || id.contains('/') || id.len() > 128 {
-            return None;
-        }
+        let id = thumbnail_id(uri.host()?, uri.path())?;
         let state = app.state::<AppState>();
         if state
             .runtime
@@ -113,12 +104,12 @@ pub fn response(app: &tauri::AppHandle, uri: &tauri::http::Uri) -> tauri::http::
         {
             return None;
         }
-        state.runtime.store.summary(id).ok()?;
+        state.runtime.store.summary(&id).ok()?;
         let key = format!("{}:{}", state.runtime.store.revision().ok()?, id);
         if let Some(bytes) = state.thumbs.lock().ok()?.get(&key) {
             return Some((*bytes).clone());
         }
-        let payload = state.runtime.store.payload(id).ok()?;
+        let payload = state.runtime.store.payload(&id).ok()?;
         let bytes = thumbnail(&payload)?;
         // Do not retain a result that completed after the panel was hidden.
         if app
@@ -139,3 +130,37 @@ pub fn response(app: &tauri::AppHandle, uri: &tauri::http::Uri) -> tauri::http::
         .unwrap()
 }
 pub type SharedCache = Mutex<Cache>;
+
+fn thumbnail_id(host: &str, path: &str) -> Option<String> {
+    // Wry reverses Windows http://localclip.localhost to localclip://localhost.
+    let path = percent_encoding::percent_decode_str(path)
+        .decode_utf8()
+        .ok()?;
+    let id = match host {
+        "thumb" => path.strip_prefix('/')?,
+        "localhost" | "localclip.localhost" => path.strip_prefix("/thumb/")?,
+        _ => return None,
+    };
+    (!id.is_empty() && id.len() <= 128 && !id.contains(['/', '\\', '\0'])).then(|| id.to_string())
+}
+#[cfg(test)]
+mod tests {
+    use super::thumbnail_id;
+    #[test]
+    fn windows_protocol_rewrite_and_encoded_slash_resolve_the_same_id() {
+        assert_eq!(
+            thumbnail_id("localhost", "/thumb%2Fgenerated-id"),
+            Some("generated-id".into())
+        );
+        assert_eq!(
+            thumbnail_id("localhost", "/thumb/generated-id"),
+            Some("generated-id".into())
+        );
+        assert_eq!(
+            thumbnail_id("thumb", "/generated-id"),
+            Some("generated-id".into())
+        );
+        assert_eq!(thumbnail_id("remote.example", "/thumb/generated-id"), None);
+        assert_eq!(thumbnail_id("localhost", "/thumb/a%2Fb"), None);
+    }
+}

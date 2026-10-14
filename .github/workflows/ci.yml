@@ -40,6 +40,9 @@ jobs:
       - name: Windows adapter tests (serial)
         if: runner.os == 'Windows'
         run: cargo test -p localclip-app --locked -- --test-threads=1 --nocapture
+      - name: Desktop unit tests
+        if: runner.os == 'Windows'
+        run: cargo test -p localclip-app --features desktop --lib --locked -- --test-threads=1
       - name: Build test utilities
         run: cargo build -p localclip-core --bins --release --locked
       - name: Build Windows demo
