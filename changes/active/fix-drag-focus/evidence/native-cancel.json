@@ -1,0 +1,14 @@
+{
+  "pinnedVisible": true,
+  "fileReceived": false,
+  "outsideReceiverFocused": true,
+  "dragTrace": "dragstart",
+  "label": "cancel",
+  "capturePaused": true,
+  "hiddenAfterDrag": true,
+  "sourcePreserved": true,
+  "unpinnedHidden": true,
+  "cancelRequested": true,
+  "fileHashMatches": false,
+  "appCommit": "81d960ce836fc952713eee854714389ddbbc2b04"
+}

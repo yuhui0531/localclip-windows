@@ -1,0 +1,24 @@
+[
+  {
+    "version": "0.1.1",
+    "arch": "arm64",
+    "signature": "",
+    "file": "LocalClip_0.1.1_arm64.msi",
+    "sha256": "bfad80eef8ce2abbceff684b72af973e75dd8e654e207472d382530ed924fd67",
+    "bytes": 9768960,
+    "exeSha256": "dd55cf9a5efd8c34dcca09b880258ddb669af1c714b6a1de17a5bb3ae72e586c",
+    "codeCommit": "81d960ce836fc952713eee854714389ddbbc2b04",
+    "buildRun": 38517365661
+  },
+  {
+    "signature": "",
+    "sha256": "d4ecbd78aa6570714ec5b84d7f9481fd4a8a6cb9eafea223b9e3adaa3f702680",
+    "arch": "x64",
+    "file": "LocalClip_0.1.1_x64.msi",
+    "version": "0.1.1",
+    "bytes": 10936320,
+    "exeSha256": "5f77b8bff9eeebbd88a648a50dffacbe6e161bdb0b1c18211393b554cbe5e596",
+    "codeCommit": "81d960ce836fc952713eee854714389ddbbc2b04",
+    "buildRun": 38517365661
+  }
+]

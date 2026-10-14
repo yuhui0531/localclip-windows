@@ -1,0 +1,37 @@
+core (macos-latest)	Clippy	2026-10-14T05:35:09.2440850Z     Finished `dev` profile [unoptimized + debuginfo] target(s) in 18.60s
+core (macos-latest)	Core vectors and storage	2026-10-14T05:35:25.4830430Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (macos-latest)	Core vectors and storage	2026-10-14T05:35:25.4833480Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (macos-latest)	Core vectors and storage	2026-10-14T05:35:25.4834840Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (macos-latest)	Core vectors and storage	2026-10-14T05:35:57.1099050Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 31.62s
+core (macos-latest)	Core vectors and storage	2026-10-14T05:35:57.1194310Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (macos-latest)	Core vectors and storage	2026-10-14T05:35:57.2524120Z test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.12s
+core (macos-latest)	Core vectors and storage	2026-10-14T05:36:35.2189830Z test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 37.96s
+core (macos-latest)	Core vectors and storage	2026-10-14T05:36:35.8172460Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (macos-latest)	Build test utilities	2026-10-14T05:37:50.4209340Z     Finished `release` profile [optimized] target(s) in 1m 14s
+core (macos-latest)	Release service benchmark	2026-10-14T05:37:51.1298470Z     Finished `release` profile [optimized] target(s) in 0.45s
+core (windows-latest)	Clippy	2026-10-14T05:36:33.8927367Z     Finished `dev` profile [unoptimized + debuginfo] target(s) in 1m 05s
+core (windows-latest)	Windows shell Clippy	2026-10-14T05:39:06.5705799Z     Finished `dev` profile [unoptimized + debuginfo] target(s) in 2m 32s
+core (windows-latest)	Core vectors and storage	2026-10-14T05:39:42.1672202Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (windows-latest)	Core vectors and storage	2026-10-14T05:39:42.1790996Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (windows-latest)	Core vectors and storage	2026-10-14T05:39:42.1907147Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (windows-latest)	Core vectors and storage	2026-10-14T05:40:05.3398447Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 23.14s
+core (windows-latest)	Core vectors and storage	2026-10-14T05:40:05.3536855Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (windows-latest)	Core vectors and storage	2026-10-14T05:40:06.3457440Z test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.98s
+core (windows-latest)	Core vectors and storage	2026-10-14T05:40:32.8334978Z test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 26.47s
+core (windows-latest)	Core vectors and storage	2026-10-14T05:40:32.9601753Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (windows-latest)	Windows adapter tests (serial)	2026-10-14T05:41:29.7983314Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (windows-latest)	Windows adapter tests (serial)	2026-10-14T05:41:29.8109729Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (windows-latest)	Windows adapter tests (serial)	2026-10-14T05:41:29.8236123Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (windows-latest)	Windows adapter tests (serial)	2026-10-14T05:41:31.3928409Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.55s
+core (windows-latest)	Windows adapter tests (serial)	2026-10-14T05:41:31.4071425Z test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (windows-latest)	Windows adapter tests (serial)	2026-10-14T05:41:31.4201811Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (windows-latest)	Windows adapter tests (serial)	2026-10-14T05:41:31.4699315Z test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+core (windows-latest)	Windows adapter tests (serial)	2026-10-14T05:41:31.4838914Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (windows-latest)	Windows adapter tests (serial)	2026-10-14T05:41:31.4965230Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (windows-latest)	Windows adapter tests (serial)	2026-10-14T05:41:31.6383547Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (windows-latest)	Desktop unit tests	2026-10-14T05:44:07.7810530Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (windows-latest)	Build test utilities	2026-10-14T05:46:04.8065481Z     Finished `release` profile [optimized] target(s) in 1m 56s
+core (windows-latest)	Build Windows demo	2026-10-14T05:47:01.9607042Z     Finished `release` profile [optimized] target(s) in 56.62s
+core (windows-latest)	Build Windows application	2026-10-14T05:53:28.6030128Z     Finished `release` profile [optimized] target(s) in 6m 18s
+core (windows-latest)	Build Windows application	2026-10-14T05:53:28.6571110Z        Built application at: D:\a\localclip-windows\localclip-windows\target\release\localclip.exe
+core (windows-latest)	Release service benchmark	2026-10-14T05:53:29.3278186Z     Finished `release` profile [optimized] target(s) in 0.25s

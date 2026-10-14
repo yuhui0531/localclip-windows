@@ -4,6 +4,8 @@ The owner approved an unsigned manual-test installer because signing keys are un
 
 [Phase 4 report](https://github.com/yuhui0531/localclip-windows/blob/feat/phase-4-release/reports/phase-4.md) · [Manual checklist](https://github.com/yuhui0531/localclip-windows/blob/feat/phase-4-release/reports/manual-testing.md)
 
+The 0.1.1 follow-up fixes native file drag-out and strengthens foreground dismissal. Its Windows/macOS [CI](https://github.com/yuhui0531/localclip-windows/actions/runs/38517365818) and [MSI builds](https://github.com/yuhui0531/localclip-windows/actions/runs/38517365661) passed. Native generated-file drop failed on 0.1.0 and passed with identical bytes on 0.1.1; pin/unpin and drag cancellation checks passed. The original focus-loss report was not reproduced by the simple old-build outside-click case. [Bug-fix evidence](https://github.com/yuhui0531/localclip-windows/blob/feat/phase-4-release/changes/active/fix-drag-focus/debug-log-2026-10-14-drag-focus.md).
+
 Stacked on Phase 3 PR #4. No tag, public release or merge was performed. The reference repository was left untouched; external modifications remain recorded.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

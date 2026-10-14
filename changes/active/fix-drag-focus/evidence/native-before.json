@@ -1,0 +1,15 @@
+{
+  "pinnedVisible": true,
+  "fileReceived": false,
+  "sourcePreserved": true,
+  "dragTrace": [
+    "dragstart",
+    "dragstart"
+  ],
+  "label": "before-verified-target",
+  "capturePaused": true,
+  "outsideReceiverFocused": true,
+  "unpinnedHidden": true,
+  "fileHashMatches": false,
+  "appCommit": "cef3ad210963df03c04ecbfdfc4c3594402cdeaf"
+}
