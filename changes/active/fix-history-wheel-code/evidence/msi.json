@@ -1,0 +1,26 @@
+[
+  {
+    "arch": "arm64",
+    "metadata": {
+      "version": "0.1.2",
+      "architecture": "Arm64;0",
+      "removalCheckbox": "REMOVELOCALCLIPHISTORY",
+      "productCode": "{68466A37-336B-46DC-9188-ECCE8AE4ED31}",
+      "deletionCondition": "REMOVE=\"ALL\" AND REMOVELOCALCLIPHISTORY=\"1\" AND NOT UPGRADINGPRODUCTCODE",
+      "product": "LocalClip",
+      "historyDeleteDefault": null
+    }
+  },
+  {
+    "arch": "x64",
+    "metadata": {
+      "version": "0.1.2",
+      "architecture": "x64;0",
+      "removalCheckbox": "REMOVELOCALCLIPHISTORY",
+      "productCode": "{673A05EF-7321-413E-93D3-ED6552C6D837}",
+      "deletionCondition": "REMOVE=\"ALL\" AND REMOVELOCALCLIPHISTORY=\"1\" AND NOT UPGRADINGPRODUCTCODE",
+      "product": "LocalClip",
+      "historyDeleteDefault": null
+    }
+  }
+]

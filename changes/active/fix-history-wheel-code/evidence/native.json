@@ -1,0 +1,217 @@
+{
+  "cases": [
+    {
+      "case": "off",
+      "textHandle": 460574,
+      "after": [
+        788240,
+        460574
+      ],
+      "before": [
+        788240,
+        460574
+      ],
+      "receiverHandle": 788240,
+      "receiver": {
+        "textMatches": false,
+        "length": 0
+      },
+      "output": {
+        "missingFiles": 0,
+        "smartPaste": null,
+        "status": "commandSent"
+      },
+      "clipboard": {
+        "ownedByTest": true,
+        "fileMatches": true,
+        "textMatches": false,
+        "file": true,
+        "text": false
+      }
+    },
+    {
+      "case": "copy",
+      "textHandle": 460574,
+      "after": [
+        788240,
+        460574
+      ],
+      "before": [
+        788240,
+        460574
+      ],
+      "receiverHandle": 788240,
+      "receiver": {
+        "textMatches": false,
+        "length": 0
+      },
+      "output": {
+        "missingFiles": 0,
+        "smartPaste": null,
+        "status": "copied"
+      },
+      "clipboard": {
+        "ownedByTest": true,
+        "fileMatches": true,
+        "textMatches": false,
+        "file": true,
+        "text": false
+      }
+    },
+    {
+      "case": "on",
+      "textHandle": 460574,
+      "after": [
+        788240,
+        460574
+      ],
+      "before": [
+        788240,
+        460574
+      ],
+      "receiverHandle": 788240,
+      "receiver": {
+        "textMatches": true,
+        "length": 68
+      },
+      "output": {
+        "missingFiles": 0,
+        "smartPaste": "converted",
+        "status": "commandSent"
+      },
+      "clipboard": {
+        "ownedByTest": true,
+        "fileMatches": false,
+        "textMatches": true,
+        "file": false,
+        "text": true
+      }
+    },
+    {
+      "case": "unknown",
+      "textHandle": 460574,
+      "after": [
+        788240,
+        919336
+      ],
+      "before": [
+        788240,
+        919336
+      ],
+      "receiverHandle": 788240,
+      "receiver": {
+        "textMatches": false,
+        "length": 0
+      },
+      "output": {
+        "missingFiles": 0,
+        "smartPaste": "codeTargetUnknown",
+        "status": "commandSent"
+      },
+      "clipboard": {
+        "ownedByTest": true,
+        "fileMatches": true,
+        "textMatches": false,
+        "file": true,
+        "text": false
+      }
+    },
+    {
+      "case": "onAfterButton",
+      "textHandle": 460574,
+      "after": [
+        788240,
+        460574
+      ],
+      "before": [
+        788240,
+        460574
+      ],
+      "receiverHandle": 788240,
+      "receiver": {
+        "textMatches": true,
+        "length": 68
+      },
+      "output": {
+        "missingFiles": 0,
+        "smartPaste": "converted",
+        "status": "commandSent"
+      },
+      "clipboard": {
+        "ownedByTest": true,
+        "fileMatches": false,
+        "textMatches": true,
+        "file": false,
+        "text": true
+      }
+    },
+    {
+      "case": "readonly",
+      "textHandle": 460574,
+      "after": [
+        788240,
+        460574
+      ],
+      "before": [
+        788240,
+        460574
+      ],
+      "receiverHandle": 788240,
+      "receiver": {
+        "textMatches": false,
+        "length": 0
+      },
+      "output": {
+        "missingFiles": 0,
+        "smartPaste": "codeTargetUnknown",
+        "status": "commandSent"
+      },
+      "clipboard": {
+        "ownedByTest": true,
+        "fileMatches": true,
+        "textMatches": false,
+        "file": true,
+        "text": false
+      }
+    },
+    {
+      "case": "hidden",
+      "textHandle": 460574,
+      "after": [
+        788240,
+        460574
+      ],
+      "before": [
+        788240,
+        460574
+      ],
+      "receiverHandle": 788240,
+      "receiver": {
+        "textMatches": false,
+        "length": 0
+      },
+      "output": {
+        "missingFiles": 0,
+        "smartPaste": null,
+        "status": "commandSent"
+      },
+      "clipboard": {
+        "ownedByTest": true,
+        "fileMatches": true,
+        "textMatches": false,
+        "file": true,
+        "text": false
+      }
+    }
+  ],
+  "exeSha256": "178c8542734c11fdf3250625cbed419bb2ca90e530c38aeadc28835bd2989e8b",
+  "codeCommit": "6c84f446e598a1468ca96988f9dbe00f71349457",
+  "sourcePreserved": true,
+  "capturePaused": true,
+  "wheel": {
+    "left": 240,
+    "idle": true,
+    "color": "rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)",
+    "rendered": 17
+  }
+}

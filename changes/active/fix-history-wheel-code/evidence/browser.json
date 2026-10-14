@@ -1,0 +1,16 @@
+{
+  "allHistoryReload": true,
+  "vertical": 240,
+  "horizontal": 360,
+  "line": 424,
+  "idle": "rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)",
+  "rendered": 18,
+  "code": {
+    "language": "typescript",
+    "tokens": 13,
+    "preserved": true,
+    "escaped": true
+  },
+  "smartPreferenceSaved": true,
+  "pageErrors": []
+}

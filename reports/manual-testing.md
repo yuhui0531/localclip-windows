@@ -25,3 +25,22 @@ in the phase report says otherwise.
 Record: OS/build/architecture, app commit+SHA256, exact steps, expected result, actual
 receipt or error, pass/fail/unexecuted, and screenshot names. No real clipboard body,
 file paths, search terms or OCR text should be included in diagnostic logs.
+
+## 0.1.2 input and code-feature checks
+
+- [ ] Scroll history with a normal vertical mouse wheel, reverse direction, then
+  continue past the first loaded page. Confirm horizontal trackpad input still
+  works, the scrollbar disappears after idle and reappears at its bottom hit area.
+- [ ] Copy a generated code snippet: confirm colored tokens and unchanged source
+  text. Enable Hide Contents and confirm preview contents disappear.
+- [ ] In Settings → General, enable **代码文件智能粘贴** (off by default). Copy a
+  generated `.rs`/`.py`/`.json` file, then directly paste its history card into a
+  new blank text editor. Verify the complete source body and original line endings.
+- [ ] Repeat with the option off, Copy instead of Direct Paste, a file-management
+  target, a read-only control and drag-out: the original file must remain a file.
+  Unknown editor/browser controls intentionally fall back to original files.
+- [ ] In a generated fixture, try a mixed supported/unsupported group, invalid
+  encoding, a missing file and an over-limit file. No partial source conversion.
+- [ ] Restart LocalClip and confirm the smart-paste setting persists; existing
+  history and preferences must remain available. Broader target coverage remains
+  manual even when the controlled receiver tests pass.
