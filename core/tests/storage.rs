@@ -399,3 +399,35 @@ fn wal_reader_can_search_during_an_uncommitted_write() {
         2
     );
 }
+
+#[test]
+fn detail_metadata_uses_visibility_and_category_order() {
+    let f = Fixture::new(Settings {
+        retention_days: 1,
+        ..Settings::default()
+    });
+    let Ingest::Inserted(id) = f.ingest(Payload::text("metadata test")) else {
+        panic!("insert")
+    };
+    let category = f
+        .store()
+        .create_category("work".into(), "3388AA".into())
+        .unwrap();
+    let preview = f
+        .store()
+        .preview(Change::Category(vec![id.clone()], category.clone(), true))
+        .unwrap();
+    f.store().apply(preview.token).unwrap();
+    assert_eq!(f.store().summary(&id).unwrap().id, id);
+    assert_eq!(f.store().memberships(&id).unwrap(), vec![category]);
+    assert_eq!(f.store().sources().unwrap().len(), 1);
+    let Ingest::Inserted(expiring) = f.ingest(Payload::text("expires")) else {
+        panic!("insert")
+    };
+    f.now.fetch_add(86_400_001, Ordering::SeqCst);
+    assert!(matches!(
+        f.store().summary(&expiring),
+        Err(StoreError::NotFound)
+    ));
+    assert!(f.store().summary(&id).is_ok());
+}

@@ -18,6 +18,16 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install pinned Rust
         run: rustup toolchain install 1.90.0 --profile minimal --component rustfmt --component clippy
+      - uses: actions/setup-node@v4
+        if: runner.os == 'Windows'
+        with:
+          node-version: 22
+      - name: Frontend dependencies
+        if: runner.os == 'Windows'
+        run: npm ci --prefix ui --no-audit --no-fund
+      - name: Frontend typecheck and build
+        if: runner.os == 'Windows'
+        run: npm --prefix ui run build
       - name: Format
         run: cargo fmt --all --check
       - name: Clippy
@@ -35,9 +45,11 @@ jobs:
       - name: Build Windows demo
         if: runner.os == 'Windows'
         run: cargo build -p localclip-app --bin localclip-demo --release --locked
-      - name: Build Windows shell
+      - name: Build Windows application
         if: runner.os == 'Windows'
-        run: cargo build -p localclip-app --features desktop --bin localclip --release --locked
+        working-directory: app
+        run: ../ui/node_modules/.bin/tauri build --no-bundle --features desktop
+
       - name: Release service benchmark
         run: cargo run -p localclip-core --release --locked --bin core_benchmark -- reports/ci-benchmark
       - uses: actions/upload-artifact@v4
@@ -60,5 +72,5 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: runner.os == 'Windows'
         with:
-          name: windows-app-shell
+          name: windows-app
           path: target/release/localclip.exe

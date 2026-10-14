@@ -4,3 +4,9 @@ pub mod queue;
 #[cfg(windows)]
 pub mod runtime;
 pub mod win;
+
+#[cfg(all(windows, feature = "desktop"))]
+pub mod commands;
+pub mod output;
+#[cfg(all(windows, feature = "desktop"))]
+pub mod thumbs;

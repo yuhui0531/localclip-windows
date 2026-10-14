@@ -306,6 +306,39 @@ impl HistoryStore {
             read_payload(db, id)
         })
     }
+    pub fn summary(&self, id: &str) -> Result<Summary> {
+        self.read(|db| {
+            let summary = summary_by_id(db, id)?;
+            if !visible(&summary, &schema::read_settings(db)?, (self.now)()) {
+                return Err(StoreError::NotFound);
+            }
+            Ok(summary)
+        })
+    }
+    pub fn metadata(&self, id: &str) -> Result<(Vec<String>, u64)> {
+        self.read(|db| {
+            let mut query = db.prepare("SELECT DISTINCT type FROM representations WHERE clipID=? ORDER BY type")?;
+            let types = query.query_map([id], |r| r.get(0))?.collect::<std::result::Result<_, _>>()?;
+            let bytes = scalar(db, "SELECT COALESCE(SUM(blobs.byteCount),0) FROM representations JOIN blobs ON blobs.digest=blobDigest WHERE clipID=?", [id])?;
+            Ok((types, bytes as u64))
+        })
+    }
+    pub fn memberships(&self, id: &str) -> Result<Vec<String>> {
+        self.summary(id)?;
+        self.read(|db| {
+            let mut stmt = db.prepare("SELECT categoryID FROM clip_categories JOIN categories ON categories.id=categoryID WHERE clipID=? ORDER BY categories.position,categoryID")?;
+            Ok(stmt.query_map([id], |r| r.get(0))?.collect::<std::result::Result<_, _>>()?)
+        })
+    }
+    pub fn sources(&self) -> Result<Vec<Source>> {
+        self.read(|db| {
+            let mut stmt = db.prepare("SELECT DISTINCT sourceAppID,sourceName,sourceBasis FROM clips ORDER BY sourceName,sourceAppID")?;
+            Ok(stmt.query_map([], |r| Ok(Source { app_id:r.get(0)?,name:r.get(1)?,basis:r.get(2)? }))?.collect::<std::result::Result<_, _>>()?)
+        })
+    }
+    pub fn revision(&self) -> Result<i64> {
+        self.read(revision)
+    }
     pub fn search(&self, request: SearchRequest) -> Result<SearchPage> {
         let now = (self.now)();
         self.read(|db| search_db(db, request, now))

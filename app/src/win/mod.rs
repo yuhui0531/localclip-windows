@@ -11,3 +11,8 @@ pub mod ocr;
 pub mod paste;
 #[cfg(windows)]
 pub mod source;
+
+#[cfg(all(windows, feature = "desktop"))]
+pub mod dialog;
+#[cfg(windows)]
+pub mod rich;

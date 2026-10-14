@@ -10,6 +10,10 @@ use tauri::{Emitter, Manager, menu::MenuBuilder, tray::TrayIconBuilder};
 use tauri_plugin_global_shortcut::{GlobalShortcutExt, Shortcut, ShortcutState};
 
 pub struct AppState {
+    pub thumbs: crate::thumbs::SharedCache,
+    pub ocr: Mutex<Option<Arc<AtomicBool>>>,
+    pub modal: AtomicBool,
+    pub capture: Mutex<serde_json::Value>,
     pub runtime: Arc<Runtime>,
     pub target: Mutex<Option<Target>>,
     pub pinned: AtomicBool,
@@ -42,10 +46,11 @@ pub fn request_panel(app: &tauri::AppHandle, settings: bool) {
     }
     let _ = state.runtime.store.expire();
     if let Some(window) = app.get_webview_window("main") {
+        position_panel(app, &window);
         let _ = window.show();
         let _ = window.set_focus();
     }
-    let _ = app.emit("panelRequested", json!({"settings":settings}));
+    let _ = app.emit("panel-shown", json!({"settings":settings}));
 }
 pub fn set_main_shortcut(
     app: &tauri::AppHandle,
@@ -92,19 +97,28 @@ fn icon(status: &str) -> tauri::image::Image<'static> {
     }
     tauri::image::Image::new_owned(pixels, 16, 16)
 }
-fn status(app: &tauri::AppHandle, reason: &'static str) {
+pub fn status(app: &tauri::AppHandle, reason: &'static str) {
     let display = app
         .try_state::<AppState>()
         .and_then(|s| s.runtime.store.settings().ok())
         .filter(|s| !s.capture_enabled || s.pause_until.is_some_and(|until| until > now()))
         .map_or(reason, |_| "paused");
+    if let Some(state) = app.try_state::<AppState>() {
+        if let Ok(mut capture) = state.capture.lock() {
+            *capture = json!({"state":display,"lastSkip":if matches!(reason,"ready"|"inserted"|"deduplicated"|"expired"|"selfWrite") {serde_json::Value::Null} else {json!({"reason":reason,"atMs":now()})}});
+        }
+    }
     if let Some(tray) = app.tray_by_id("main") {
         let _ = tray.set_icon(Some(icon(display)));
         let _ = tray.set_tooltip(Some(format!("LocalClip · {display}")));
     }
-    let _ = app.emit("captureStateChanged", json!({"status":display}));
+    let _ = app.emit("capture-status", json!({"state":display}));
     if matches!(reason, "inserted" | "deduplicated" | "expired") {
-        let _ = app.emit("clipsChanged", json!({"reason":reason}));
+        let revision = app
+            .try_state::<AppState>()
+            .and_then(|s| s.runtime.store.revision().ok())
+            .unwrap_or(0);
+        let _ = app.emit("store-changed", json!({"revision":revision,"kind":reason}));
     }
 }
 pub fn start_queue(app: &tauri::AppHandle, ids: Vec<String>) -> Result<(), &'static str> {
@@ -131,7 +145,7 @@ pub fn start_queue(app: &tauri::AppHandle, ids: Vec<String>) -> Result<(), &'sta
     queue.start(ids, now())?;
     queue.shortcut = Some(next);
     wake.notify_all();
-    let _ = app.emit("pasteQueueChanged", queue.document());
+    let _ = app.emit("queue-changed", queue.document());
     if let Some(window) = app.get_webview_window("main") {
         let _ = window.hide();
     }
@@ -146,7 +160,7 @@ pub fn stop_queue(app: &tauri::AppHandle) {
         }
         queue.stop();
         wake.notify_all();
-        let _ = app.emit("pasteQueueChanged", queue.document());
+        let _ = app.emit("queue-changed", queue.document());
     }
 }
 fn queue_next(app: &tauri::AppHandle) {
@@ -181,7 +195,7 @@ fn queue_next(app: &tauri::AppHandle) {
             let Some((index, id)) = next else {
                 if !skipped.is_empty() {
                     let _ = app.emit(
-                        "outputFeedback",
+                        "feedback",
                         json!({"status":"queueSkipped","skipped":skipped}),
                     );
                 }
@@ -194,7 +208,7 @@ fn queue_next(app: &tauri::AppHandle) {
                     continue;
                 }
                 Err(_) => {
-                    let _ = app.emit("outputFeedback", json!({"status":"storageUnavailable"}));
+                    let _ = app.emit("feedback", json!({"status":"storageUnavailable"}));
                     break;
                 }
             };
@@ -205,7 +219,7 @@ fn queue_next(app: &tauri::AppHandle) {
                 match payload.plain_text() {
                     Some(text) => Payload::text(&text),
                     None => {
-                        let _ = app.emit("outputFeedback", json!({"status":"unsupported"}));
+                        let _ = app.emit("feedback", json!({"status":"unsupported"}));
                         break;
                     }
                 }
@@ -237,7 +251,7 @@ fn queue_next(app: &tauri::AppHandle) {
                 Err(reason) => reason,
             };
             let _ = app.emit(
-                "outputFeedback",
+                "feedback",
                 json!({"status":reason,"position":index,"skipped":skipped}),
             );
             break;
@@ -250,7 +264,7 @@ fn queue_next(app: &tauri::AppHandle) {
                 return;
             }
             queue.finish(generation);
-            let _ = app.emit("pasteQueueChanged", queue.document());
+            let _ = app.emit("queue-changed", queue.document());
             !queue.active()
         };
         if done {
@@ -296,6 +310,57 @@ fn idle_watch(app: tauri::AppHandle, queue: Arc<(Mutex<Queue>, Condvar)>) {
 }
 pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     tauri::Builder::default()
+        .invoke_handler(tauri::generate_handler![
+            crate::commands::search,
+            crate::commands::clip_detail,
+            crate::commands::perform,
+            crate::commands::transform_menu,
+            crate::commands::save_as,
+            crate::commands::inspect,
+            crate::commands::queue_start,
+            crate::commands::queue_stop,
+            crate::commands::queue_status,
+            crate::commands::set_pinned,
+            crate::commands::ocr_copy,
+            crate::commands::ocr_cancel,
+            crate::commands::set_favorite,
+            crate::commands::set_title,
+            crate::commands::delete,
+            crate::commands::undo_delete,
+            crate::commands::categories,
+            crate::commands::upsert_category,
+            crate::commands::delete_category,
+            crate::commands::assign_categories,
+            crate::commands::settings,
+            crate::commands::update_settings,
+            crate::commands::preview_change,
+            crate::commands::apply_change,
+            crate::commands::usage,
+            crate::commands::capture_status,
+            crate::commands::pause,
+            crate::commands::resume
+        ])
+        .register_asynchronous_uri_scheme_protocol("localclip", |context, request, responder| {
+            let app = context.app_handle().clone();
+            std::thread::spawn(move || {
+                responder.respond(crate::thumbs::response(&app, request.uri()))
+            });
+        })
+        .on_window_event(|window, event| {
+            if window.label() != "main" { return; }
+            if let tauri::WindowEvent::Focused(false) = event {
+                let state = window.state::<AppState>();
+                if !state.pinned.load(std::sync::atomic::Ordering::SeqCst)
+                    && !state.modal.load(std::sync::atomic::Ordering::SeqCst)
+                {
+                    hide_panel(window.app_handle());
+                }
+            }
+            if let tauri::WindowEvent::CloseRequested { api, .. } = event {
+                api.prevent_close();
+                hide_panel(window.app_handle());
+            }
+        })
         .plugin(tauri_plugin_single_instance::init(|app, _, _| {
             request_panel(app, false)
         }))
@@ -336,6 +401,10 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
                 .map_err(|_| std::io::Error::other("storageUnavailable"))?;
             let queue = Arc::new((Mutex::new(Queue::default()), Condvar::new()));
             app.manage(AppState {
+                thumbs: Mutex::new(crate::thumbs::Cache::default()),
+                ocr: Mutex::new(None),
+                modal: AtomicBool::new(false),
+                capture: Mutex::new(json!({"state":"ready"})),
                 runtime: Arc::new(runtime),
                 target: Mutex::new(None),
                 pinned: AtomicBool::new(false),
@@ -394,6 +463,23 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
             if let Err(reason) = set_main_shortcut(app.handle(), &settings.preferences.shortcut) {
                 status(app.handle(), reason);
             }
+            if app.get_webview_window("main").is_none() {
+                tauri::WebviewWindowBuilder::new(
+                    app,
+                    "main",
+                    tauri::WebviewUrl::App("index.html".into()),
+                )
+                .title("LocalClip")
+                .visible(false)
+                .decorations(false)
+                .always_on_top(true)
+                .skip_taskbar(true)
+                .inner_size(1280.0, 340.0)
+                .min_inner_size(640.0, 220.0)
+                .resizable(false)
+                .build()?;
+            }
+            status(app.handle(), "ready");
             idle_watch(app.handle().clone(), queue);
             Ok(())
         })
@@ -410,4 +496,38 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
             }
         });
     Ok(())
+}
+
+pub fn hide_panel(app: &tauri::AppHandle) {
+    if let Some(window) = app.get_webview_window("main") {
+        let _ = window.hide();
+    }
+    if let Some(state) = app.try_state::<AppState>() {
+        if let Ok(mut cache) = state.thumbs.lock() {
+            cache.clear();
+        }
+    }
+}
+fn position_panel(app: &tauri::AppHandle, window: &tauri::WebviewWindow) {
+    let Ok(cursor) = app.cursor_position() else {
+        return;
+    };
+    let Ok(Some(monitor)) = app.monitor_from_point(cursor.x, cursor.y) else {
+        return;
+    };
+    let state = app.state::<AppState>();
+    let logical_height = state
+        .runtime
+        .store
+        .settings()
+        .map(|s| s.preferences.panel_height)
+        .unwrap_or(340);
+    let area = monitor.work_area();
+    let height =
+        ((logical_height as f64 * monitor.scale_factor()).round() as u32).min(area.size.height);
+    let _ = window.set_size(tauri::PhysicalSize::new(area.size.width, height));
+    let _ = window.set_position(tauri::PhysicalPosition::new(
+        area.position.x,
+        area.position.y + area.size.height as i32 - height as i32,
+    ));
 }

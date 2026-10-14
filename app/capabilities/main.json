@@ -1,0 +1,39 @@
+{
+  "identifier": "main",
+  "description": "Local history panel commands; no filesystem, shell or HTTP plugin access.",
+  "windows": [
+    "main"
+  ],
+  "permissions": [
+    "core:event:allow-listen",
+    "core:event:allow-unlisten",
+    "allow-search",
+    "allow-clip-detail",
+    "allow-perform",
+    "allow-transform-menu",
+    "allow-save-as",
+    "allow-inspect",
+    "allow-queue-start",
+    "allow-queue-stop",
+    "allow-queue-status",
+    "allow-set-pinned",
+    "allow-ocr-copy",
+    "allow-ocr-cancel",
+    "allow-set-favorite",
+    "allow-set-title",
+    "allow-delete",
+    "allow-undo-delete",
+    "allow-categories",
+    "allow-upsert-category",
+    "allow-delete-category",
+    "allow-assign-categories",
+    "allow-settings",
+    "allow-update-settings",
+    "allow-preview-change",
+    "allow-apply-change",
+    "allow-usage",
+    "allow-capture-status",
+    "allow-pause",
+    "allow-resume"
+  ]
+}

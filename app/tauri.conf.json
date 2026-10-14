@@ -6,12 +6,24 @@
   "app": {
     "windows": [],
     "security": {
-      "csp": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src ipc: http://ipc.localhost; object-src 'none'; frame-src 'none'; base-uri 'none'"
+      "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: http://localclip.localhost localclip:; connect-src ipc: http://ipc.localhost http://localclip.localhost localclip:; object-src 'none'; frame-src 'self'; base-uri 'none'; form-action 'none'"
     }
   },
   "bundle": {
     "active": false,
-    "targets": ["msi"],
-    "windows": { "webviewInstallMode": { "type": "downloadBootstrapper" } }
+    "targets": [
+      "msi"
+    ],
+    "windows": {
+      "webviewInstallMode": {
+        "type": "downloadBootstrapper"
+      }
+    }
+  },
+  "build": {
+    "frontendDist": "../ui/dist",
+    "devUrl": "http://localhost:1420",
+    "beforeDevCommand": "npm --prefix ../ui run dev",
+    "beforeBuildCommand": "npm --prefix ../ui run build"
   }
 }

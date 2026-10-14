@@ -16,6 +16,7 @@ use std::{
 
 pub struct Runtime {
     pub store: Arc<HistoryStore>,
+    root: std::path::PathBuf,
     listener: Mutex<Option<Listener>>,
     tracker: Mutex<Option<Tracker>>,
 }
@@ -91,6 +92,7 @@ impl Runtime {
         )?;
         let tracker = Tracker::start()?;
         Ok(Self {
+            root: root.to_owned(),
             store,
             listener: Mutex::new(Some(listener)),
             tracker: Mutex::new(Some(tracker)),
@@ -137,6 +139,17 @@ impl Runtime {
         let lines = result.text.lines().count();
         self.output(Payload::text(&result.text), None, false, true, || {})?;
         Ok((lines, result.missing_languages))
+    }
+    pub fn free_disk_bytes(&self) -> Result<u64> {
+        use std::os::windows::ffi::OsStrExt;
+        use windows::{Win32::Storage::FileSystem::GetDiskFreeSpaceExW, core::PCWSTR};
+        let path: Vec<u16> = self.root.as_os_str().encode_wide().chain([0]).collect();
+        let mut bytes = 0;
+        unsafe {
+            GetDiskFreeSpaceExW(PCWSTR(path.as_ptr()), Some(&mut bytes), None, None)
+                .map_err(|_| "storageUnavailable")?;
+        }
+        Ok(bytes)
     }
     pub fn shutdown(&self) {
         if let Ok(mut listener) = self.listener.lock() {
