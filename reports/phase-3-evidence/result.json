@@ -1,0 +1,6 @@
+{
+  "mode": "synthetic IPC browser check, not Windows acceptance",
+  "firstPageDOMCards": 8,
+  "scrolledDOMCards": 18,
+  "errors": []
+}

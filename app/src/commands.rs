@@ -99,6 +99,17 @@ fn perform_output(app: &tauri::AppHandle, request: &Value) -> Result<Value> {
     if !["copy", "directPaste"].contains(&action) {
         return Err("invalidRequest".into());
     }
+    if request["drag"].as_bool() == Some(true) {
+        state.modal.store(true, Ordering::SeqCst);
+        let result =
+            crate::win::drag::export_drag(payload, request["language"].as_str().map(String::from));
+        state.modal.store(false, Ordering::SeqCst);
+        if result.map_err(String::from)? {
+            state.runtime.store.touch(ids).map_err(error)?;
+            changed(app, "used");
+        }
+        return Ok(json!({"status":"dragFinished"}));
+    }
     let target = if state.pinned.load(Ordering::SeqCst) {
         foreground::recent()
     } else {

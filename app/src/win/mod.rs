@@ -16,3 +16,6 @@ pub mod source;
 pub mod dialog;
 #[cfg(windows)]
 pub mod rich;
+
+#[cfg(windows)]
+pub mod drag;

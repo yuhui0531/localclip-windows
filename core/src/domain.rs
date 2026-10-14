@@ -333,6 +333,7 @@ pub struct Preferences {
     pub show_menu_icon: bool,
     pub timing_enabled: bool,
     pub auto_check_updates: bool,
+    pub ocr_languages: Vec<String>,
     pub shortcut: Shortcut,
     pub queue_shortcut: Shortcut,
 }
@@ -350,6 +351,7 @@ impl Default for Preferences {
             show_menu_icon: true,
             timing_enabled: false,
             auto_check_updates: true,
+            ocr_languages: vec!["zh-Hans".into(), "zh-Hant".into(), "en-US".into()],
             shortcut: Shortcut {
                 modifiers: ["ctrl".into(), "shift".into()].into(),
                 key: "V".into(),
@@ -367,12 +369,18 @@ impl Preferences {
             && ["original", "plainText"].contains(&self.default_format.as_str())
             && (220..=520).contains(&self.panel_height)
             && ["system", "light", "dark"].contains(&self.appearance.as_str())
+            && !self.ocr_languages.is_empty()
+            && self.ocr_languages.len() <= 3
+            && self
+                .ocr_languages
+                .iter()
+                .all(|v| ["zh-Hans", "zh-Hant", "en-US"].contains(&v.as_str()))
             && self.shortcut.validate()
             && self.queue_shortcut.validate()
             && self.shortcut != self.queue_shortcut
     }
     pub fn document(&self) -> serde_json::Value {
-        serde_json::json!({"defaultAction":self.default_action,"defaultFormat":self.default_format,"panelHeight":self.panel_height,"pauseWhenExcludedFrontmost":self.pause_when_excluded_frontmost,"hideContents":self.hide_contents,"appearance":self.appearance,"compactLayout":self.compact_layout,"captureSounds":self.capture_sounds,"showMenuIcon":self.show_menu_icon,"timingEnabled":self.timing_enabled,"autoCheckUpdates":self.auto_check_updates,"shortcut":{"modifiers":self.shortcut.modifiers,"key":self.shortcut.key},"queueShortcut":{"modifiers":self.queue_shortcut.modifiers,"key":self.queue_shortcut.key}})
+        serde_json::json!({"defaultAction":self.default_action,"defaultFormat":self.default_format,"panelHeight":self.panel_height,"pauseWhenExcludedFrontmost":self.pause_when_excluded_frontmost,"hideContents":self.hide_contents,"appearance":self.appearance,"compactLayout":self.compact_layout,"captureSounds":self.capture_sounds,"showMenuIcon":self.show_menu_icon,"timingEnabled":self.timing_enabled,"autoCheckUpdates":self.auto_check_updates,"ocrLanguages":self.ocr_languages,"shortcut":{"modifiers":self.shortcut.modifiers,"key":self.shortcut.key},"queueShortcut":{"modifiers":self.queue_shortcut.modifiers,"key":self.queue_shortcut.key}})
     }
     pub fn from_document(v: &serde_json::Value) -> Option<Self> {
         let shortcut = |key: &str| -> Option<Shortcut> {
@@ -397,6 +405,14 @@ impl Preferences {
             show_menu_icon: v["showMenuIcon"].as_bool()?,
             timing_enabled: v["timingEnabled"].as_bool()?,
             auto_check_updates: v["autoCheckUpdates"].as_bool()?,
+            ocr_languages: match v.get("ocrLanguages") {
+                Some(value) => value
+                    .as_array()?
+                    .iter()
+                    .map(|v| v.as_str().map(String::from))
+                    .collect::<Option<Vec<_>>>()?,
+                None => Self::default().ocr_languages,
+            },
             shortcut: shortcut("shortcut")?,
             queue_shortcut: shortcut("queueShortcut")?,
         };
