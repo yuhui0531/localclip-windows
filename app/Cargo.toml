@@ -1,0 +1,24 @@
+[package]
+name = "localclip-app"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+localclip-core = { path = "../core" }
+serde_json.workspace = true
+base64.workspace = true
+percent-encoding.workspace = true
+image.workspace = true
+
+[target.'cfg(windows)'.dependencies]
+windows = { version = "0.62", features = [
+  "Foundation", "Globalization", "Graphics_Imaging", "Media_Ocr", "Storage_Streams",
+  "Win32_Foundation", "Win32_Graphics_Gdi", "Win32_Security", "Win32_Security_Cryptography",
+  "Win32_Storage_FileSystem", "Win32_System_Com", "Win32_System_DataExchange",
+  "Win32_System_LibraryLoader", "Win32_System_Memory", "Win32_System_Ole",
+  "Win32_System_Threading", "Win32_System_ProcessStatus", "Win32_System_SystemServices",
+  "Win32_UI_Accessibility", "Win32_UI_Input_KeyboardAndMouse", "Win32_UI_Shell",
+  "Win32_UI_WindowsAndMessaging"
+] }

@@ -24,6 +24,9 @@ jobs:
         run: cargo clippy --workspace --all-targets --locked -- -D warnings
       - name: Core vectors and storage
         run: cargo test -p localclip-core --locked -- --nocapture
+      - name: Windows adapter tests (serial)
+        if: runner.os == 'Windows'
+        run: cargo test -p localclip-app --locked -- --test-threads=1 --nocapture
       - name: Build test utilities
         run: cargo build -p localclip-core --bins --release --locked
       - name: Release service benchmark
