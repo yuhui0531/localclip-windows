@@ -164,6 +164,7 @@ fn set_bytes(data: &IDataObject, cf_format: u16, bytes: &[u8]) -> Result<(), &'s
 mod tests {
     use super::*;
     use localclip_core::domain::{Item, Representation};
+    use windows::Win32::Foundation::S_OK;
 
     /// 每个测试线程自行初始化 OLE，并在所有数据对象释放后退出。
     struct Apartment;
@@ -254,7 +255,10 @@ mod tests {
             let payload = Payload::text(text);
             drag_data(&payload, None).unwrap()
         };
-        assert!(unsafe { data.QueryGetData(&format(15, -1, TYMED_HGLOBAL)) }.is_err());
+        assert_ne!(
+            unsafe { data.QueryGetData(&format(15, -1, TYMED_HGLOBAL)) },
+            S_OK
+        );
         let raw = bytes(&data, 13);
         let utf16: Vec<u16> = raw
             .chunks_exact(2)
@@ -285,7 +289,10 @@ mod tests {
             }],
         };
         let data = drag_data(&image, None).unwrap();
-        assert!(unsafe { data.QueryGetData(&format(13, -1, TYMED_HGLOBAL)) }.is_err());
+        assert_ne!(
+            unsafe { data.QueryGetData(&format(13, -1, TYMED_HGLOBAL)) },
+            S_OK
+        );
         contents(&data, &[137, 80, 78, 71], "png");
         let link = Payload::text("https://example.com");
         contents(
@@ -314,8 +321,14 @@ mod tests {
             }],
         };
         let data = drag_data(&payload, None).unwrap();
-        assert!(unsafe { data.QueryGetData(&format(15, -1, TYMED_HGLOBAL)) }.is_ok());
-        assert!(unsafe { data.QueryGetData(&format(13, -1, TYMED_HGLOBAL)) }.is_err());
+        assert_eq!(
+            unsafe { data.QueryGetData(&format(15, -1, TYMED_HGLOBAL)) },
+            S_OK
+        );
+        assert_ne!(
+            unsafe { data.QueryGetData(&format(13, -1, TYMED_HGLOBAL)) },
+            S_OK
+        );
         assert!(path.exists());
         std::fs::remove_dir_all(root).unwrap();
     }
