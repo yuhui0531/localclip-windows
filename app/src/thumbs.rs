@@ -45,11 +45,13 @@ fn thumbnail(payload: &Payload) -> Option<Vec<u8>> {
         let mut candidates = Vec::new();
         for format in ["image/png", "image/jpeg", "image/x-win-dibv5"] {
             if let Some(bytes) = item.representation(format) {
-                candidates.push(if format.ends_with("dibv5") {
-                    dibv5_to_bmp(bytes)?
+                if format.ends_with("dibv5") {
+                    if let Some(bmp) = dibv5_to_bmp(bytes) {
+                        candidates.push(bmp);
+                    }
                 } else {
-                    bytes.to_vec()
-                });
+                    candidates.push(bytes.to_vec());
+                }
             }
         }
         if item.file_path().is_some() {
@@ -64,9 +66,9 @@ fn thumbnail(payload: &Payload) -> Option<Vec<u8>> {
             }
         }
         for bytes in candidates {
-            let reader = ImageReader::new(Cursor::new(&bytes))
-                .with_guessed_format()
-                .ok()?;
+            let Ok(reader) = ImageReader::new(Cursor::new(&bytes)).with_guessed_format() else {
+                continue;
+            };
             let Ok((w, h)) = reader.into_dimensions() else {
                 continue;
             };

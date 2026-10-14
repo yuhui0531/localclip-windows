@@ -505,6 +505,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
                 .title("LocalClip feedback")
                 .visible(false)
                 .focused(false)
+                .focusable(false)
                 .decorations(false)
                 .always_on_top(true)
                 .skip_taskbar(true)
