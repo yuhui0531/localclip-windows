@@ -715,6 +715,11 @@ pub fn sanitized_file_name(value: &str) -> Option<String> {
             })
         });
     if reserved {
+        if out.len() == 200 {
+            let last = out.grapheme_indices(true).next_back()?.0;
+            out.truncate(last);
+            out = out.trim_end_matches(['.', ' ']).to_string();
+        }
         out.insert(0, '_');
     }
     Some(out)

@@ -244,7 +244,10 @@ impl HistoryStore {
                 };
                 loop {
                     match receiver.recv_timeout(Duration::from_millis(1000)) {
-                        Ok(job) => job(&mut state),
+                        Ok(job) => {
+                            state.clear_expired_undo();
+                            job(&mut state);
+                        }
                         Err(mpsc::RecvTimeoutError::Timeout) => {
                             state.clear_expired_undo();
                             if state.last_write.elapsed() >= Duration::from_secs(1) {
@@ -502,10 +505,18 @@ impl HistoryStore {
             }) {
                 return Err(StoreError::InvalidSettings);
             }
+            let current = summary_by_id(&w.db, &id)?;
+            if !visible(&current, &s, (w.options.now)()) {
+                return Err(StoreError::NotFound);
+            }
+            if current.title == title {
+                return Ok(());
+            }
+            let growth = 8192 + title.as_ref().map_or(0, |v| v.len() as u64 * 6);
             w.mutate(
                 Commit {
                     settings: &s,
-                    growth: 8192,
+                    growth,
                     trim: false,
                     allow_over: false,
                     protect: None,
@@ -670,9 +681,12 @@ impl Writer {
                 r.get(0)
             })
             .optional()?;
-        let existing = existing.filter(|id| {
-            summary_by_id(&self.db, id).is_ok_and(|r| visible(&r, &s, snapshot.captured_at))
-        });
+        let existing = match existing {
+            Some(id) if visible(&summary_by_id(&self.db, &id)?, &s, snapshot.captured_at) => {
+                Some(id)
+            }
+            _ => None,
+        };
         if let Some(id) = &existing {
             if read_payload(&self.db, id)?.canonical() != snapshot.payload.canonical() {
                 return Err(StoreError::CorruptPayload);
@@ -797,7 +811,11 @@ impl Writer {
         let now = (self.options.now)();
         self.mutate(Commit {settings: &settings, growth: packet.bytes, trim: false, allow_over: false, protect: None, operation: ""}, |db|{for saved in &packet.records{
             let mut summary=saved.summary.clone();if summary.source.basis=="owner"&&summary.source.app_id.as_ref().is_some_and(|id|settings.excluded_app_ids.contains(id)){return Err(StoreError::PolicyChanged);}
-            let memberships=saved.memberships.iter().filter(|(cat,_)|scalar(db,"SELECT COUNT(*) FROM categories WHERE id=?",[cat]).is_ok_and(|n|n>0)).collect::<Vec<_>>();summary.protected=summary.favorite||!memberships.is_empty();
+            let mut memberships = Vec::new();
+            for member in &saved.memberships {
+                if scalar(db, "SELECT COUNT(*) FROM categories WHERE id=?", [&member.0])? > 0 { memberships.push(member); }
+            }
+            summary.protected=summary.favorite||!memberships.is_empty();
             if !visible(&summary,&settings,now){return Err(StoreError::NotFound);}
             if scalar(db,"SELECT COUNT(*) FROM clips WHERE id=? OR contentHash=?",params![summary.id,saved.payload.fingerprint()])?>0{return Err(StoreError::StalePreview);}
             insert_payload(db,&summary.id,&saved.payload,&summary.source,summary.first_copied_at)?;
@@ -1276,6 +1294,16 @@ fn make_undo(db: &Connection, ids: &[String], now: i64) -> Result<Option<Undo>> 
         )? as u64;
         bytes += scalar(
             db,
+            "SELECT COALESCE(SUM(length(CAST(previewText AS BLOB))+COALESCE(length(CAST(title AS BLOB))*2,0)+COALESCE(length(CAST(sourceAppID AS BLOB)),0)+length(CAST(sourceName AS BLOB))+length(CAST(sourceBasis AS BLOB))),0) FROM clips WHERE id=?",
+            [id],
+        )? as u64;
+        bytes += scalar(
+            db,
+            "SELECT COALESCE(SUM(length(CAST(declaredTypes AS BLOB))),0) FROM items WHERE clipID=?",
+            [id],
+        )? as u64;
+        bytes += scalar(
+            db,
             "SELECT COALESCE(SUM(length(CAST(plainText AS BLOB))+length(CAST(normalizedText AS BLOB))),0) FROM text_content WHERE clipID=?",
             [id],
         )? as u64;
@@ -1285,8 +1313,10 @@ fn make_undo(db: &Connection, ids: &[String], now: i64) -> Result<Option<Undo>> 
     }
     let mut records = Vec::new();
     for id in ids {
-        let Ok(summary) = summary_by_id(db, &id) else {
-            continue;
+        let summary = match summary_by_id(db, &id) {
+            Ok(summary) => summary,
+            Err(StoreError::NotFound) => continue,
+            Err(error) => return Err(error),
         };
         let payload = read_payload(db, &id)?;
         let mut q = db.prepare("SELECT categoryID,position FROM clip_categories WHERE clipID=?")?;

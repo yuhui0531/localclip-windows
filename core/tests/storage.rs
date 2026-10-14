@@ -65,6 +65,40 @@ impl Drop for Fixture {
 }
 
 #[test]
+fn renaming_requires_visible_record_and_unchanged_name_preserves_cursor() {
+    let f = Fixture::new(Settings {
+        retention_days: 1,
+        ..Settings::default()
+    });
+    let Ingest::Inserted(id) = f.ingest(Payload::text("one")) else {
+        panic!("insert")
+    };
+    f.ingest(Payload::text("two"));
+    let page = f
+        .store()
+        .search(SearchRequest {
+            page_size: 1,
+            ..Default::default()
+        })
+        .unwrap();
+    f.store().rename(id.clone(), None).unwrap();
+    assert!(
+        f.store()
+            .search(SearchRequest {
+                page_size: 1,
+                cursor: page.next,
+                ..Default::default()
+            })
+            .is_ok()
+    );
+    f.now.fetch_add(86_400_000, Ordering::SeqCst);
+    assert_eq!(
+        f.store().rename(id, Some("expired".into())),
+        Err(StoreError::NotFound)
+    );
+}
+
+#[test]
 fn original_representations_round_trip_and_deduplicate() {
     let f = Fixture::new(Settings::default());
     let payload = Payload {
@@ -221,6 +255,32 @@ fn schema_pragmas_unknown_version_and_disk_gate() {
         Err(StoreError::IncompatibleSchema)
     ));
     assert_eq!(before, std::fs::read(&other).unwrap());
+    let low = HistoryStore::open(
+        f.root.join("low-space.sqlite"),
+        Options {
+            available_space: Arc::new(|| Ok(64 * MIB - 1)),
+            ..Default::default()
+        },
+    )
+    .unwrap();
+    let result = low
+        .ingest(Snapshot {
+            capture_id: "low-space".into(),
+            captured_at: 1760486400000,
+            payload: Payload::text("synthetic-disk-gate-body"),
+            source: Source::default(),
+            policy_revision: 0,
+            sensitive: false,
+        })
+        .unwrap();
+    assert_eq!(result, Ingest::Skipped("diskFull"));
+    assert!(
+        low.search(SearchRequest::default())
+            .unwrap()
+            .items
+            .is_empty()
+    );
+    drop(low);
 }
 
 #[test]
@@ -284,4 +344,58 @@ fn settings_categories_and_undo_preserve_metadata() {
         vec![b.as_str(), a.as_str()]
     );
     assert_eq!(page.items[1].title.as_deref(), Some("é"));
+}
+
+#[test]
+fn wal_reader_can_search_during_an_uncommitted_write() {
+    use std::sync::{Barrier, atomic::AtomicBool};
+    let f = Fixture::new(Settings::default());
+    let gate = Arc::new(Barrier::new(2));
+    let resume = Arc::new(Barrier::new(2));
+    let armed = Arc::new(AtomicBool::new(false));
+    let hook = armed.clone();
+    let entered = gate.clone();
+    let release = resume.clone();
+    let store = Arc::new(
+        HistoryStore::open(
+            f.root.join("concurrent.sqlite"),
+            Options {
+                now: Arc::new(|| 1760486400000),
+                available_space: Arc::new(|| Ok(u64::MAX)),
+                before_commit: Arc::new(move || {
+                    if hook.load(Ordering::SeqCst) {
+                        entered.wait();
+                        release.wait();
+                    }
+                    Ok(())
+                }),
+                ..Default::default()
+            },
+        )
+        .unwrap(),
+    );
+    let snapshot = |id: &str| Snapshot {
+        capture_id: id.into(),
+        captured_at: 1760486400000,
+        payload: Payload::text(id),
+        source: Source::default(),
+        policy_revision: 0,
+        sensitive: false,
+    };
+    store.ingest(snapshot("baseline")).unwrap();
+    armed.store(true, Ordering::SeqCst);
+    let writer = store.clone();
+    let thread = std::thread::spawn(move || writer.ingest(snapshot("uncommitted")));
+    gate.wait();
+    let result = store.search(SearchRequest::default());
+    resume.wait();
+    assert_eq!(result.unwrap().items.len(), 1);
+    assert!(matches!(
+        thread.join().unwrap().unwrap(),
+        Ingest::Inserted(_)
+    ));
+    assert_eq!(
+        store.search(SearchRequest::default()).unwrap().items.len(),
+        2
+    );
 }

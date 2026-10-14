@@ -12,7 +12,8 @@ The reference repository is read-only. No macOS history is read, imported, or mi
 - `test-vectors/`: committed behavioral fixtures; CI will consume these without the reference checkout.
 - `scripts/`: fixture validation and reproducibility checks.
 - `reports/`: phase task lists, evidence, limitations, and PR descriptions.
-- Planned subsequent phases: `core/` (Rust), `app/` (Windows/Tauri), `ui/` (React).
+- `core/`: platform-neutral domain, search, transforms, SQLite store and synthetic benchmarks.
+- Planned subsequent phases: `app/` (Windows/Tauri), `ui/` (React).
 
 ## Exporting the behavior baseline
 
@@ -41,3 +42,23 @@ environment rather than publishing misleading macOS differences.
 Each JSON document contains `metadata` and `cases`. Metadata identifies source functions,
 commit, version, timezone, and any Windows adaptation. Platform-specific changes are explicit;
 an exported macOS observation is not evidence of Windows runtime acceptance.
+
+## Core checks
+
+Rust 1.90.0 is pinned by `rust-toolchain.toml`. With a normal Rust installation:
+
+```sh
+cargo fmt --all --check
+cargo clippy --workspace --all-targets --locked -- -D warnings
+cargo test -p localclip-core --locked
+cargo run -p localclip-core --release --locked --bin core_benchmark -- reports/my-benchmark
+```
+
+The benchmark output directory must be new. It creates only synthetic history,
+records all 60 samples per metric, and removes its temporary database on completion.
+The crash test force-kills 50 child processes using generated data. Run Windows
+integration tests serially once that layer exists. Core utility executables are
+not the clipboard application; the Windows installer belongs to later phases.
+
+For the repository-local toolchain, use `sh scripts/cargo-local.sh` in place of
+`cargo`. See [Phase 1 evidence](reports/phase-1.md) for measured limits and gates.

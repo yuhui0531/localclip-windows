@@ -17,7 +17,8 @@ Branch: `feat/phase-1-core`, based on Phase 0 `cafbe8d` (PR #1 remains unmerged)
   policy rejection before persistence, schema refusal and WAL/auto-vacuum configuration.
 - Fifty real macOS child-process kills during open write transactions passed:
   `forced-termination iterations=50 integrity=50 atomic-records=50 foreign-keys=50`.
-  Windows execution uses `taskkill /F`; **WAC16 not yet executed on Windows**.
+  Windows execution uses `taskkill /F`; WAC16 passed on the Windows CI runner in [run 38497014488](https://github.com/yuhui0531/localclip-windows/actions/runs/38497014488).
+  Both macOS and Windows jobs passed on `f7ab704`; the final changes require a new green run.
 - The local Parallels guest `Windows 11` is running, architecture ARM64.
   PowerShell guest commands work. Cargo/Rust/Node/npm were not found in PATH.
   No clipboard or personal data was read. No application build exists yet.
@@ -51,8 +52,22 @@ become DIBV5 under §4.1, and Rust PNG/JPEG encoders produce different fixture b
 Captured images are never re-encoded. The synthetic database was removed after
 measurement; manifests and all samples remain.
 
-Search optimization and a second measurement are in progress. No failed sample
-has been discarded or replaced.
+The second local run uses borrowed SQLite blob arguments, optimized literal search,
+and a persistent 32 MiB reader page cache. The fixture checksum is unchanged.
+
+| Boundary | Second-run P95 |
+|---|---:|
+| SQLite search | 73.026 ms |
+| Text ingest | 11.612 ms |
+| Image ingest (encoding excluded) | 91.564 ms |
+| First search after commit | 80.686 ms |
+| Warm search | 72.701 ms |
+
+First-search P95 gap: **10.98%, passed <20%**. Raw samples and fixture manifest:
+[second run](phase-1-benchmark-macos-02/service-results.json).
+This does not establish the Windows input-to-render target. No failed sample has
+been discarded or replaced. Shared CI runner metrics are retained separately in
+`phase-1-ci-38497014488/`; that environment does not match §10 desktop hardware.
 
 ## Approved decisions and implementation differences
 
