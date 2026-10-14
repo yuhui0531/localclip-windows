@@ -83,7 +83,7 @@ fn drag_data(payload: &Payload, language: Option<&str>) -> Result<IDataObject, &
         let descriptor = FILEGROUPDESCRIPTORW {
             cItems: 1,
             fgd: [FILEDESCRIPTORW {
-                dwFlags: (FD_ATTRIBUTES | FD_FILESIZE).0 as u32,
+                dwFlags: (FD_ATTRIBUTES.0 | FD_FILESIZE.0) as u32,
                 dwFileAttributes: FILE_ATTRIBUTE_NORMAL.0,
                 nFileSizeHigh: ((file.bytes.len() as u64) >> 32) as u32,
                 nFileSizeLow: file.bytes.len() as u32,
