@@ -43,6 +43,11 @@ jobs:
           CODESIGN_PFX_BASE64: ${{ secrets.WINDOWS_CODESIGN_PFX_BASE64 }}
           CODESIGN_PFX_PASSWORD: ${{ secrets.WINDOWS_CODESIGN_PFX_PASSWORD }}
         run: ./scripts/sign-windows.ps1 -File 'target/${{ matrix.target }}/release/localclip.exe'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: LocalClip-executable-${{ matrix.arch }}
+          path: target/${{ matrix.target }}/release/localclip.exe
+          if-no-files-found: error
       - name: Bundle MSI
         working-directory: app
         run: ../ui/node_modules/.bin/tauri bundle --ci --no-sign --no-binary-patching --features desktop --bundles msi --target ${{ matrix.target }}
@@ -72,6 +77,11 @@ jobs:
           "$hash  $([IO.Path]::GetFileName($msi))" | Set-Content "artifacts/SHA256SUMS-${{ matrix.arch }}.txt"
           @{version=$version;arch='${{ matrix.arch }}';file=[IO.Path]::GetFileName($msi);sha256=$hash;bytes=(Get-Item $msi).Length;signature=$signature} | ConvertTo-Json | Set-Content "artifacts/metadata-${{ matrix.arch }}.json"
           Copy-Item 'target/${{ matrix.target }}/release/localclip.exe' 'artifacts/localclip-${{ matrix.arch }}.exe'
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: packaging-diagnostics-${{ matrix.arch }}
+          path: target/${{ matrix.target }}/release/wix/**
       - uses: actions/upload-artifact@v4
         with:
           name: LocalClip-manual-${{ matrix.arch }}

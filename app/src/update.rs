@@ -118,6 +118,11 @@ pub async fn check(app: tauri::AppHandle, manual: bool) -> Result<Value, String>
             verified_bytes,
         });
     }
+    if let Ok(latest) = state.latest.lock()
+        && let Some(version) = latest.as_ref()
+    {
+        let _ = app.emit("update-available", json!({"version":version}));
+    }
     Ok(document(&state))
 }
 

@@ -467,6 +467,7 @@ fn image_and_file_filters_intersect_without_losing_image_files() {
 #[test]
 fn update_snapshot_is_consistent_and_never_overwrites_existing_backup() {
     let f = Fixture::new(Settings::default());
+    f.ingest(Payload::text("generated snapshot payload"));
     let store = f.store.as_ref().unwrap();
     let destination = f.root.join("snapshot.sqlite");
     store.snapshot(destination.clone()).unwrap();
@@ -475,6 +476,11 @@ fn update_snapshot_is_consistent_and_never_overwrites_existing_backup() {
         db.query_row("PRAGMA integrity_check", [], |r| r.get::<_, String>(0))
             .unwrap(),
         "ok"
+    );
+    assert_eq!(
+        db.query_row("SELECT COUNT(*) FROM clips", [], |r| r.get::<_, i64>(0))
+            .unwrap(),
+        1
     );
     drop(db);
     let before = std::fs::read(&destination).unwrap();

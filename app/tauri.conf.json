@@ -25,7 +25,10 @@
       },
       "allowDowngrades": false
     },
-    "publisher": "LocalClip"
+    "publisher": "LocalClip",
+    "icon": [
+      "icons/icon.ico"
+    ]
   },
   "build": {
     "frontendDist": "../ui/dist",
