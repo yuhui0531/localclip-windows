@@ -1,0 +1,7 @@
+{
+  "reason": "Product approved Windows-safe filenames on 2026-10-14. Phase 0 reference data remains unchanged.",
+  "inspect": {
+    "34": {"sanitizedFileName": "back-slash-----", "exportBaseName": "back-slash-----"},
+    "35": {"sanitizedFileName": "_CON", "exportBaseName": "_CON"}
+  }
+}

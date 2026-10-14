@@ -1,0 +1,42 @@
+name: CI
+on:
+  push:
+    branches: [main, 'feat/**', 'codex/**']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  core:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned Rust
+        run: rustup toolchain install 1.90.0 --profile minimal --component rustfmt --component clippy
+      - name: Format
+        run: cargo fmt --all --check
+      - name: Clippy
+        run: cargo clippy --workspace --all-targets --locked -- -D warnings
+      - name: Core vectors and storage
+        run: cargo test -p localclip-core --locked -- --nocapture
+      - name: Build test utilities
+        run: cargo build -p localclip-core --bins --release --locked
+      - name: Release service benchmark
+        run: cargo run -p localclip-core --release --locked --bin core_benchmark -- reports/ci-benchmark
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: core-benchmark-${{ matrix.os }}
+          path: reports/ci-benchmark/*.json
+      - uses: actions/upload-artifact@v4
+        if: runner.os == 'Windows'
+        with:
+          name: windows-core-test-utilities
+          path: |
+            target/release/crash_probe.exe
+            target/release/core_benchmark.exe

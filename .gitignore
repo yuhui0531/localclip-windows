@@ -6,3 +6,7 @@ dist/
 .swiftpm/
 reports/raw/
 __pycache__/
+.tooling/
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm

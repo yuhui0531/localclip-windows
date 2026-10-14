@@ -1,0 +1,17 @@
+[package]
+name = "localclip-core"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+sha2.workspace = true
+unicode-normalization.workspace = true
+unicode-segmentation.workspace = true
+serde_json.workspace = true
+base64.workspace = true
+percent-encoding.workspace = true
+time.workspace = true
+rusqlite.workspace = true
+image.workspace = true
