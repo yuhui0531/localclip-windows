@@ -5,6 +5,14 @@ edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
 
+[features]
+desktop = ["dep:tauri", "dep:tauri-build", "dep:tauri-plugin-single-instance", "dep:tauri-plugin-autostart", "dep:tauri-plugin-global-shortcut"]
+
+[[bin]]
+name = "localclip"
+path = "src/main.rs"
+required-features = ["desktop"]
+
 [dependencies]
 localclip-core = { path = "../core" }
 serde_json.workspace = true
@@ -13,6 +21,10 @@ percent-encoding.workspace = true
 image.workspace = true
 
 [target.'cfg(windows)'.dependencies]
+tauri = { version = "2", features = ["tray-icon"], optional = true }
+tauri-plugin-single-instance = { version = "2", optional = true }
+tauri-plugin-autostart = { version = "2", optional = true }
+tauri-plugin-global-shortcut = { version = "2", optional = true }
 windows = { version = "0.62", features = [
   "Foundation", "Globalization", "Graphics_Imaging", "Media_Ocr", "Storage_Streams",
   "Win32_Foundation", "Win32_Graphics_Gdi", "Win32_Security", "Win32_Security_Cryptography",
@@ -22,3 +34,6 @@ windows = { version = "0.62", features = [
   "Win32_UI_Accessibility", "Win32_UI_Input_KeyboardAndMouse", "Win32_UI_Shell",
   "Win32_UI_WindowsAndMessaging"
 ] }
+
+[build-dependencies]
+tauri-build = { version = "2", optional = true }

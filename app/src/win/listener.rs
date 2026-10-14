@@ -5,7 +5,10 @@ use windows::{
     Win32::{
         Foundation::{HWND, LPARAM, LRESULT, WPARAM},
         System::{
-            DataExchange::{AddClipboardFormatListener, RemoveClipboardFormatListener},
+            DataExchange::{
+                AddClipboardFormatListener, GetClipboardSequenceNumber,
+                RemoveClipboardFormatListener,
+            },
             LibraryLoader::GetModuleHandleW,
         },
         UI::WindowsAndMessaging::*,
@@ -23,6 +26,7 @@ struct State {
     captured: Captured,
     receipt: Option<Receipt>,
     commands: mpsc::Receiver<Command>,
+    last_sequence: u32,
 }
 pub struct Listener {
     window: isize,
@@ -53,6 +57,11 @@ unsafe extern "system" fn procedure(window: HWND, message: u32, w: WPARAM, l: LP
             }
             WM_TIMER if w.0 == 1 => {
                 let _ = KillTimer(Some(window), 1);
+                let sequence = GetClipboardSequenceNumber();
+                if sequence == state.last_sequence {
+                    return LRESULT(0);
+                }
+                state.last_sequence = sequence;
                 let timestamp = now();
                 match (state.policy)() {
                     Ok(settings) => {
@@ -94,6 +103,7 @@ impl Listener {
                 captured,
                 receipt: None,
                 commands: rx,
+                last_sequence: GetClipboardSequenceNumber(),
             });
             let instance = match GetModuleHandleW(None) {
                 Ok(v) => v,

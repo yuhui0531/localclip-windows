@@ -22,6 +22,9 @@ jobs:
         run: cargo fmt --all --check
       - name: Clippy
         run: cargo clippy --workspace --all-targets --locked -- -D warnings
+      - name: Windows shell Clippy
+        if: runner.os == 'Windows'
+        run: cargo clippy -p localclip-app --features desktop --all-targets --locked -- -D warnings
       - name: Core vectors and storage
         run: cargo test -p localclip-core --locked -- --nocapture
       - name: Windows adapter tests (serial)
@@ -32,6 +35,9 @@ jobs:
       - name: Build Windows demo
         if: runner.os == 'Windows'
         run: cargo build -p localclip-app --bin localclip-demo --release --locked
+      - name: Build Windows shell
+        if: runner.os == 'Windows'
+        run: cargo build -p localclip-app --features desktop --bin localclip --release --locked
       - name: Release service benchmark
         run: cargo run -p localclip-core --release --locked --bin core_benchmark -- reports/ci-benchmark
       - uses: actions/upload-artifact@v4
@@ -51,3 +57,8 @@ jobs:
         with:
           name: windows-native-demo
           path: target/release/localclip-demo.exe
+      - uses: actions/upload-artifact@v4
+        if: runner.os == 'Windows'
+        with:
+          name: windows-app-shell
+          path: target/release/localclip.exe
