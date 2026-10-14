@@ -25,7 +25,20 @@ Branch: `feat/phase-1-core`, based on Phase 0 `cafbe8d` (PR #1 remains unmerged)
 
 Commands use `rtk proxy sh scripts/cargo-local.sh ...` after installing the local
 toolchain. `cargo fmt --all`, `cargo clippy --workspace --all-targets -- -D warnings`,
-and `cargo test -p localclip-core` are the relevant checks. Final rerun pending.
+and `cargo test -p localclip-core -- --nocapture` passed after final code review:
+
+```text
+Finished `dev` profile (Clippy, -D warnings)
+forced-termination iterations=50 integrity=50 atomic-records=50 foreign-keys=50
+test result: ok. 1 passed; 0 failed (crash)
+test result: ok. 2 passed; 0 failed (export)
+test result: ok. 7 passed; 0 failed (storage)
+test result: ok. 16 passed; 0 failed (15 vector files plus byte-literal rank)
+```
+
+All 440 cases ran. Storage tests additionally prove a WAL reader can search while
+the writer holds an uncommitted transaction, disk-space refusal, preserved undo
+metadata, invisible expired records and unchanged-title cursor validity.
 
 ## Performance — every measured run retained
 
@@ -69,8 +82,40 @@ This does not establish the Windows input-to-render target. No failed sample has
 been discarded or replaced. Shared CI runner metrics are retained separately in
 `phase-1-ci-38497014488/`; that environment does not match §10 desktop hardware.
 
+## CI measurements
+
+Run [38497014488](https://github.com/yuhui0531/localclip-windows/actions/runs/38497014488)
+is green on both platforms. Windows uses Windows Server 2025 on the hosted runner;
+this establishes core Windows compatibility and WAC16, not Win10/11 desktop UX.
+[Raw Windows test summary](phase-1-ci-38497014488/windows-test-summary.txt).
+
+| Host | Search P95 | Text ingest P95 | Image ingest P95 | First/warm P95 | Gap |
+|---|---:|---:|---:|---:|---:|
+| CI macOS ARM64 | 146.237 ms | 30.752 ms | 187.099 ms | 147.515 / 151.275 ms | -2.49% |
+| CI Windows x64 | 102.107 ms | 30.803 ms | 74.254 ms | 126.251 / 105.641 ms | 19.51% |
+
+Each series has 60 retained samples. The Windows search result already exceeds the
+eventual 100 ms input-to-render budget before UI overhead; full desktop performance
+remains a Phase 3 gate. CI hardware differs from §10. The available Parallels VM has
+4 processors and 8 GiB RAM, also below the 16 GiB reference condition.
+
+## Rule mapping
+
+| Task | Implementation and evidence |
+|---|---|
+| P1-01–04; §4.1–4.3, §5.5, §9.2 | Rust workspace, neutral formats, canonical identity, offline link classification, literal search/parser; all vectors |
+| P1-05; §5.13, §5.17 | Transforms/joins/inspector, Windows exports, grapheme-safe filenames and versions; vector/export tests |
+| P1-06–08; §4.4–4.5, §5.6, §5.12 | WAL/FULL schema, dedicated writer/reader, quotas, settings revisions, categories, preview/confirm, 30-second undo; store/vector tests |
+| P1-09–11; §8 WAC16, §10 | Synthetic generator, 50 forced kills per platform, retained nearest-rank measurements |
+| P1-12–13; §12–13 | Dual-platform CI, report, read-only reference checks and separate PR |
+
 ## Approved decisions and implementation differences
 
+- Launching the first CI utility in the Parallels guest failed with `0xC0000135`.
+  PE inspection found a `VCRUNTIME140.dll` import and the guest has no VC runtime.
+  Windows MSVC targets now statically link the C runtime via `.cargo/config.toml`,
+  following the [Rust linkage reference](https://doc.rust-lang.org/stable/reference/linkage.html#static-and-dynamic-c-runtimes).
+  This adds no dependency or VM installation. Rebuilt-utility launch verification is pending.
 - Product approved build-time downloads from official Rust, crates.io/npm, and IANA.
   Toolchain/cache directories remain inside this repository. No app network was added.
 - Product approved replacing Windows-invalid filename characters with `-`, removing
@@ -89,9 +134,8 @@ been discarded or replaced. Shared CI runner metrics are retained separately in
 ## Read-only reference checks and remaining work
 
 Stage-start `git -C /Users/ronny/VscodeProjects/rea status --porcelain`: empty.
-Intermediate repeat: empty. Final stage-end check pending.
+Intermediate repeats: empty. Stage-end check: empty (2026-10-14).
 
-Outstanding: finish storage API/boundary review, complete final checks, improved
-performance measurements, green Windows/macOS CI, Windows WAC16, final report and PR.
+Outstanding: final code commit `6c34a4e` CI run 38497753643, then report closure and PR.
 Phases 2–4 have not started. No paste receipt, installer, update or release acceptance
 is claimed.

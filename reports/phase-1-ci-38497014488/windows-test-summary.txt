@@ -1,0 +1,11 @@
+core (windows-latest)	Set up job	2026-10-14T01:40:49.0855703Z Microsoft Windows Server 2025
+core (windows-latest)	Core vectors and storage	﻿2026-10-14T01:41:34.6432883Z ##[group]Run cargo test -p localclip-core --locked -- --nocapture
+core (windows-latest)	Core vectors and storage	2026-10-14T01:41:34.6433325Z ^[[36;1mcargo test -p localclip-core --locked -- --nocapture^[[0m
+core (windows-latest)	Core vectors and storage	2026-10-14T01:42:00.5187751Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (windows-latest)	Core vectors and storage	2026-10-14T01:42:00.5287457Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (windows-latest)	Core vectors and storage	2026-10-14T01:42:00.5379798Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+core (windows-latest)	Core vectors and storage	2026-10-14T01:42:23.0812588Z forced-termination iterations=50 integrity=50 atomic-records=50 foreign-keys=50
+core (windows-latest)	Core vectors and storage	2026-10-14T01:42:23.0813868Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 22.53s
+core (windows-latest)	Core vectors and storage	2026-10-14T01:42:23.2791220Z test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.19s
+core (windows-latest)	Core vectors and storage	2026-10-14T01:42:50.0137739Z test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 26.72s
+core (windows-latest)	Core vectors and storage	2026-10-14T01:42:50.1090190Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
