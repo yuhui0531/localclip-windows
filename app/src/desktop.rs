@@ -14,6 +14,7 @@ pub struct AppState {
     pub ocr: Mutex<Option<Arc<AtomicBool>>>,
     pub modal: AtomicBool,
     pub capture: Mutex<serde_json::Value>,
+    pub feedback_generation: std::sync::atomic::AtomicU64,
     pub runtime: Arc<Runtime>,
     pub target: Mutex<Option<Target>>,
     pub pinned: AtomicBool,
@@ -144,6 +145,10 @@ pub fn start_queue(app: &tauri::AppHandle, ids: Vec<String>) -> Result<(), &'sta
     }
     queue.start(ids, now())?;
     queue.shortcut = Some(next);
+    feedback(
+        app,
+        json!({"status":"queueStarted","total":queue.ids.len()}),
+    );
     wake.notify_all();
     let _ = app.emit("queue-changed", queue.document());
     if let Some(window) = app.get_webview_window("main") {
@@ -194,10 +199,7 @@ fn queue_next(app: &tauri::AppHandle) {
             };
             let Some((index, id)) = next else {
                 if !skipped.is_empty() {
-                    let _ = app.emit(
-                        "feedback",
-                        json!({"status":"queueSkipped","skipped":skipped}),
-                    );
+                    feedback(&app, json!({"status":"queueSkipped","skipped":skipped}));
                 }
                 break;
             };
@@ -208,7 +210,7 @@ fn queue_next(app: &tauri::AppHandle) {
                     continue;
                 }
                 Err(_) => {
-                    let _ = app.emit("feedback", json!({"status":"storageUnavailable"}));
+                    feedback(&app, json!({"status":"storageUnavailable"}));
                     break;
                 }
             };
@@ -219,7 +221,7 @@ fn queue_next(app: &tauri::AppHandle) {
                 match payload.plain_text() {
                     Some(text) => Payload::text(&text),
                     None => {
-                        let _ = app.emit("feedback", json!({"status":"unsupported"}));
+                        feedback(&app, json!({"status":"unsupported"}));
                         break;
                     }
                 }
@@ -250,8 +252,8 @@ fn queue_next(app: &tauri::AppHandle) {
                 }
                 Err(reason) => reason,
             };
-            let _ = app.emit(
-                "feedback",
+            feedback(
+                &app,
                 json!({"status":reason,"position":index,"skipped":skipped}),
             );
             break;
@@ -347,7 +349,9 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
             });
         })
         .on_window_event(|window, event| {
-            if window.label() != "main" { return; }
+            if window.label() != "main" {
+                return;
+            }
             if let tauri::WindowEvent::Focused(false) = event {
                 let state = window.state::<AppState>();
                 if !state.pinned.load(std::sync::atomic::Ordering::SeqCst)
@@ -405,6 +409,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
                 ocr: Mutex::new(None),
                 modal: AtomicBool::new(false),
                 capture: Mutex::new(json!({"state":"ready"})),
+                feedback_generation: std::sync::atomic::AtomicU64::new(0),
                 runtime: Arc::new(runtime),
                 target: Mutex::new(None),
                 pinned: AtomicBool::new(false),
@@ -479,6 +484,24 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
                 .resizable(false)
                 .build()?;
             }
+            if app.get_webview_window("feedback").is_none() {
+                tauri::WebviewWindowBuilder::new(
+                    app,
+                    "feedback",
+                    tauri::WebviewUrl::App("index.html#feedback".into()),
+                )
+                .title("LocalClip feedback")
+                .visible(false)
+                .focused(false)
+                .decorations(false)
+                .always_on_top(true)
+                .skip_taskbar(true)
+                .transparent(true)
+                .inner_size(660.0, 74.0)
+                .resizable(false)
+                .build()?
+                .set_ignore_cursor_events(true)?;
+            }
             status(app.handle(), "ready");
             idle_watch(app.handle().clone(), queue);
             Ok(())
@@ -530,4 +553,43 @@ fn position_panel(app: &tauri::AppHandle, window: &tauri::WebviewWindow) {
         area.position.x,
         area.position.y + area.size.height as i32 - height as i32,
     ));
+}
+
+pub fn feedback(app: &tauri::AppHandle, value: serde_json::Value) {
+    let state = app.state::<AppState>();
+    let generation = state
+        .feedback_generation
+        .fetch_add(1, std::sync::atomic::Ordering::SeqCst)
+        + 1;
+    if let Some(window) = app.get_webview_window("feedback") {
+        if let Ok(cursor) = app.cursor_position() {
+            if let Ok(Some(monitor)) = app.monitor_from_point(cursor.x, cursor.y) {
+                let area = monitor.work_area();
+                let scale = monitor.scale_factor();
+                let width = (660.0 * scale) as u32;
+                let height = (74.0 * scale) as u32;
+                let _ = window.set_size(tauri::PhysicalSize::new(width, height));
+                let _ = window.set_position(tauri::PhysicalPosition::new(
+                    area.position.x + (area.size.width.saturating_sub(width) / 2) as i32,
+                    area.position.y + area.size.height as i32 - height as i32,
+                ));
+            }
+        }
+        let _ = window.show();
+    }
+    let _ = app.emit("feedback", value);
+    let app = app.clone();
+    std::thread::spawn(move || {
+        std::thread::sleep(std::time::Duration::from_secs(4));
+        if app
+            .state::<AppState>()
+            .feedback_generation
+            .load(std::sync::atomic::Ordering::SeqCst)
+            == generation
+        {
+            if let Some(window) = app.get_webview_window("feedback") {
+                let _ = window.hide();
+            }
+        }
+    });
 }

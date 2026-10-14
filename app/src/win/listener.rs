@@ -73,6 +73,10 @@ unsafe extern "system" fn procedure(window: HWND, message: u32, w: WPARAM, l: LP
                 }
                 LRESULT(0)
             }
+            WM_POWERBROADCAST if w.0 == PBT_APMRESUMEAUTOMATIC as usize => {
+                (state.maintenance)();
+                LRESULT(1)
+            }
             WM_TIMER if w.0 == 2 => {
                 (state.maintenance)();
                 LRESULT(0)
@@ -155,12 +159,22 @@ impl Listener {
                 let _ = ready.send(Err("accessUnavailable"));
                 return;
             }
+            let notification = windows::Win32::System::Power::RegisterSuspendResumeNotification(
+                windows::Win32::Foundation::HANDLE(window.0),
+                DEVICE_NOTIFY_WINDOW_HANDLE,
+            )
+            .ok();
             SetTimer(Some(window), 2, 60_000, None);
             let _ = ready.send(Ok(window.0 as isize));
             let mut message = MSG::default();
             while GetMessageW(&mut message, None, 0, 0).0 > 0 {
                 let _ = TranslateMessage(&message);
                 DispatchMessageW(&message);
+            }
+            if let Some(notification) = notification {
+                let _ = windows::Win32::System::Power::UnregisterSuspendResumeNotification(
+                    notification,
+                );
             }
         });
         match received.recv().map_err(|_| "accessUnavailable")? {

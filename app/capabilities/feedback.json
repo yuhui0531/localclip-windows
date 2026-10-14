@@ -1,0 +1,1 @@
+{"identifier":"feedback","description":"Read only operation feedback","windows":["feedback"],"permissions":["core:event:allow-listen","core:event:allow-unlisten"]}

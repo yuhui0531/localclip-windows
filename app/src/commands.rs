@@ -110,6 +110,12 @@ fn perform(app: &tauri::AppHandle, request: &Value) -> Result<Value> {
             desktop::hide_panel(app)
         })
         .map_err(String::from)?;
+    if !matches!(result.status, "copied" | "commandSent") || result.missing_files > 0 {
+        desktop::feedback(
+            app,
+            json!({"status":result.status,"missingFiles":result.missing_files}),
+        );
+    }
     state.runtime.store.touch(ids).map_err(error)?;
     desktop::hide_panel(app);
     changed(app, "used");
