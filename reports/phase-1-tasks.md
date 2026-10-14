@@ -15,7 +15,7 @@ Phase 0 PR #1 is open; this branch builds on its verified commit. No merge was p
 - [x] P1-09 — Deterministic dataset generator, seed 0xC11F, 10,000 texts + 100 images (§10).
 - [x] P1-10 — Fifty forced child-process kills, integrity and atomic-record checks; Windows WAC16 (§8/13).
 - [x] P1-11 — Search/ingest P95 with ≥60 samples and first-search-after-commit versus warm gap (§10).
-- [ ] P1-12 — fmt, clippy -D warnings, all core tests; green macOS and Windows CI (§12–13).
+- [x] P1-12 — fmt, clippy -D warnings, all core tests; green macOS and Windows CI (§12–13).
 - [ ] P1-13 — Phase report, clean reference end check, commit and separate PR (§13).
 
 Exit requires every item above, 100% vector pass, both CI platforms green and WAC16 passed.
@@ -24,3 +24,8 @@ Do not begin Phase 2 while any exit condition is unfulfilled.
 Approved: build-time downloads, Windows-safe filenames, macOS-compatible bare-link exclusions,
 release defaults. Rust 1.90 is now installed. Local Parallels Windows 11 ARM64 guest command
 access is verified. No Windows desktop acceptance checks have run yet.
+
+Final executable revision: `1072de2`; dual-platform CI run 38498258081 green.
+Windows WAC16: 50/50 forced terminations, integrity, atomicity and foreign-key checks.
+Windows CRT issue fixed; utility entry point verified on the Parallels guest.
+CI performance misses remain explicit in the phase report.

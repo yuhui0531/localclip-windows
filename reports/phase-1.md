@@ -1,7 +1,7 @@
-# Phase 1 — core (in progress)
+# Phase 1 — core
 
-Phase 1 is **not complete**. Do not advance to Phase 2 until the exit checklist
-in [phase-1-tasks.md](phase-1-tasks.md) is satisfied.
+Phase 1 implementation and executable exit checks are complete. See
+[phase-1-tasks.md](phase-1-tasks.md) for the rule mapping and exit checklist.
 
 Baseline: macOS 0.3.29 (51), `c097591431c00982ad34186068064b40965c95fd`.
 Branch: `feat/phase-1-core`, based on Phase 0 `cafbe8d` (PR #1 remains unmerged).
@@ -18,7 +18,7 @@ Branch: `feat/phase-1-core`, based on Phase 0 `cafbe8d` (PR #1 remains unmerged)
 - Fifty real macOS child-process kills during open write transactions passed:
   `forced-termination iterations=50 integrity=50 atomic-records=50 foreign-keys=50`.
   Windows execution uses `taskkill /F`; WAC16 passed on the Windows CI runner in [run 38497014488](https://github.com/yuhui0531/localclip-windows/actions/runs/38497014488).
-  Both macOS and Windows jobs passed on `f7ab704`; the final changes require a new green run.
+  Both macOS and Windows jobs passed on `f7ab704` and core code revision `6c34a4e` (run 38497753643). Static-runtime revision `1072de2` is also green in run 38498258081.
 - The local Parallels guest `Windows 11` is running, architecture ARM64.
   PowerShell guest commands work. Cargo/Rust/Node/npm were not found in PATH.
   No clipboard or personal data was read. No application build exists yet.
@@ -99,6 +99,32 @@ eventual 100 ms input-to-render budget before UI overhead; full desktop performa
 remains a Phase 3 gate. CI hardware differs from §10. The available Parallels VM has
 4 processors and 8 GiB RAM, also below the 16 GiB reference condition.
 
+Run [38497753643](https://github.com/yuhui0531/localclip-windows/actions/runs/38497753643)
+tested `6c34a4e`; both CI jobs passed. All raw samples are retained in
+[its artifact directory](phase-1-ci-38497753643/).
+
+| Host | Search P95 | Text ingest P95 | Image ingest P95 | First/warm P95 | Gap |
+|---|---:|---:|---:|---:|---:|
+| CI macOS ARM64 | 101.143 ms | 22.142 ms | 121.497 ms | 99.344 / 99.231 ms | 0.11% |
+| CI Windows x64 | 131.572 ms | 21.956 ms | 56.983 ms | 158.814 / 128.682 ms | **23.42%, failed** |
+
+This failed measurement is not discarded. CI success reflects build/test execution,
+not the first-search performance target; the benchmark reports its pass/fail result.
+The §13 Phase 1 exit is vectors, both CI jobs, and WAC16. §10 full desktop performance
+and product acceptance of unresolved misses remain open for later phases.
+
+Final build run [38498258081](https://github.com/yuhui0531/localclip-windows/actions/runs/38498258081)
+tested `1072de2` with static Windows CRT and is green on both OSes.
+[Windows WAC16/test summary](phase-1-ci-38498258081/windows-test-summary.txt).
+
+| Host | Search P95 | Text ingest P95 | Image ingest P95 | First/warm P95 | Gap |
+|---|---:|---:|---:|---:|---:|
+| CI macOS ARM64 | 118.870 ms | 21.986 ms | 146.515 ms | 147.036 / 116.907 ms | **25.77%, failed** |
+| CI Windows x64 | 102.028 ms | 29.310 ms | 178.628 ms | 123.998 / 106.061 ms | 16.91% |
+
+Both new 60-sample series are retained. These variations are not a stable performance
+pass across environments; §10 remains open as described above.
+
 ## Rule mapping
 
 | Task | Implementation and evidence |
@@ -115,7 +141,9 @@ remains a Phase 3 gate. CI hardware differs from §10. The available Parallels V
   PE inspection found a `VCRUNTIME140.dll` import and the guest has no VC runtime.
   Windows MSVC targets now statically link the C runtime via `.cargo/config.toml`,
   following the [Rust linkage reference](https://doc.rust-lang.org/stable/reference/linkage.html#static-and-dynamic-c-runtimes).
-  This adds no dependency or VM installation. Rebuilt-utility launch verification is pending.
+  This adds no dependency or VM installation. The rebuilt utility launched in the Windows 11 ARM64 guest and reached its expected
+  missing-argument validation (exit 1), replacing the loader failure. PE imports
+  contain only Windows system DLLs. [Launch evidence](phase-1-ci-38498258081/vm-launch.txt).
 - Product approved build-time downloads from official Rust, crates.io/npm, and IANA.
   Toolchain/cache directories remain inside this repository. No app network was added.
 - Product approved replacing Windows-invalid filename characters with `-`, removing
@@ -136,6 +164,7 @@ remains a Phase 3 gate. CI hardware differs from §10. The available Parallels V
 Stage-start `git -C /Users/ronny/VscodeProjects/rea status --porcelain`: empty.
 Intermediate repeats: empty. Stage-end check: empty (2026-10-14).
 
-Outstanding: final code commit `6c34a4e` CI run 38497753643, then report closure and PR.
+No Phase 1 implementation or executable exit checks remain. PR delivery is recorded
+in the task checklist. All subsequent report-only commits preserve tested code `1072de2`.
 Phases 2–4 have not started. No paste receipt, installer, update or release acceptance
 is claimed.
