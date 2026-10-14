@@ -373,7 +373,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
                 })
                 .build(app)?;
             if let Err(reason) = set_main_shortcut(app.handle(), &settings.preferences.shortcut) {
-                status(app, reason);
+                status(app.handle(), reason);
             }
             idle_watch(app.handle().clone(), queue);
             Ok(())

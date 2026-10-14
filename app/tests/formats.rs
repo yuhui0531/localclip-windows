@@ -21,6 +21,13 @@ fn html_offsets_count_utf8_bytes_and_keep_fragment() {
 
 #[test]
 fn file_urls_and_dropfiles_preserve_order_and_paths() {
+    let mut ansi = vec![0; 20];
+    ansi[..4].copy_from_slice(&20u32.to_le_bytes());
+    ansi.extend_from_slice(b"C:\\one.txt\0C:\\two.txt\0\0");
+    assert_eq!(
+        decode_dropfiles_with(&ansi, |v| std::str::from_utf8(v).ok().map(String::from)),
+        Some(vec![r"C:\one.txt".into(), r"C:\two.txt".into()])
+    );
     let paths: Vec<String> = vec![
         r"C:\测试 文件\one.txt".into(),
         r"\\server\share\a#b%.png".into(),

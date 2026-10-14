@@ -331,7 +331,30 @@ pub fn capture(settings: &Settings, now: i64, receipt: &mut Option<Receipt>) -> 
                         .into_bytes(),
                     "text/html" => formats::decode_html(&data).ok_or("unsupported")?,
                     "text/uri-list" => {
-                        paths = Some(formats::decode_dropfiles(&data).ok_or("unsupported")?);
+                        paths = Some(
+                            formats::decode_dropfiles_with(&data, |bytes| unsafe {
+                                use windows::Win32::Globalization::{
+                                    CP_ACP, MB_ERR_INVALID_CHARS, MultiByteToWideChar,
+                                };
+                                let count =
+                                    MultiByteToWideChar(CP_ACP, MB_ERR_INVALID_CHARS, bytes, None);
+                                if count <= 0 {
+                                    return None;
+                                }
+                                let mut words = vec![0; count as usize];
+                                if MultiByteToWideChar(
+                                    CP_ACP,
+                                    MB_ERR_INVALID_CHARS,
+                                    bytes,
+                                    Some(&mut words),
+                                ) != count
+                                {
+                                    return None;
+                                }
+                                String::from_utf16(&words).ok()
+                            })
+                            .ok_or("unsupported")?,
+                        );
                         continue;
                     }
                     _ => data,

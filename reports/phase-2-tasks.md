@@ -15,7 +15,9 @@ reference `git status --porcelain`: empty. No PR has been merged.
 - [ ] P2-09 — Serial Windows integration tests, data-directory privacy scanner and actual WAC01/02/04–07/10–13/23 evidence (§8/12/13).
 - [ ] P2-10 — Workspace Clippy, clean reference end check, report and separate PR (§13).
 
-The user offered to test an app build manually if VM use is unavailable. The VM
-supports guest commands but pauses between uses; required third-party acceptance
-apps were not found in the checked locations. A clarification about deferring
-unavailable desktop gates is pending. No test has been waived or marked passed.
+Product decision (2026-10-14): "Build for my manual testing; defer unavailable
+desktop gates." Continue implementation/build through later phases while marking
+unavailable desktop tests unexecuted. This changes the original strict phase gate;
+it does not turn missing tests into passes. The VM supports guest commands but
+pauses between uses; required third-party acceptance apps were not found in the
+checked locations/packages.

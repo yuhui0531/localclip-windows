@@ -42,6 +42,7 @@ fn sensitive_markers_never_reach_generated_store_files() {
     );
     let window = MessageWindow::new().unwrap();
     let sentinel = "LocalClip-generated-private-sentinel-四种标记";
+    std::fs::write(root.join(".localclip-test-data"), b"synthetic").unwrap();
     for marker in [
         "ExcludeClipboardContentFromMonitorProcessing",
         "Clipboard Viewer Ignore",
@@ -78,6 +79,22 @@ fn sensitive_markers_never_reach_generated_store_files() {
             assert!(!bytes.windows(utf16.len()).any(|v| v == utf16));
         }
     }
+    let needles = root.with_extension("needles.json");
+    std::fs::write(&needles, serde_json::to_vec(&vec![sentinel]).unwrap()).unwrap();
+    let scan = Command::new("python")
+        .arg(std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../scripts/scan-private.py"))
+        .arg("--root")
+        .arg(&root)
+        .arg("--needles")
+        .arg(&needles)
+        .output()
+        .unwrap();
+    assert!(scan.status.success());
+    println!(
+        "privacy-scan {}",
+        String::from_utf8(scan.stdout).unwrap().trim()
+    );
+    std::fs::remove_file(needles).unwrap();
     child.kill().unwrap();
     child.wait().unwrap();
     reader.join().unwrap();

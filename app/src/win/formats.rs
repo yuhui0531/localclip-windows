@@ -138,12 +138,38 @@ pub fn encode_dropfiles(paths: &[String]) -> Option<Vec<u8>> {
 }
 
 pub fn decode_dropfiles(bytes: &[u8]) -> Option<Vec<String>> {
+    decode_dropfiles_with(bytes, |_| None)
+}
+pub fn decode_dropfiles_with(
+    bytes: &[u8],
+    decode_ansi: impl Fn(&[u8]) -> Option<String>,
+) -> Option<Vec<String>> {
     let offset = u32::from_le_bytes(bytes.get(..4)?.try_into().ok()?) as usize;
     let wide = u32::from_le_bytes(bytes.get(16..20)?.try_into().ok()?);
-    if offset < 20 || wide == 0 {
+    if offset < 20 {
         return None;
     }
     let data = bytes.get(offset..)?;
+    if wide == 0 {
+        let mut out = Vec::new();
+        let mut start = 0;
+        for (i, byte) in data.iter().enumerate() {
+            if *byte != 0 {
+                continue;
+            }
+            if i == start {
+                return (!out.is_empty()).then_some(out);
+            }
+            let path = decode_ansi(&data[start..i])?;
+            path_to_url(&path)?;
+            out.push(path);
+            if out.len() > 32 {
+                return None;
+            }
+            start = i + 1;
+        }
+        return None;
+    }
     if !data.len().is_multiple_of(2) {
         return None;
     }
