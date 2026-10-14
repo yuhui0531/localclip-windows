@@ -14,3 +14,5 @@ pub mod thumbs;
 #[cfg(all(windows, feature = "desktop"))]
 pub mod update;
 pub mod update_policy;
+
+pub mod code_file;

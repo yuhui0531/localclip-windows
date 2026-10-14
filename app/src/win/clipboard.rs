@@ -448,6 +448,15 @@ fn allocate(bytes: &[u8]) -> Result<Allocation> {
     }
 }
 pub fn write(window: HWND, payload: &Payload) -> Result<(Receipt, usize)> {
+    write_checked(window, payload, None)
+}
+
+/// 在 OpenClipboard 锁内校验序号，智能转换不得覆盖用户的新复制。by AI.Coding
+pub fn write_checked(
+    window: HWND,
+    payload: &Payload,
+    expected: Option<u32>,
+) -> Result<(Receipt, usize)> {
     payload.validate()?;
     let mut blocks = Vec::new();
     let mut missing = 0;
@@ -515,6 +524,9 @@ pub fn write(window: HWND, payload: &Payload) -> Result<(Receipt, usize)> {
         .collect::<Result<Vec<_>>>()?;
     {
         let _open = open(window)?;
+        if expected.is_some_and(|sequence| unsafe { GetClipboardSequenceNumber() } != sequence) {
+            return Err("clipboardChanged");
+        }
         unsafe {
             EmptyClipboard().map_err(|_| "accessUnavailable")?;
         }

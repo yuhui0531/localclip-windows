@@ -19,7 +19,7 @@ use windows::{
 type Policy = Arc<dyn Fn() -> Result<Settings> + Send + Sync>;
 type Captured = Arc<dyn Fn(Result<Capture>, i64, i64) + Send + Sync>;
 enum Command {
-    Copy(Payload, mpsc::Sender<Result<usize>>),
+    Copy(Payload, Option<u32>, mpsc::Sender<Result<(u32, usize)>>),
 }
 struct State {
     policy: Policy,
@@ -82,11 +82,14 @@ unsafe extern "system" fn procedure(window: HWND, message: u32, w: WPARAM, l: LP
                 LRESULT(0)
             }
             WM_APP => {
-                while let Ok(Command::Copy(payload, reply)) = state.commands.try_recv() {
-                    let result = clipboard::write(window, &payload).map(|(receipt, missing)| {
-                        state.receipt = Some(receipt);
-                        missing
-                    });
+                while let Ok(Command::Copy(payload, expected, reply)) = state.commands.try_recv() {
+                    let result = clipboard::write_checked(window, &payload, expected).map(
+                        |(receipt, missing)| {
+                            let sequence = receipt.sequence;
+                            state.receipt = Some(receipt);
+                            (sequence, missing)
+                        },
+                    );
                     let _ = reply.send(result);
                 }
                 LRESULT(0)
@@ -190,9 +193,13 @@ impl Listener {
         }
     }
     pub fn copy(&self, payload: Payload) -> Result<usize> {
+        self.copy_checked(payload, None).map(|(_, missing)| missing)
+    }
+    /// 返回本次写入序号，转换和回退只替换本次仍持有的剪贴板。by AI.Coding
+    pub fn copy_checked(&self, payload: Payload, expected: Option<u32>) -> Result<(u32, usize)> {
         let (tx, rx) = mpsc::channel();
         self.commands
-            .send(Command::Copy(payload, tx))
+            .send(Command::Copy(payload, expected, tx))
             .map_err(|_| "accessUnavailable")?;
         unsafe {
             PostMessageW(

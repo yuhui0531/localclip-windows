@@ -327,6 +327,7 @@ pub struct Preferences {
     pub panel_height: u16,
     pub pause_when_excluded_frontmost: bool,
     pub hide_contents: bool,
+    pub smart_code_file_paste: bool,
     pub appearance: String,
     pub compact_layout: bool,
     pub capture_sounds: bool,
@@ -345,6 +346,7 @@ impl Default for Preferences {
             panel_height: 340,
             pause_when_excluded_frontmost: false,
             hide_contents: false,
+            smart_code_file_paste: false,
             appearance: "system".into(),
             compact_layout: false,
             capture_sounds: false,
@@ -380,7 +382,7 @@ impl Preferences {
             && self.shortcut != self.queue_shortcut
     }
     pub fn document(&self) -> serde_json::Value {
-        serde_json::json!({"defaultAction":self.default_action,"defaultFormat":self.default_format,"panelHeight":self.panel_height,"pauseWhenExcludedFrontmost":self.pause_when_excluded_frontmost,"hideContents":self.hide_contents,"appearance":self.appearance,"compactLayout":self.compact_layout,"captureSounds":self.capture_sounds,"showMenuIcon":self.show_menu_icon,"timingEnabled":self.timing_enabled,"autoCheckUpdates":self.auto_check_updates,"ocrLanguages":self.ocr_languages,"shortcut":{"modifiers":self.shortcut.modifiers,"key":self.shortcut.key},"queueShortcut":{"modifiers":self.queue_shortcut.modifiers,"key":self.queue_shortcut.key}})
+        serde_json::json!({"defaultAction":self.default_action,"defaultFormat":self.default_format,"panelHeight":self.panel_height,"pauseWhenExcludedFrontmost":self.pause_when_excluded_frontmost,"hideContents":self.hide_contents,"smartCodeFilePaste":self.smart_code_file_paste,"appearance":self.appearance,"compactLayout":self.compact_layout,"captureSounds":self.capture_sounds,"showMenuIcon":self.show_menu_icon,"timingEnabled":self.timing_enabled,"autoCheckUpdates":self.auto_check_updates,"ocrLanguages":self.ocr_languages,"shortcut":{"modifiers":self.shortcut.modifiers,"key":self.shortcut.key},"queueShortcut":{"modifiers":self.queue_shortcut.modifiers,"key":self.queue_shortcut.key}})
     }
     pub fn from_document(v: &serde_json::Value) -> Option<Self> {
         let shortcut = |key: &str| -> Option<Shortcut> {
@@ -399,6 +401,11 @@ impl Preferences {
             panel_height: u16::try_from(v["panelHeight"].as_u64()?).ok()?,
             pause_when_excluded_frontmost: v["pauseWhenExcludedFrontmost"].as_bool()?,
             hide_contents: v["hideContents"].as_bool()?,
+            // 旧版设置不包含此字段时保持关闭。by AI.Coding
+            smart_code_file_paste: match v.get("smartCodeFilePaste") {
+                Some(value) => value.as_bool()?,
+                None => false,
+            },
             appearance: v["appearance"].as_str()?.into(),
             compact_layout: v["compactLayout"].as_bool()?,
             capture_sounds: v["captureSounds"].as_bool()?,

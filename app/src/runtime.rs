@@ -119,13 +119,18 @@ impl Runtime {
         hide: impl FnOnce(),
     ) -> Result<paste::Outcome> {
         let listener = self.listener.lock().map_err(|_| "accessUnavailable")?;
-        paste::output(
+        paste::output_with_code_files(
             listener.as_ref().ok_or("accessUnavailable")?,
             payload,
             target,
             direct,
             modifiers_released,
             hide,
+            || {
+                self.store.settings().is_ok_and(|s| {
+                    s.preferences.smart_code_file_paste && !s.preferences.hide_contents
+                })
+            },
         )
     }
     pub fn ocr(

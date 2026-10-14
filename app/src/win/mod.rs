@@ -19,3 +19,6 @@ pub mod rich;
 
 #[cfg(windows)]
 pub mod drag;
+
+#[cfg(windows)]
+pub mod code_file;
