@@ -22,11 +22,11 @@ export function highlighted(text:string):{html:string;language?:string} {
     }
     if(code.size>=160)code.delete(code.keys().next().value!);code.set(prefix,value);return value;
 }
-export interface FileInfo {contentBytes:number;contentCount:number;unknownCount:number;folderCount:number;fileVersion:string;previewText?:string}
+export interface FileInfo {contentBytes:number;contentCount:number;unknownCount:number;folderCount:number;fileVersion:string;previewText?:string;characterCount?:number}
 // 只为实际挂载的可见卡片读取有界正文及元数据；隐藏或取消后不发布内容。
 export function useFileInfo(clip:Clip,revision:number,hidden=false) {
  const [info,setInfo]=useState<FileInfo>();
- useEffect(()=>{let live=true;setInfo(undefined);if(hidden||(clip.kind!=='text'&&!clip.types.some(t=>t==='text/uri-list'||t.startsWith('image/'))))return;
+ useEffect(()=>{let live=true;setInfo(undefined);if(hidden||(clip.kind!=='text'&&clip.kind!=='url'&&!clip.types.some(t=>t==='text/uri-list'||t.startsWith('image/'))))return;
   void call<FileInfo>('clip_detail',{id:clip.id,previewOnly:true}).then(v=>{if(live)setInfo(v);}).catch(()=>{});return()=>{live=false;};
  },[clip.id,revision,hidden]);return info;
 }

@@ -114,7 +114,7 @@ pub fn info(payload: &Payload) -> serde_json::Value {
             }
         }
     }
-    serde_json::json!({"contentBytes":known,"contentCount":count,"unknownCount":unknown,"folderCount":folders,"fileVersion":localclip_core::domain::hash(version.as_bytes()),"previewText":text})
+    serde_json::json!({"contentBytes":known,"contentCount":count,"unknownCount":unknown,"folderCount":folders,"fileVersion":localclip_core::domain::hash(version.as_bytes()),"previewText":text,"characterCount":payload.character_count()})
 }
 /// 根据真实编码生成缩略图，不依赖文件扩展名。
 pub fn image(bytes: &[u8]) -> Option<Vec<u8>> {

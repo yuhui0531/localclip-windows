@@ -2,6 +2,7 @@
 pub use crate::web::web_link;
 use sha2::{Digest, Sha256};
 use std::collections::BTreeSet;
+use unicode_segmentation::UnicodeSegmentation;
 
 pub const MIB: u64 = 1_048_576;
 pub const DAY_MS: i64 = 86_400_000;
@@ -193,6 +194,20 @@ impl Payload {
             .map(|i| i.plain_text.as_deref())
             .collect::<Option<Vec<_>>>()
             .map(|v| v.join("\n"))
+    }
+    /// 卡片字符数使用完整正文的组合字符，不能用截断摘要或 UTF-8 字节数替代。
+    pub fn character_count(&self) -> Option<usize> {
+        if !matches!(self.kind(), Kind::Text | Kind::Url | Kind::RichText) {
+            return None;
+        }
+        // 常见单项正文直接借用，避免为计数复制大文本。
+        match self.items.as_slice() {
+            [item] => item
+                .plain_text
+                .as_deref()
+                .map(|text| text.graphemes(true).count()),
+            _ => self.plain_text().map(|text| text.graphemes(true).count()),
+        }
     }
     pub fn kind(&self) -> Kind {
         let types: BTreeSet<_> = self

@@ -813,3 +813,26 @@ fn edit_text_quota_and_commit_failure_roll_back() {
     assert_eq!(f.store().revision().unwrap(), revision);
     assert_eq!(f.store().integrity_check().unwrap(), "ok");
 }
+
+// 精确组合字符计数覆盖重音、CRLF 与联字 emoji，且文件路径不冒充正文。by AI.Coding
+#[test]
+fn card_character_count_uses_full_composed_text() {
+    assert_eq!(Payload::text("e\u{301}\r\n👨‍👩‍👧‍👦").character_count(), Some(3));
+    let payload = Payload {
+        items: vec![Item {
+            representations: vec![Representation {
+                format: "text/uri-list".into(),
+                data: b"file:///C:/generated.txt".to_vec(),
+            }],
+            plain_text: Some("file:///C:/generated.txt".into()),
+            ..Default::default()
+        }],
+    };
+    assert_eq!(payload.character_count(), None);
+    let f = Fixture::new(Settings::default());
+    let Ingest::Inserted(id) = f.ingest(Payload::text(&"中文".repeat(300))) else {
+        panic!("insert")
+    };
+    assert_eq!(f.store().summary(&id).unwrap().preview.chars().count(), 180);
+    assert_eq!(f.store().payload(&id).unwrap().character_count(), Some(600));
+}

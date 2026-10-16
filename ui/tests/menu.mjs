@@ -77,7 +77,7 @@ try{
   await page.evaluate(()=>{window.testItems[1].fullText='// generated line\n'.repeat(100)+'const answer = 42;';window.testItems[1].richText=true;});
   await card(1).click({button:'right'});await choose('编辑内容');await page.getByRole('dialog',{name:'编辑内容'}).waitFor();
   assert((await page.getByLabel('文本内容').inputValue()).endsWith('const answer = 42;'));assert(await page.getByText('保存修改后将使用纯文本，原有富文本格式会被替换。').isVisible());
-  await page.setViewportSize({width:1200,height:800});const rect=await page.getByRole('dialog',{name:'编辑内容'}).boundingBox();assert(rect.height>650&&rect.y+rect.height<=800);await page.screenshot({path:'reports/raw/edit018-browser-editor.png'});
+  await page.setViewportSize({width:1200,height:800});const rect=await page.getByRole('dialog',{name:'编辑内容'}).boundingBox();assert(rect.height>=350&&rect.height<=430&&rect.y+rect.height<=800);assert((await page.getByLabel('文本内容').boundingBox()).height>=200);await page.screenshot({path:'reports/raw/edit018-browser-editor.png'});
  });
  await check('editing keyboard and IME cannot trigger history actions; cancel preserves content',async()=>{
   const before=await page.evaluate(()=>window.testCalls.filter(v=>['perform','delete'].includes(v.command)).length);
