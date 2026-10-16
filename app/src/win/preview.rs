@@ -218,7 +218,20 @@ fn pdf(bytes: &[u8]) -> Option<Vec<u8>> {
     }
     let page = document.GetPage(0).ok()?;
     let options = PdfPageRenderOptions::new().ok()?;
-    options.SetDestinationWidth(640).ok()?;
+    let size = page.Size().ok()?;
+    if !size.Width.is_finite()
+        || !size.Height.is_finite()
+        || size.Width <= 0.0
+        || size.Height <= 0.0
+    {
+        return None;
+    }
+    // 两个方向都限制像素预算，避免长页面仅按宽度缩放后产生巨幅位图。
+    if size.Width / 640.0 >= size.Height / 480.0 {
+        options.SetDestinationWidth(640).ok()?;
+    } else {
+        options.SetDestinationHeight(480).ok()?;
+    }
     let output = InMemoryRandomAccessStream::new().ok()?;
     page.RenderWithOptionsToStreamAsync(&output, &options)
         .ok()?
@@ -247,8 +260,8 @@ mod tests {
         .unwrap();
         assert!(png.starts_with(b"\x89PNG\r\n\x1a\n"));
         let decoded = image::load_from_memory(&png).unwrap();
-        assert_eq!(decoded.width(), 640);
-        assert_eq!(decoded.height(), 640);
+        assert_eq!(decoded.width(), 480);
+        assert_eq!(decoded.height(), 480);
     }
 
     #[test]
