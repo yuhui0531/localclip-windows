@@ -5,10 +5,12 @@ import swift from 'highlight.js/lib/languages/swift';
 import { bytes, call, Clip, thumb } from './api';
 hljs.registerLanguage('swift',swift);
 const code = new Map<string,{html:string;language?:string}>();
+/** 高亮预算只约束着色，不截断详情正文；避免在代理对中间分开前后两段。 */
+function codePrefix(text:string) {return text.slice(0,16_384).replace(/[\uD800-\uDBFF]$/,'');}
 // 有界检测样本排除路径、链接和普通中文正文，真实代码仍使用原文着色。by AI.Coding
 export function highlighted(text:string):{html:string;language?:string} {
-    const cached=code.get(text);if(cached)return cached;
-    const prefix=text.slice(0,16_384);const sample=prefix.slice(0,2048);
+    const prefix=codePrefix(text);const cached=code.get(prefix);if(cached)return cached;
+    const sample=prefix.slice(0,2048);
     const plain={html:prefix.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')};
     const lines=sample.trim().split(/\r?\n/);
     const path=(line:string)=>/^(?:[A-Za-z]:[\\/]|\\\\|\/|~\/|file:\/\/)/.test(line.trim());
@@ -18,7 +20,7 @@ export function highlighted(text:string):{html:string;language?:string} {
       const detection=hljs.highlightAuto(lines.filter(line=>!path(line)).join('\n'), ['json','java','python','javascript','typescript','yaml','xml','css','bash','swift','sql','cpp','csharp','go','ruby','php','rust','ini','markdown']);
       if(detection.language&&detection.relevance>=3)value={html:hljs.highlight(prefix,{language:detection.language,ignoreIllegals:true}).value,language:detection.language};
     }
-    if(code.size>=160)code.delete(code.keys().next().value!);code.set(text,value);return value;
+    if(code.size>=160)code.delete(code.keys().next().value!);code.set(prefix,value);return value;
 }
 export interface FileInfo {contentBytes:number;contentCount:number;unknownCount:number;folderCount:number;fileVersion:string;previewText?:string}
 // 只为实际挂载的可见卡片读取元数据；取消后不发布内容。
@@ -78,8 +80,10 @@ export function ImagePreview({clip,revision,fallback,info}:{clip:Clip;revision:n
   </div>
  </div>;
 }
-/** 详情必须保留全文；超出高亮预算时用完整纯文本，避免静默截断。 */
-export function TextPreview({text}:{text:string}) {const result=text.length<=16_384?highlighted(text):undefined;return result?.language?<pre className="code-preview" dangerouslySetInnerHTML={{__html:result.html}}/>:<pre>{text}</pre>;}
+/** 详情保留全文和有界高亮；尾部交给 React 转义，长度增加不能关闭已有着色。 */
+export function TextPreview({text}:{text:string}) {const result=highlighted(text);return result.language?<pre className="code-preview"><span dangerouslySetInnerHTML={{__html:result.html}}/>{text.slice(codePrefix(text).length)}</pre>:<pre>{text}</pre>;}
+/** 编辑器常同时复制 HTML 和正文；已识别代码使用统一高亮，普通富文本仍保留排版。 */
+export function ContentPreview({text,html}:{text?:string;html?:string}) {return html&&!(text&&highlighted(text).language)?<RichPreview html={html}/>:<TextPreview text={text||'此格式没有文本预览'}/>;}
 export function clearPreviewCache(){code.clear();}
 export function RichPreview({html}:{html:string}){
     const safe=`<!doctype html><html><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; form-action 'none'; base-uri 'none'"><style>body{font:14px/1.5 'Segoe UI',sans-serif;overflow-wrap:anywhere;color:#20262e}img{max-width:100%}</style></head><body>${html}</body></html>`;
