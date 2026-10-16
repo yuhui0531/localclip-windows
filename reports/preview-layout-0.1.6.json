@@ -1,0 +1,746 @@
+{
+  "version": "0.1.6",
+  "applicationSource": "a5f44eab214e7b3a390f9066974db9a50735998a",
+  "verificationDate": "2026-10-17",
+  "environment": "Parallels Windows 11 ARM64; isolated generated history with capture paused",
+  "browserLayoutCasesPassed": 8,
+  "browserMenuCasesPassed": 14,
+  "localRustTestsPassed": 43,
+  "ci": {
+    "status": "success",
+    "url": "https://github.com/yuhui0531/localclip-windows/actions/runs/38934937386"
+  },
+  "installerBuild": {
+    "status": "success",
+    "url": "https://github.com/yuhui0531/localclip-windows/actions/runs/38934963127"
+  },
+  "native": {
+    "layout-native": {
+      "restored": {
+        "left": 0,
+        "width": 4122,
+        "handle": 1377470,
+        "top": 1528,
+        "height": 695
+      },
+      "exeSha256": "9c5462a7f5042454e582e917ec3b22d045ef5b1a9ba959986ecea2464b22585a",
+      "checks": [
+        {
+          "name": "generated capture paused",
+          "passed": true
+        },
+        {
+          "name": "card title above content",
+          "passed": true
+        },
+        {
+          "name": "native window expanded within monitor work area",
+          "passed": true
+        },
+        {
+          "name": "full-resolution image fits without clipping or stretching",
+          "passed": true
+        },
+        {
+          "name": "original size preserves source dimensions",
+          "passed": true
+        },
+        {
+          "name": "zoom produces scrollable image canvas",
+          "passed": true
+        },
+        {
+          "name": "dragging zoomed canvas pans image",
+          "passed": true
+        },
+        {
+          "name": "close restores history geometry",
+          "passed": true
+        },
+        {
+          "name": "details have usable body and inspector",
+          "passed": true
+        },
+        {
+          "name": "OCR entry remains visible",
+          "passed": true
+        },
+        {
+          "name": "reopen clears detail and restores compact history",
+          "passed": true
+        }
+      ],
+      "expanded": {
+        "left": 848,
+        "width": 2426,
+        "handle": 1377470,
+        "top": 304,
+        "height": 1615
+      },
+      "before": {
+        "left": 0,
+        "width": 4122,
+        "handle": 1377470,
+        "top": 1528,
+        "height": 695
+      },
+      "image": {
+        "naturalWidth": 1000,
+        "naturalHeight": 240,
+        "width": 1000,
+        "height": 240,
+        "fit": true,
+        "closeVisible": true
+      }
+    },
+    "layout-native-ui": {
+      "ocrLines": 2,
+      "exeSha256": "9c5462a7f5042454e582e917ec3b22d045ef5b1a9ba959986ecea2464b22585a",
+      "checks": [
+        {
+          "name": "capture paused",
+          "passed": true
+        },
+        {
+          "name": "card context menu contains OCR and screenshot actions",
+          "passed": true
+        },
+        {
+          "name": "original image copy preserves PNG bytes despite plain-text default",
+          "passed": true
+        },
+        {
+          "name": "image OCR copies actual English/numbers and Chinese result",
+          "passed": true
+        },
+        {
+          "name": "detail OCR copies recognized text",
+          "passed": true
+        },
+        {
+          "name": "file OCR reads actual image",
+          "passed": true
+        },
+        {
+          "name": "missing OCR language shows installation guidance",
+          "passed": true
+        },
+        {
+          "name": "hidden content disables OCR",
+          "passed": true
+        },
+        {
+          "name": "rename persisted",
+          "passed": true
+        },
+        {
+          "name": "favorite persisted",
+          "passed": true
+        },
+        {
+          "name": "category plus opens categories",
+          "passed": true
+        },
+        {
+          "name": "category assignment persisted",
+          "passed": true
+        },
+        {
+          "name": "locate history retains late record across pages",
+          "passed": true
+        },
+        {
+          "name": "locate category retains same record",
+          "passed": true
+        },
+        {
+          "name": "preview visible",
+          "passed": true
+        },
+        {
+          "name": "protected deletion confirmed",
+          "passed": true
+        },
+        {
+          "name": "undo restores record",
+          "passed": true
+        },
+        {
+          "name": "mixed filter works",
+          "passed": true
+        }
+      ],
+      "capturePaused": true,
+      "ocrText": "LocalClip OCR 12345\n图 片 文 字 识 另 刂 测 试",
+      "ocrExactChinese": false,
+      "menu": {
+        "labels": [
+          "原格式复制",
+          "转换后粘贴… Ctrl T",
+          "复制图中文字",
+          "重命名",
+          "收藏",
+          "加入分类 ›",
+          "在历史中定位 Ctrl G",
+          "在分类中定位 ›",
+          "详情 Ctrl I",
+          "预览 Space",
+          "打开 Ctrl O",
+          "存储为文件…",
+          "删除 Delete"
+        ],
+        "bounded": true,
+        "left": 70
+      }
+    },
+    "layout-open-save": {
+      "openInAssociatedApp": true,
+      "exeSha256": "9c5462a7f5042454e582e917ec3b22d045ef5b1a9ba959986ecea2464b22585a",
+      "saveDialogCompleted": true,
+      "savedBytes": 9758,
+      "savedHashMatchesSource": true
+    },
+    "layout-image-after-clean": {
+      "savedBytes": 9758,
+      "exeSha256": "9c5462a7f5042454e582e917ec3b22d045ef5b1a9ba959986ecea2464b22585a",
+      "saveDialogCompleted": true,
+      "historyImagePreservedAfterCacheCleanup": true,
+      "savedHashMatchesSource": true
+    },
+    "layout-ocr-cancel": {
+      "exeSha256": "9c5462a7f5042454e582e917ec3b22d045ef5b1a9ba959986ecea2464b22585a",
+      "result": {
+        "status": "cancelled"
+      },
+      "clipboardUnchanged": true
+    },
+    "layout-native-cache-drag": {
+      "cacheUiDisplay": "拖出图片文件9.6 KB · 长期保留，不计入历史容量清理…",
+      "exeSha256": "9c5462a7f5042454e582e917ec3b22d045ef5b1a9ba959986ecea2464b22585a",
+      "cacheBytes": 9781,
+      "clearedBytes": 0,
+      "sourcePreserved": true,
+      "confirmationRequired": true,
+      "cancelPreserved": true,
+      "cacheWarning": "清理拖出图片引用这些路径的文档可能无法再显示图片。仅清理导出副本，历史原图保留。取消确认",
+      "cases": [
+        {
+          "drop": {
+            "path": "C:\\Users\\Public\\Documents\\LocalClip-menu-20261016\\history\\DragImages\\8b69b58ad61da3192ba9f1b7151e1d82763f4c4120ffc97f280fd124937e9f01-0.png",
+            "textMatches": false,
+            "existsDuringDrop": true,
+            "unicode": false
+          },
+          "case": "image",
+          "existsAfterDrag": true,
+          "passed": true
+        },
+        {
+          "drop": {
+            "path": "C:\\Users\\Public\\Documents\\LocalClip-menu-20261016\\history\\DragImages\\8b69b58ad61da3192ba9f1b7151e1d82763f4c4120ffc97f280fd124937e9f01-0.png",
+            "textMatches": false,
+            "existsDuringDrop": true,
+            "unicode": false
+          },
+          "case": "image-reuse",
+          "existsAfterDrag": true,
+          "passed": true
+        },
+        {
+          "drop": {
+            "path": "C:\\Users\\Public\\Documents\\LocalClip-menu-20261016\\history\\DragImages\\8b69b58ad61da3192ba9f1b7151e1d82763f4c4120ffc97f280fd124937e9f01-1.png",
+            "textMatches": false,
+            "existsDuringDrop": true,
+            "unicode": false
+          },
+          "case": "image-modified",
+          "existsAfterDrag": true,
+          "passed": true
+        },
+        {
+          "drop": {
+            "path": "C:\\Users\\Public\\Documents\\LocalClip-menu-20261016\\source\\sample.rs",
+            "textMatches": false,
+            "existsDuringDrop": true,
+            "unicode": false
+          },
+          "case": "file-off",
+          "existsAfterDrag": true,
+          "passed": true
+        },
+        {
+          "drop": {
+            "path": "C:\\Users\\Public\\Documents\\LocalClip-menu-20261016\\source\\sample.rs",
+            "textMatches": true,
+            "existsDuringDrop": true,
+            "unicode": true
+          },
+          "case": "file-on",
+          "existsAfterDrag": true,
+          "passed": true
+        }
+      ]
+    },
+    "layout-text-drag-code-native": {
+      "cases": [
+        {
+          "case": "off",
+          "textHandle": 1573946,
+          "after": [
+            2688148,
+            1573946
+          ],
+          "before": [
+            2688148,
+            1573946
+          ],
+          "receiverHandle": 2688148,
+          "receiver": {
+            "textMatches": false,
+            "length": 0
+          },
+          "output": {
+            "missingFiles": 0,
+            "smartPaste": null,
+            "status": "commandSent"
+          },
+          "clipboard": {
+            "ownedByTest": true,
+            "fileMatches": true,
+            "textMatches": false,
+            "file": true,
+            "text": false
+          }
+        },
+        {
+          "case": "copy",
+          "textHandle": 1573946,
+          "after": [
+            2688148,
+            1573946
+          ],
+          "before": [
+            2688148,
+            1573946
+          ],
+          "receiverHandle": 2688148,
+          "receiver": {
+            "textMatches": false,
+            "length": 0
+          },
+          "output": {
+            "missingFiles": 0,
+            "smartPaste": null,
+            "status": "copied"
+          },
+          "clipboard": {
+            "ownedByTest": true,
+            "fileMatches": true,
+            "textMatches": false,
+            "file": true,
+            "text": false
+          }
+        },
+        {
+          "case": "on",
+          "textHandle": 1573946,
+          "after": [
+            2688148,
+            1573946
+          ],
+          "before": [
+            2688148,
+            1573946
+          ],
+          "receiverHandle": 2688148,
+          "receiver": {
+            "textMatches": true,
+            "length": 68
+          },
+          "output": {
+            "missingFiles": 0,
+            "smartPaste": "converted",
+            "status": "commandSent"
+          },
+          "clipboard": {
+            "ownedByTest": true,
+            "fileMatches": false,
+            "textMatches": true,
+            "file": false,
+            "text": true
+          }
+        },
+        {
+          "case": "unknown",
+          "textHandle": 1573946,
+          "after": [
+            2688148,
+            1049666
+          ],
+          "before": [
+            2688148,
+            1049666
+          ],
+          "receiverHandle": 2688148,
+          "receiver": {
+            "textMatches": false,
+            "length": 0
+          },
+          "output": {
+            "missingFiles": 0,
+            "smartPaste": "codeTargetUnknown",
+            "status": "commandSent"
+          },
+          "clipboard": {
+            "ownedByTest": true,
+            "fileMatches": true,
+            "textMatches": false,
+            "file": true,
+            "text": false
+          }
+        },
+        {
+          "case": "onAfterButton",
+          "textHandle": 1573946,
+          "after": [
+            2688148,
+            1573946
+          ],
+          "before": [
+            2688148,
+            1573946
+          ],
+          "receiverHandle": 2688148,
+          "receiver": {
+            "textMatches": true,
+            "length": 68
+          },
+          "output": {
+            "missingFiles": 0,
+            "smartPaste": "converted",
+            "status": "commandSent"
+          },
+          "clipboard": {
+            "ownedByTest": true,
+            "fileMatches": false,
+            "textMatches": true,
+            "file": false,
+            "text": true
+          }
+        },
+        {
+          "case": "readonly",
+          "textHandle": 1573946,
+          "after": [
+            2688148,
+            1573946
+          ],
+          "before": [
+            2688148,
+            1573946
+          ],
+          "receiverHandle": 2688148,
+          "receiver": {
+            "textMatches": false,
+            "length": 0
+          },
+          "output": {
+            "missingFiles": 0,
+            "smartPaste": "codeTargetUnknown",
+            "status": "commandSent"
+          },
+          "clipboard": {
+            "ownedByTest": true,
+            "fileMatches": true,
+            "textMatches": false,
+            "file": true,
+            "text": false
+          }
+        },
+        {
+          "case": "hidden",
+          "textHandle": 1573946,
+          "after": [
+            2688148,
+            1573946
+          ],
+          "before": [
+            2688148,
+            1573946
+          ],
+          "receiverHandle": 2688148,
+          "receiver": {
+            "textMatches": false,
+            "length": 0
+          },
+          "output": {
+            "missingFiles": 0,
+            "smartPaste": null,
+            "status": "commandSent"
+          },
+          "clipboard": {
+            "ownedByTest": true,
+            "fileMatches": true,
+            "textMatches": false,
+            "file": true,
+            "text": false
+          }
+        }
+      ],
+      "exeSha256": "9c5462a7f5042454e582e917ec3b22d045ef5b1a9ba959986ecea2464b22585a",
+      "codeCommit": "a5f44eab214e7b3a390f9066974db9a50735998a",
+      "sourcePreserved": true,
+      "capturePaused": true,
+      "wheel": {
+        "left": 240,
+        "idle": true,
+        "color": "rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)",
+        "rendered": 10
+      }
+    },
+    "layout-text-highlight-result": {
+      "hidden": true,
+      "exeSha256": "9c5462a7f5042454e582e917ec3b22d045ef5b1a9ba959986ecea2464b22585a",
+      "before": {
+        "previews": 5,
+        "coloredTokens": 34
+      },
+      "restored": true
+    },
+    "layout-text-notepad-result": {
+      "exeSha256": "9c5462a7f5042454e582e917ec3b22d045ef5b1a9ba959986ecea2464b22585a",
+      "sameDocument": true,
+      "existingTextPreserved": true,
+      "expectedLength": 28,
+      "trace": {},
+      "length": 49,
+      "textInserted": true
+    },
+    "layout-text-explorer-result": {
+      "exeSha256": "9c5462a7f5042454e582e917ec3b22d045ef5b1a9ba959986ecea2464b22585a",
+      "cases": [
+        {
+          "case": "cancel",
+          "files": [
+            null
+          ],
+          "passed": true
+        },
+        {
+          "case": "text",
+          "files": [
+            "LocalClip.json"
+          ],
+          "passed": true
+        },
+        {
+          "case": "file",
+          "files": [
+            "LocalClip.json",
+            "sample.rs"
+          ],
+          "passed": true
+        }
+      ],
+      "sourcePreserved": true
+    },
+    "layout-focus": {
+      "pinnedRemainsVisible": true,
+      "exeSha256": "9c5462a7f5042454e582e917ec3b22d045ef5b1a9ba959986ecea2464b22585a",
+      "unPinnedHides": true,
+      "hiddenOutputRejected": true
+    }
+  },
+  "packages": [
+    {
+      "arch": "arm64",
+      "msiSha256": "E74CC85020FFC2BC184EE9101A576C26CEECA3857A4A4D33F4E47A85862F5430",
+      "exeSha256": "9C5462A7F5042454E582E917EC3B22D045EF5B1A9BA959986ECEA2464B22585A"
+    },
+    {
+      "arch": "x64",
+      "msiSha256": "2F7FB11A84DA4FBAC2E2E48F5CC518A873231FDB037B0B5C09809DD69A71B2DB",
+      "exeSha256": "3F1657C0B498AF26B69F37E7ED25A913E41C60ACC7AD3A0C607576A5BE1E4B88"
+    }
+  ],
+  "packageExtraction": [
+    {
+      "mainMatchesCiExecutable": true,
+      "arch": "arm64",
+      "files": [
+        {
+          "signer": null,
+          "signature": "NotSigned",
+          "sha256": "9C5462A7F5042454E582E917EC3B22D045EF5B1A9BA959986ECEA2464B22585A",
+          "file": "localclip.exe",
+          "bytes": 16856064
+        },
+        {
+          "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "signature": "Valid",
+          "sha256": "C90F9CDCEC5E1997E581127DD1CB4526C239551908E9ADBFE63AD14671BDCC94",
+          "file": "MicrosoftEdgeWebview2Setup.exe",
+          "bytes": 1867984
+        },
+        {
+          "signer": "CN=WiX Toolset (.NET Foundation), O=WiX Toolset (.NET Foundation), L=Redmond, S=Washington, C=US, SERIALNUMBER=603 389 068, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.2=Washington, OID.1.3.6.1.4.1.311.60.2.1.3=US",
+          "signature": "Valid",
+          "sha256": "7F47D98AB25CFEA9B3A2E898C3376CC9BA1CD893B4948B0C27CAA530FD0E34CC",
+          "file": "WixUIWixca.dll",
+          "bytes": 135440
+        }
+      ]
+    },
+    {
+      "mainMatchesCiExecutable": true,
+      "arch": "x64",
+      "files": [
+        {
+          "signer": null,
+          "signature": "NotSigned",
+          "sha256": "3F1657C0B498AF26B69F37E7ED25A913E41C60ACC7AD3A0C607576A5BE1E4B88",
+          "file": "localclip.exe",
+          "bytes": 19852800
+        },
+        {
+          "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "signature": "Valid",
+          "sha256": "C90F9CDCEC5E1997E581127DD1CB4526C239551908E9ADBFE63AD14671BDCC94",
+          "file": "MicrosoftEdgeWebview2Setup.exe",
+          "bytes": 1867984
+        },
+        {
+          "signer": "CN=WiX Toolset (.NET Foundation), O=WiX Toolset (.NET Foundation), L=Redmond, S=Washington, C=US, SERIALNUMBER=603 389 068, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.2=Washington, OID.1.3.6.1.4.1.311.60.2.1.3=US",
+          "signature": "Valid",
+          "sha256": "7F47D98AB25CFEA9B3A2E898C3376CC9BA1CD893B4948B0C27CAA530FD0E34CC",
+          "file": "WixUIWixca.dll",
+          "bytes": 135440
+        }
+      ]
+    }
+  ],
+  "defenderScans": {
+    "engine": {
+      "AMProductVersion": "4.18.26070.9",
+      "AMEngineVersion": "1.1.26090.9",
+      "AntivirusSignatureVersion": "1.461.55.0",
+      "AntivirusSignatureLastUpdated": "/Date(1792135120000)/",
+      "RealTimeProtectionEnabled": true
+    },
+    "results": [
+      {
+        "output": "Scan starting...\r\nScan finished.\r\nScanning C:\\Users\\Public\\Documents\\LocalClip-AV-b1efe65bd29a4b48a8ce4e8c2c11f8a0\\arm64\\LocalClip_0.1.6_arm64.msi found no threats.\r\n",
+        "exitCode": 0,
+        "fileExistsAfterScan": true,
+        "sha256": "E74CC85020FFC2BC184EE9101A576C26CEECA3857A4A4D33F4E47A85862F5430",
+        "arch": "arm64",
+        "seconds": 0.5090664,
+        "file": "LocalClip_0.1.6_arm64.msi"
+      },
+      {
+        "output": "Scan starting...\r\nScan finished.\r\nScanning C:\\Users\\Public\\Documents\\LocalClip-AV-b1efe65bd29a4b48a8ce4e8c2c11f8a0\\arm64\\localclip.exe found no threats.\r\n",
+        "exitCode": 0,
+        "fileExistsAfterScan": true,
+        "sha256": "9C5462A7F5042454E582E917EC3B22D045EF5B1A9BA959986ECEA2464B22585A",
+        "arch": "arm64",
+        "seconds": 0.0416521,
+        "file": "localclip.exe"
+      },
+      {
+        "output": "Scan starting...\r\nScan finished.\r\nScanning C:\\Users\\Public\\Documents\\LocalClip-AV-b1efe65bd29a4b48a8ce4e8c2c11f8a0\\arm64\\MicrosoftEdgeWebview2Setup.exe found no threats.\r\n",
+        "exitCode": 0,
+        "fileExistsAfterScan": true,
+        "sha256": "C90F9CDCEC5E1997E581127DD1CB4526C239551908E9ADBFE63AD14671BDCC94",
+        "arch": "arm64",
+        "seconds": 0.0114884,
+        "file": "MicrosoftEdgeWebview2Setup.exe"
+      },
+      {
+        "output": "Scan starting...\r\nScan finished.\r\nScanning C:\\Users\\Public\\Documents\\LocalClip-AV-b1efe65bd29a4b48a8ce4e8c2c11f8a0\\arm64\\WixUIWixca.dll found no threats.\r\n",
+        "exitCode": 0,
+        "fileExistsAfterScan": true,
+        "sha256": "7F47D98AB25CFEA9B3A2E898C3376CC9BA1CD893B4948B0C27CAA530FD0E34CC",
+        "arch": "arm64",
+        "seconds": 0.0130718,
+        "file": "WixUIWixca.dll"
+      },
+      {
+        "output": "Scan starting...\r\nScan finished.\r\nScanning C:\\Users\\Public\\Documents\\LocalClip-AV-b1efe65bd29a4b48a8ce4e8c2c11f8a0\\x64\\LocalClip_0.1.6_x64.msi found no threats.\r\n",
+        "exitCode": 0,
+        "fileExistsAfterScan": true,
+        "sha256": "2F7FB11A84DA4FBAC2E2E48F5CC518A873231FDB037B0B5C09809DD69A71B2DB",
+        "arch": "x64",
+        "seconds": 0.7436572,
+        "file": "LocalClip_0.1.6_x64.msi"
+      },
+      {
+        "output": "Scan starting...\r\nScan finished.\r\nScanning C:\\Users\\Public\\Documents\\LocalClip-AV-b1efe65bd29a4b48a8ce4e8c2c11f8a0\\x64\\localclip.exe found no threats.\r\n",
+        "exitCode": 0,
+        "fileExistsAfterScan": true,
+        "sha256": "3F1657C0B498AF26B69F37E7ED25A913E41C60ACC7AD3A0C607576A5BE1E4B88",
+        "arch": "x64",
+        "seconds": 0.2972201,
+        "file": "localclip.exe"
+      },
+      {
+        "output": "Scan starting...\r\nScan finished.\r\nScanning C:\\Users\\Public\\Documents\\LocalClip-AV-b1efe65bd29a4b48a8ce4e8c2c11f8a0\\x64\\MicrosoftEdgeWebview2Setup.exe found no threats.\r\n",
+        "exitCode": 0,
+        "fileExistsAfterScan": true,
+        "sha256": "C90F9CDCEC5E1997E581127DD1CB4526C239551908E9ADBFE63AD14671BDCC94",
+        "arch": "x64",
+        "seconds": 0.061351499999999996,
+        "file": "MicrosoftEdgeWebview2Setup.exe"
+      },
+      {
+        "output": "Scan starting...\r\nScan finished.\r\nScanning C:\\Users\\Public\\Documents\\LocalClip-AV-b1efe65bd29a4b48a8ce4e8c2c11f8a0\\x64\\WixUIWixca.dll found no threats.\r\n",
+        "exitCode": 0,
+        "fileExistsAfterScan": true,
+        "sha256": "7F47D98AB25CFEA9B3A2E898C3376CC9BA1CD893B4948B0C27CAA530FD0E34CC",
+        "arch": "x64",
+        "seconds": 0.055024899999999995,
+        "file": "WixUIWixca.dll"
+      }
+    ],
+    "localDirectory": "C:\\Users\\Public\\Documents\\LocalClip-AV-b1efe65bd29a4b48a8ce4e8c2c11f8a0"
+  },
+  "installedVerification": {
+    "allExistingDataFilesUnchangedBeforeLaunch": true,
+    "antivirusEnabled": true,
+    "exeSha256": "9C5462A7F5042454E582E917EC3B22D045EF5B1A9BA959986ECEA2464B22585A",
+    "verifiedDataFileCount": 6,
+    "version": "0.1.6",
+    "realtimeEnabled": true,
+    "backup": "C:\\Users\\ronny\\AppData\\Local\\LocalClip-UpgradeBackups\\before-0.1.6-20261017-011357",
+    "runningPid": 8344,
+    "installed": [
+      {
+        "DisplayVersion": "0.1.6",
+        "InstallLocation": "C:\\apps\\LocalClip\\"
+      }
+    ]
+  },
+  "installationExitCode": 0,
+  "generatedClipboardClearedBeforeUpgrade": true,
+  "vmIdlePauseRestored": true,
+  "limitations": [
+    "Native desktop checks ran on Windows 11 ARM64; x64 packages built and were scanned.",
+    "Windows OCR still makes spacing/character errors on the Chinese fixture; engine unchanged.",
+    "Unsigned manual-test packages; Defender clean results do not establish a 360 result."
+  ],
+  "rawEvidenceSha256": {
+    "layout-native.json": "fdfde296327b90cafc68678152ef7d66eeb248292471dbfff0f5718011aed11b",
+    "layout-native-ui.json": "939befd9bd2bf2eec9a4627b995f62f5ef4920335767881d54d106b1937d8aab",
+    "layout-open-save.json": "a9a716041ea82cd848e59fe5e751820938b20c863a6af9af09632fc1802fa8a4",
+    "layout-image-after-clean.json": "28552edc25b820864d0f8a652a69132aa25096997ed31b5ceb7ccb39c2658f2a",
+    "layout-ocr-cancel.json": "4c0ce0cd0796c6c82b39ede1d155c975788a1101f95102119aba8022e3620de7",
+    "layout-native-cache-drag.json": "dceef03da74e8273befd8e17ac3e05828837644dd164421f4830aba5d87c6c37",
+    "layout-text-drag-code-native.json": "95689c91b49e94bbf0d670ee42016420f46a60d1113b3b3a9325bb5b9c90b04a",
+    "layout-text-highlight-result.json": "70ffcac8d6426ab77df357c218700732b3ccfda5ddd2fadc23a28a5f1180d04f",
+    "layout-text-notepad-result.json": "64b4c34826e9ad90c253beca8c41f6a09f5efed34fb3d7ff2ba74fa4f6eaf287",
+    "layout-text-explorer-result.json": "61e6fa451bc075b60616cdf9b2530971323188118baec0990a7c0198661ff26b",
+    "layout-focus.json": "6fd7059cd542733647b1c1e7e4fcfd35b15c18591522ccf6727f9c20e4ff55b8",
+    "layout-installed-verified.json": "25b38fae968cec03b72cd3c3f137439f71605f0495de75d91cdef7330510b8dd",
+    "layout-defender-scan.json": "e751096d66a00a6bfad55fe4d5c332a402c09b000738273214d7ff4840be9c30",
+    "layout-msi-extracted-v2.json": "064d51faa8163c284015d494d62a531aa50d3c918a02ed5bf3e81bc5e3309985"
+  }
+}
