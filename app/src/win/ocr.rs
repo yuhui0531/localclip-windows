@@ -38,8 +38,10 @@ fn bitmap(payload: &Payload, cancelled: &AtomicBool) -> Result<SoftwareBitmap, &
                         ..Default::default()
                     }],
                 };
-                if let Ok(bitmap) = bitmap(&candidate, cancelled) {
-                    return Ok(bitmap);
+                match bitmap(&candidate, cancelled) {
+                    Ok(bitmap) => return Ok(bitmap),
+                    Err("unsupported") => {}
+                    Err(error) => return Err(error),
                 }
             }
             continue;

@@ -164,14 +164,16 @@ pub fn document(path: &str, bytes: Option<&[u8]>) -> Option<Vec<u8>> {
         if w <= 0 || h <= 0 || i64::from(w) * i64::from(h) > 4_000_000 {
             return None;
         }
-        let mut dib = BITMAPINFO::default();
-        dib.bmiHeader = BITMAPINFOHEADER {
-            biSize: std::mem::size_of::<BITMAPINFOHEADER>() as u32,
-            biWidth: w,
-            biHeight: -h,
-            biPlanes: 1,
-            biBitCount: 32,
-            biCompression: BI_RGB.0,
+        let mut dib = BITMAPINFO {
+            bmiHeader: BITMAPINFOHEADER {
+                biSize: std::mem::size_of::<BITMAPINFOHEADER>() as u32,
+                biWidth: w,
+                biHeight: -h,
+                biPlanes: 1,
+                biBitCount: 32,
+                biCompression: BI_RGB.0,
+                ..Default::default()
+            },
             ..Default::default()
         };
         let mut raw = vec![0u8; (w * h * 4) as usize];

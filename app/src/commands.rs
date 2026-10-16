@@ -305,7 +305,15 @@ fn dispatch(app: &tauri::AppHandle, name: &str, request: Value) -> Result<Value>
                 return Ok(result);
             }
             let items = payload.items.iter().map(|i|json!({"types":i.representations.iter().map(|r|&r.format).collect::<Vec<_>>(),"plainText":if hide {None} else {i.plain_text.as_deref()},"html":if hide {None} else {i.representation("text/html").and_then(|b|std::str::from_utf8(b).ok())},"hasImage":i.representations.iter().any(|r|r.format.starts_with("image/")) || i.file_path().is_some()})).collect::<Vec<_>>();
-            Ok(json!({"categoryIDs":s["categoryIDs"],"summary":s,"items":items}))
+            let file_info = (!hide).then(|| crate::win::preview::info(&payload));
+            // 慢文件预览完成后再次验证可见性，防止隐藏操作后的正文回流。
+            if store.settings().map_err(error)?.preferences.hide_contents != hide {
+                return Err("contentsHidden".into());
+            }
+            store.summary(id).map_err(error)?;
+            Ok(
+                json!({"categoryIDs":s["categoryIDs"],"summary":s,"items":items,"fileInfo":file_info}),
+            )
         }
         "perform" => perform_output(app, &request),
         "transform_menu" => {

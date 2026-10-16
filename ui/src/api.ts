@@ -6,7 +6,7 @@ export interface Catalog {categories:Category[];sources:{id:string|null;name:str
 export interface Shortcut {modifiers:string[];key:string}
 export interface Settings {revision:number;retentionDays:number;quotaBytes:number;captureEnabled:boolean;pauseUntil:number|null;excludedAppIDs:string[];moveUsedToFront:boolean;defaultAction:'copy'|'directPaste';defaultFormat:'original'|'plainText';panelHeight:number;pauseWhenExcludedFrontmost:boolean;hideContents:boolean;smartCodeFilePaste:boolean;appearance:'system'|'light'|'dark';compactLayout:boolean;captureSounds:boolean;showMenuIcon:boolean;timingEnabled:boolean;autoCheckUpdates:boolean;ocrLanguages:string[];shortcut:Shortcut;queueShortcut:Shortcut;autostart?:boolean}
 export interface Page {items:Clip[];cursor:unknown;revision:number;labels:string[];problems:string[]}
-export interface Detail {summary:Clip;items:{types:string[];plainText?:string;html?:string;hasImage:boolean}[];categoryIDs:string[]}
+export interface Detail {fileInfo?:import("./preview").FileInfo;summary:Clip;items:{types:string[];plainText?:string;html?:string;hasImage:boolean}[];categoryIDs:string[]}
 export interface Inspection {badge?:string;title?:string;note?:string;rows:{label:string;value:string;monospaced?:boolean}[];actions:{title:string;transform:string}[]}
 export interface Preview {token:string;affectedCount:number;needsConfirmation:boolean;message:string;estimatedReclaimBytes:number}
 export interface Output {status:string;missingFiles?:number;smartPaste?:string;lines?:number;missingLanguages?:string[];position?:number;total?:number;skipped?:number[]}

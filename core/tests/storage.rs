@@ -65,6 +65,56 @@ impl Drop for Fixture {
 }
 
 #[test]
+fn legacy_rich_text_remains_searchable_without_changing_saved_bytes() {
+    let f = Fixture::new(Settings::default());
+    let payload = Payload {
+        items: vec![Item {
+            plain_text: Some("formatted body".into()),
+            representations: vec![
+                Representation {
+                    format: "text/html".into(),
+                    data: b"<b>formatted body</b>".to_vec(),
+                },
+                Representation {
+                    format: "text/rtf".into(),
+                    data: br"{\rtf1 formatted body}".to_vec(),
+                },
+            ],
+            ..Default::default()
+        }],
+    };
+    let Ingest::Inserted(id) = f.ingest(payload.clone()) else {
+        panic!("insert")
+    };
+    // 模拟旧版分类，验证新筛选不会丢失旧记录或改写原始表示。
+    let db = rusqlite::Connection::open(f.root.join("history.sqlite")).unwrap();
+    db.execute("UPDATE clips SET kind='richText' WHERE id=?", [&id])
+        .unwrap();
+    let found = f
+        .store()
+        .search(SearchRequest {
+            kind: Some(localclip_core::domain::Kind::Text),
+            ..Default::default()
+        })
+        .unwrap();
+    assert_eq!(found.items.len(), 1);
+    assert_eq!(found.items[0].id, id);
+    let restored = f.store().payload(&id).unwrap();
+    for rep in &payload.items[0].representations {
+        assert_eq!(
+            restored.items[0].representation(&rep.format),
+            Some(rep.data.as_slice())
+        );
+    }
+    assert_eq!(
+        db.query_row("PRAGMA user_version", [], |r| r.get::<_, i64>(0))
+            .unwrap(),
+        1
+    );
+    assert_eq!(f.store().integrity_check().unwrap(), "ok");
+}
+
+#[test]
 fn renaming_requires_visible_record_and_unchanged_name_preserves_cursor() {
     let f = Fixture::new(Settings {
         retention_days: 1,
