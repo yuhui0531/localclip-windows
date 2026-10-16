@@ -16,8 +16,9 @@ await page.addInitScript(()=>{
  const callbacks=new Map(),listeners=new Map();let next=1;
  const items=Array.from({length:140},(_,i)=>({id:String(i),kind:i===0?'image':i===2?'file':i===3?'mixed':'text',title:null,preview:i===1?'function generated() { return true; }':`Generated ${i}`,context:'',sourceName:'Generated',sourceBasis:'owner',sourceAppID:'generated.exe',lastCopiedAtMs:Date.now()-i*1000,firstCopiedAtMs:Date.now(),copyCount:1,favorite:false,protected:false,categoryIDs:i===120?['a']:[],types:i===0?['image/png']:i===2?['text/uri-list']:i===3?['image/png','text/plain']:['text/plain'],byteCount:100,badge:null}));
  const settings={revision:1,defaultAction:'copy',defaultFormat:'plainText',hideContents:false,appearance:'light',compactLayout:false,ocrLanguages:['en-US'],retentionDays:30,quotaBytes:500*1048576,excludedAppIDs:[],shortcut:{modifiers:['ctrl','shift'],key:'V'},queueShortcut:{modifiers:['ctrl','shift','alt'],key:'V'}};
- window.testCalls=[];window.testItems=items;window.testSettings=settings;
+ window.testCalls=[];window.testItems=items;window.testSettings=settings;window.testOcrPending=false;
  const emit=()=>{const id=listeners.get('store-changed');if(id)callbacks.get(id)({payload:{kind:'updated'}});};
+ window.testEmit=emit;
  window.__TAURI_EVENT_PLUGIN_INTERNALS__={unregisterListener(){}};
  window.__TAURI_INTERNALS__={transformCallback(fn){const id=next++;callbacks.set(id,fn);return id;},convertFileSrc(){return '/missing.png';},async invoke(command,args={}){
  const r=args.request||{};window.testCalls.push({command,r});
@@ -29,7 +30,8 @@ await page.addInitScript(()=>{
  if(command==='inspect')return {rows:[],actions:[]};
  if(command==='perform')return {status:'copied'};
  if(command==='transform_menu')return [{transform:'uppercase',title:'转为大写',applicable:true}];
- if(command==='ocr_copy')return {status:'ocrCopied',lines:1};
+ if(command==='ocr_copy')return window.testOcrPending?new Promise(resolve=>{window.testOcrResolve=resolve;}):{status:'ocrCopied',lines:1};
+ if(command==='ocr_cancel'){window.testOcrResolve?.({status:'cancelled'});return {};}
  if(command==='set_title'){items.find(v=>v.id===r.id).title=r.value;emit();return {};}
  if(command==='set_favorite'){items.find(v=>v.id===r.id).favorite=r.value;emit();return {};}
  if(command==='assign_categories')return {token:'assign',needsConfirmation:false};
@@ -62,6 +64,7 @@ try{
  await check('save action wired',async()=>{await page.locator('.clip-card.selected').click({button:'right'});await choose('存储为文件…');await page.waitForFunction(()=>window.testCalls.some(v=>v.command==='save_as'));});
  await check('mixed filter and category plus destination',async()=>{await page.getByRole('button',{name:'全部历史',exact:true}).click();await page.getByRole('button',{name:'混合',exact:true}).click();await page.waitForFunction(()=>document.querySelector('.clip-card')?.classList.contains('kind-mixed'));await page.getByLabel('管理分类').click();await page.locator('.settings h2').filter({hasText:'分类'}).waitFor();await page.getByLabel('关闭设置').click();});
  await check('file menu omits unsupported Save As and category creation remains available',async()=>{await page.getByRole('button',{name:'全部历史',exact:true}).click();await page.locator('.clip-card.kind-file').click({button:'right'});assert.equal(await menu.getByRole('menuitem',{name:'存储为文件…'}).count(),0);await menu.getByRole('menuitem',{name:'加入分类'}).click();await menu.getByRole('button',{name:'新建分类…'}).click();await page.locator('.settings h2').filter({hasText:'分类'}).waitFor();await page.getByLabel('关闭设置').click();});
+ await check('OCR progress cancellation and hidden-content guard',async()=>{await page.getByRole('button',{name:'全部历史',exact:true}).click();await page.evaluate(()=>{window.testOcrPending=true;});await page.locator('.clip-card.kind-image').click({button:'right'});await choose('复制图中文字');await page.locator('.ocr-progress').waitFor();await page.locator('.ocr-progress').getByRole('button',{name:'取消',exact:true}).click();await page.waitForFunction(()=>!document.querySelector('.ocr-progress'));assert(await page.evaluate(()=>window.testCalls.some(v=>v.command==='ocr_cancel')));await page.evaluate(()=>{window.testOcrPending=false;window.testSettings.hideContents=true;window.testEmit();});await page.locator('.hidden-content').first().waitFor();await page.locator('.clip-card.kind-image').click({button:'right'});assert(await menu.getByRole('menuitem',{name:'复制图中文字',exact:true}).isDisabled());await page.keyboard.press('Escape');await page.evaluate(()=>{window.testSettings.hideContents=false;window.testEmit();});await page.waitForFunction(()=>!document.querySelector('.hidden-content'));});
  await check('delete wired and code highlight retained',async()=>{await page.getByRole('button',{name:'全部历史',exact:true}).click();await page.locator('.code-preview .hljs-keyword').first().waitFor();await card(3).click({button:'right'});await menu.getByRole('menuitem',{name:/^删除/}).click();await page.waitForFunction(()=>window.testCalls.some(v=>v.command==='delete'));});
  assert.deepEqual(errors,[]);console.log(JSON.stringify({checks,passed:checks.length,errors}));
 }finally{await browser.close();await new Promise(r=>server.close(r));}
