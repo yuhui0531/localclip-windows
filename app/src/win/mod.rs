@@ -24,4 +24,6 @@ pub mod drag;
 pub mod code_file;
 
 #[cfg(windows)]
+pub mod open;
+#[cfg(windows)]
 pub mod preview;

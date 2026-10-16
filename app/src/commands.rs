@@ -316,6 +316,38 @@ fn dispatch(app: &tauri::AppHandle, name: &str, request: Value) -> Result<Value>
             )
         }
         "perform" => perform_output(app, &request),
+        "open_item" => {
+            // 列举和执行都从记录重读；隐藏、删除或面板关闭后禁止打开。
+            if hide {
+                return Err("contentsHidden".into());
+            }
+            if !app
+                .get_webview_window("main")
+                .is_some_and(|w| w.is_visible().unwrap_or(false))
+            {
+                return Err("panelHidden".into());
+            }
+            let id = string(&request, "id")?;
+            store.summary(id).map_err(error)?;
+            let targets = crate::open_target::targets(&store.payload(id).map_err(error)?);
+            if request["index"].is_null() {
+                return Ok(json!(
+                    targets
+                        .iter()
+                        .enumerate()
+                        .map(|(index, t)| json!({"index":index,"label":t.value,"file":t.file}))
+                        .collect::<Vec<_>>()
+                ));
+            }
+            let index = request["index"].as_u64().ok_or("invalidRequest")? as usize;
+            let target = targets.get(index).ok_or("unsupported")?;
+            if store.settings().map_err(error)?.preferences.hide_contents {
+                return Err("contentsHidden".into());
+            }
+            store.summary(id).map_err(error)?;
+            crate::win::open::open(target).map_err(String::from)?;
+            Ok(json!({"opened":true}))
+        }
         "transform_menu" => {
             if hide {
                 return Ok(json!([]));
@@ -701,6 +733,13 @@ pub async fn inspect(app: tauri::AppHandle, request: Value) -> Result<Value> {
     tauri::async_runtime::spawn_blocking(move || dispatch(&app, "inspect", request))
         .await
         .map_err(|_| "commandUnavailable".to_string())?
+}
+/// 系统打开操作始终经过同一可见性和历史对象检查。
+#[tauri::command]
+pub async fn open_item(app: tauri::AppHandle, request: Value) -> Result<Value> {
+    tauri::async_runtime::spawn_blocking(move || dispatch(&app, "open_item", request))
+        .await
+        .map_err(|_| "commandFailed".to_string())?
 }
 
 #[tauri::command]

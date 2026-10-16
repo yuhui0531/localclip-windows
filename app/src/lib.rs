@@ -18,3 +18,4 @@ pub mod update_policy;
 pub mod code_file;
 
 pub mod drag_cache;
+pub mod open_target;

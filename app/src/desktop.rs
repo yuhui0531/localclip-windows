@@ -334,6 +334,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
             crate::commands::transform_menu,
             crate::commands::save_as,
             crate::commands::inspect,
+            crate::commands::open_item,
             crate::commands::queue_start,
             crate::commands::queue_stop,
             crate::commands::queue_status,
