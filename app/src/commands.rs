@@ -150,7 +150,7 @@ fn perform_output(app: &tauri::AppHandle, request: &Value) -> Result<Value> {
                             payload,
                             language,
                             smart_files,
-                            &drag_app
+                            &*drag_app
                                 .state::<AppState>()
                                 .runtime
                                 .drag_cache
