@@ -5,5 +5,7 @@ export RUSTUP_HOME="$repo/.tooling/rustup"
 export CARGO_HOME="$repo/.tooling/cargo"
 export RUSTUP_TOOLCHAIN=1.90.0
 cd "$repo"
-# Homebrew 的 cargo 不读取 rustup 工具链选择，必须显式通过 rustup 启动。
-exec rustup run "$RUSTUP_TOOLCHAIN" cargo "$@"
+# cargo 的外部子命令也从 PATH 查找，避免混用 Homebrew 的 clippy/rustfmt。
+localclip_toolchain_bin=$(dirname "$(rustup which --toolchain "$RUSTUP_TOOLCHAIN" cargo)")
+export PATH="$localclip_toolchain_bin:$PATH"
+exec cargo "$@"
