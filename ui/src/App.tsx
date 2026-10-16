@@ -14,7 +14,8 @@ const glyph:Record<Kind,string>={text:'Aa',url:'↗',image:'▧',file:'▱',mixe
 function Card({clip,selected,index,revision,hidden,categories,onSelect,onDetail,onAction,onMenu,onDrag}:{clip:Clip;selected:boolean;index:number;revision:number;hidden:boolean;categories:Catalog['categories'];onSelect:(e:React.MouseEvent)=>void;onDetail:()=>void;onAction:()=>void;onMenu:(e:React.MouseEvent)=>void;onDrag:()=>void}){
  const info=useFileInfo(clip,revision,hidden);
  const image=clip.types.some(t=>t.startsWith('image/'))||clip.kind==='file';
- const value=clip.context||clip.preview;const code=!hidden&&clip.kind==='text'?highlighted(value):undefined;
+ // 普通浏览用有界正文识别语法；搜索命中片段仍显示在原位置，不被正文开头覆盖。
+ const value=(clip.context&&clip.context!==clip.preview?clip.context:info?.previewText)||clip.context||clip.preview;const code=!hidden&&clip.kind==='text'?highlighted(value):undefined;
  return <article className={`clip-card kind-${clip.kind} ${selected?'selected':''}`} role="option" aria-selected={selected} tabIndex={0} aria-label={`${kindNames[clip.kind]}，${clip.sourceName}，${relative(clip.lastCopiedAtMs)}，${hidden?'内容已隐藏':value.slice(0,80)}`} onClick={onSelect} onDoubleClick={onAction} onContextMenu={onMenu} draggable={!hidden} onDragStart={e=>{e.preventDefault();onDrag();}}>
   <div className="card-header"><span className="kind-icon">{glyph[clip.kind]}</span><span>{kindNames[clip.kind]}</span><span className="card-number">{index<9?`Ctrl ${index+1}`:''}</span><button className="detail-trigger" aria-label="查看详情" onClick={e=>{e.stopPropagation();onDetail();}}>↗</button></div>
   {/* 标题放在正文上方，避免被误认为底部元数据。 */}

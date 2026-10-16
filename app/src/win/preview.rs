@@ -94,6 +94,25 @@ pub fn info(payload: &Payload) -> serde_json::Value {
                 count += 1;
             }
         }
+        // 卡片的 180 字摘要可能只剩注释或半条语句；用有界正文识别代码，不修改存储摘要。
+        if known == 0 {
+            let mut prefix = String::new();
+            for item in &payload.items {
+                if let Some(body) = &item.plain_text {
+                    if !prefix.is_empty() {
+                        prefix.push('\n');
+                    }
+                    let remaining = 16_384usize.saturating_sub(prefix.chars().count());
+                    prefix.extend(body.chars().take(remaining));
+                    if prefix.chars().count() >= 16_384 {
+                        break;
+                    }
+                }
+            }
+            if !prefix.is_empty() {
+                text = Some(prefix);
+            }
+        }
     }
     serde_json::json!({"contentBytes":known,"contentCount":count,"unknownCount":unknown,"folderCount":folders,"fileVersion":localclip_core::domain::hash(version.as_bytes()),"previewText":text})
 }
@@ -257,6 +276,25 @@ fn pdf(bytes: &[u8]) -> Option<Vec<u8>> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    /// 文本卡片读取可识别代码的有界正文，保持文件大小统计和原始载荷不变。
+    #[test]
+    fn text_card_receives_code_beyond_summary_without_unbounded_content() {
+        let source = format!(
+            "// {}\nfunction generated() {{ return true; }}\n{}",
+            "说明".repeat(100),
+            "x".repeat(20_000)
+        );
+        let payload = Payload::text(&source);
+        let result = info(&payload);
+        let preview = result["previewText"].as_str().unwrap();
+        assert!(preview.contains("function generated()"));
+        assert_eq!(preview.chars().count(), 16_384);
+        assert_eq!(result["contentCount"], 0);
+        assert_eq!(
+            payload.items[0].plain_text.as_deref(),
+            Some(source.as_str())
+        );
+    }
     /// 原始像素仅用于详情，卡片保持原来的轻量尺寸。
     #[test]
     fn detail_preserves_pixels_while_card_remains_bounded() {
