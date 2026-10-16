@@ -6,6 +6,10 @@ No separate design document: narrow feature using the existing writer transactio
 
 - [x] Atomic full-text edit with stale/duplicate/visibility guards, metadata preservation and rollback tests.
 - [x] Chinese 编辑内容 menu and details entry, multiline editor, save/cancel, IME-safe keyboard and privacy guards.
-- [ ] Verify search, copy payload, syntax highlighting and existing UI regressions; build Windows packages.
+- [x] Verify search, copy payload, syntax highlighting and existing UI regressions; build Windows packages.
+- [x] Native generated-data editing/copy checks, four Defender scans, backed-up installation with all six original data files unchanged.
+- [ ] Record final CI status (Windows tests passed; final application build/benchmark running).
 
 Edited rich text becomes plain text after explicit Save; the editor explains this. Unchanged Save preserves original formats. Single textual records only; images, files and mixed records are not modified. Empty/NUL/over-50-MiB text rejected. Duplicate content rejected rather than merging or deleting another record. Save does not write the clipboard or change copy timestamps/counts. No schema/dependency/OS permission/network changes.
+
+- [ ] Slow-save focus correction: keep textarea read-only and focusable while saving; package and install 0.1.9.

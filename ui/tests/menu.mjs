@@ -18,7 +18,7 @@ await page.addInitScript(()=>{
  const settings={revision:1,defaultAction:'copy',defaultFormat:'plainText',hideContents:false,appearance:'light',compactLayout:false,ocrLanguages:['en-US'],retentionDays:30,quotaBytes:500*1048576,excludedAppIDs:[],shortcut:{modifiers:['ctrl','shift'],key:'V'},queueShortcut:{modifiers:['ctrl','shift','alt'],key:'V'}};
  window.testCalls=[];window.testItems=items;window.testSettings=settings;window.testOcrPending=false;
  const emit=()=>{const id=listeners.get('store-changed');if(id)callbacks.get(id)({payload:{kind:'updated'}});};
- window.testEmit=emit;
+ window.testEmit=emit;window.testPanelShown=()=>{const id=listeners.get('panel-shown');if(id)callbacks.get(id)({payload:{}});};
  window.__TAURI_EVENT_PLUGIN_INTERNALS__={unregisterListener(){}};
  window.__TAURI_INTERNALS__={transformCallback(fn){const id=next++;callbacks.set(id,fn);return id;},convertFileSrc(){return '/missing.png';},async invoke(command,args={}){
  const r=args.request||{};window.testCalls.push({command,r});
@@ -36,7 +36,7 @@ await page.addInitScript(()=>{
  if(command==='edit_text'){
   const v=items.find(v=>v.id===r.id);
   if(r.text===undefined)return {text:v.fullText??v.preview,fingerprint:'generated-version',richText:Boolean(v.richText)};
-  if(window.testEditError)throw window.testEditError;
+  if(window.testEditError)throw window.testEditError;if(window.testEditPending)await new Promise(resolve=>window.testResolveEdit=resolve);
   v.fullText=r.text;v.preview=r.text.slice(0,180);emit();return {saved:true};
  }
  if(command==='set_title'){items.find(v=>v.id===r.id).title=r.value;emit();return {};}
@@ -77,11 +77,11 @@ try{
   await page.evaluate(()=>{window.testItems[1].fullText='// generated line\n'.repeat(100)+'const answer = 42;';window.testItems[1].richText=true;});
   await card(1).click({button:'right'});await choose('编辑内容');await page.getByRole('dialog',{name:'编辑内容'}).waitFor();
   assert((await page.getByLabel('文本内容').inputValue()).endsWith('const answer = 42;'));assert(await page.getByText('保存修改后将使用纯文本，原有富文本格式会被替换。').isVisible());
-  await page.setViewportSize({width:1200,height:800});const rect=await page.getByRole('dialog',{name:'编辑内容'}).boundingBox();assert(rect.height>650&&rect.y+rect.height<=800);
+  await page.setViewportSize({width:1200,height:800});const rect=await page.getByRole('dialog',{name:'编辑内容'}).boundingBox();assert(rect.height>650&&rect.y+rect.height<=800);await page.screenshot({path:'reports/raw/edit018-browser-editor.png'});
  });
  await check('editing keyboard and IME cannot trigger history actions; cancel preserves content',async()=>{
   const before=await page.evaluate(()=>window.testCalls.filter(v=>['perform','delete'].includes(v.command)).length);
-  await page.getByLabel('文本内容').fill('cancelled draft');await page.keyboard.press('Enter');await page.keyboard.press('Delete');await page.keyboard.press('Control+f');assert(await page.getByLabel('文本内容').evaluate(el=>el===document.activeElement));
+  await page.getByLabel('文本内容').fill('cancelled draft');await page.evaluate(()=>window.testPanelShown());await page.waitForFunction(()=>document.activeElement?.getAttribute('aria-label')==='文本内容');assert.equal(await page.getByLabel('文本内容').inputValue(),'cancelled draft');assert(await page.evaluate(()=>window.testCalls.filter(v=>v.command==='set_detail_view').at(-1).r.expanded));await page.keyboard.press('Enter');await page.keyboard.press('Delete');await page.keyboard.press('Control+f');assert(await page.getByLabel('文本内容').evaluate(el=>el===document.activeElement));
   await page.getByLabel('文本内容').dispatchEvent('keydown',{key:'Escape',isComposing:true,bubbles:true});assert(await page.getByRole('dialog',{name:'编辑内容'}).isVisible());
   await page.getByLabel('文本内容').dispatchEvent('keydown',{key:'Enter',ctrlKey:true,isComposing:true,bubbles:true});assert.equal(await page.evaluate(()=>window.testCalls.filter(v=>v.command==='edit_text'&&v.r.text!==undefined).length),0);
   await page.keyboard.press('Tab');await page.keyboard.press('Tab');await page.keyboard.press('Tab');assert(await page.getByRole('dialog',{name:'编辑内容'}).evaluate(el=>el.contains(document.activeElement)));
@@ -98,6 +98,7 @@ try{
   await page.evaluate(()=>{window.testSettings.hideContents=true;window.testEmit();});await page.getByRole('dialog',{name:'编辑内容'}).waitFor({state:'detached'});await page.locator('.hidden-content').first().waitFor();await card(1).click({button:'right'});assert(await menu.getByRole('menuitem',{name:'编辑内容',exact:true}).isDisabled());await page.keyboard.press('Escape');
   await page.evaluate(()=>{window.testSettings.hideContents=false;window.testEmit();});await page.waitForFunction(()=>!document.querySelector('.hidden-content'));assert.equal(await page.evaluate(()=>window.testItems[1].fullText),'function edited() { return 42; }');await page.setViewportSize({width:1200,height:340});
  });
+ await check('save in flight keeps keyboard inside editor',async()=>{await card(1).click({button:'right'});await choose('编辑内容');await page.getByLabel('文本内容').fill('function pending() { return 42; }');await page.evaluate(()=>window.testEditPending=true);await page.getByRole('button',{name:'保存',exact:true}).click();await page.keyboard.press('Tab');assert(await page.getByRole('dialog',{name:'编辑内容'}).evaluate(el=>el.contains(document.activeElement)));await page.evaluate(()=>window.testResolveEdit());await page.getByRole('dialog',{name:'编辑内容'}).waitFor({state:'detached'});});
  await check('delete wired and code highlight retained',async()=>{await page.getByRole('button',{name:'全部历史',exact:true}).click();await page.locator('.code-preview .hljs-keyword').first().waitFor();await card(3).click({button:'right'});await menu.getByRole('menuitem',{name:/^删除/}).click();await page.waitForFunction(()=>window.testCalls.some(v=>v.command==='delete'));});
  assert.deepEqual(errors,[]);console.log(JSON.stringify({checks,passed:checks.length,errors}));
 }finally{await browser.close();await new Promise(r=>server.close(r));}
