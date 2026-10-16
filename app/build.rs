@@ -1,3 +1,4 @@
+// 桌面命令声明须与窗口权限配套，避免已注册入口被 ACL 拒绝。by AI.Coding
 fn main() {
     #[cfg(feature = "desktop")]
     if std::env::var("CARGO_CFG_TARGET_OS").as_deref() == Ok("windows") {
@@ -8,6 +9,7 @@ fn main() {
                 "update_install",
                 "clip_detail",
                 "perform",
+                "open_item",
                 "transform_menu",
                 "save_as",
                 "inspect",

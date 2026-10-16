@@ -10,6 +10,7 @@
     "allow-search",
     "allow-clip-detail",
     "allow-perform",
+    "allow-open-item",
     "allow-transform-menu",
     "allow-save-as",
     "allow-inspect",
