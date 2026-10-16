@@ -1,0 +1,67 @@
+{
+  "version": "0.1.11",
+  "source": "bc12dcc2d460a925b65d21100825f62f171e3bf5",
+  "pullRequest": 8,
+  "installersRun": 38960413626,
+  "installersStatus": "success",
+  "ciRuns": [
+    38960409040,
+    38960415628
+  ],
+  "ciStatus": "success",
+  "local": {
+    "frontendBuild": "passed",
+    "format": "passed",
+    "clippy": "passed",
+    "menuEditorChecks": 22,
+    "macOSAlignmentChecks": 13,
+    "editorScreenshotInspected": true
+  },
+  "changes": [
+    "Compact editor-only native layout",
+    "Primary title-bar native window dragging",
+    "Opaque editor surface and hidden history controls",
+    "Restore history geometry, late selection and scroll on close"
+  ],
+  "dataSchemaPermissionsDependenciesChanged": false,
+  "native": {
+    "status": "pending_app_exit",
+    "plannedWindowScript": "reports/raw/ui0111-window-native.ps1",
+    "plannedEditorScript": "reports/raw/ui0111-native.ps1",
+    "actualMovementVerified": false,
+    "testScriptSyntaxValidated": true
+  },
+  "installation": {
+    "status": "not_started",
+    "lastVerifiedInstalledVersion": "0.1.8",
+    "runningPid": 10964,
+    "reason": "Personal app running; isolated tests and upgrade require tray exit"
+  },
+  "antivirus": {
+    "status": "passed",
+    "scanner": "Microsoft Defender",
+    "scans": 4,
+    "threatsDetected": 0,
+    "enabled": true,
+    "realtimeEnabled": true,
+    "settingsChanged": false,
+    "sameEnvironment360Rescan": false
+  },
+  "packages": [
+    {
+      "arch": "arm64",
+      "msiSha256": "A334149F785731BB2965F3E636C35E4CEEC395D8B8CABDD52B7696F4B292CF3C",
+      "exeSha256": "265D96FBA08E85642E533A97FE9A7E937652973A82F5BC4DCE09F0C230C92251"
+    },
+    {
+      "arch": "x64",
+      "msiSha256": "D79659FB8EAC25A52DC9A7542800A87866792736693697F389E8125D2D3B8F96",
+      "exeSha256": "2B6DDBCC24E13A5EA6BEC3E15181DD5DE0F58C54A8584BCD00CDA7E3DD39C3C7"
+    }
+  ],
+  "verifiedCiRun": 38960409040,
+  "ciByRun": {
+    "38960409040": "success",
+    "38960415628": "in_progress_at_last_check"
+  }
+}

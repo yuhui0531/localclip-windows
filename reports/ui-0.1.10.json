@@ -76,6 +76,7 @@
   "verifiedCiRun": 38957759820,
   "ciByRun": {
     "38957759820": "success",
-    "38957769207": "in_progress_at_last_check"
-  }
+    "38957769207": "success"
+  },
+  "supersededBy": "0.1.11"
 }
