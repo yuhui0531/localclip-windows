@@ -340,6 +340,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
             crate::commands::queue_status,
             crate::commands::set_pinned,
             crate::commands::set_detail_view,
+            crate::commands::start_window_drag,
             crate::commands::ocr_copy,
             crate::commands::ocr_cancel,
             crate::commands::set_favorite,
@@ -606,11 +607,19 @@ fn position_panel(app: &tauri::AppHandle, window: &tauri::WebviewWindow) {
     let Ok(Some(monitor)) = app.monitor_from_point(cursor.x, cursor.y) else {
         return;
     };
-    let _ = layout_panel(app, window, &monitor, false);
+    let _ = layout_panel(app, window, &monitor, PanelView::History);
 }
 
-/// 只允许切换详情/历史两种受限布局，不向前端开放任意窗口尺寸或位置。
-pub fn set_detail_view(app: &tauri::AppHandle, expanded: bool) -> Result<(), String> {
+/// 编辑使用独立的紧凑布局，避免把整个历史面板放大后留在编辑器背后。
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum PanelView {
+    History,
+    Detail,
+    Editor,
+}
+
+/// 仅切换受限的历史、详情或编辑布局，不开放任意窗口尺寸或位置。
+pub fn set_detail_view(app: &tauri::AppHandle, expanded: bool, editor: bool) -> Result<(), String> {
     let window = app.get_webview_window("main").ok_or("panelHidden")?;
     if expanded && !window.is_visible().unwrap_or(false) {
         return Err("panelHidden".into());
@@ -619,15 +628,33 @@ pub fn set_detail_view(app: &tauri::AppHandle, expanded: bool) -> Result<(), Str
         .current_monitor()
         .map_err(|_| "previewUnavailable")?
         .ok_or("previewUnavailable")?;
-    layout_panel(app, &window, &monitor, expanded)
+    let view = if !expanded {
+        PanelView::History
+    } else if editor {
+        PanelView::Editor
+    } else {
+        PanelView::Detail
+    };
+    layout_panel(app, &window, &monitor, view)
 }
 
-/// 详情在当前显示器工作区居中，退出时恢复底部面板；不修改持久设置或粘贴目标。
+/// 标题栏使用系统拖动当前可见窗口，不接收外部路径或任意窗口句柄。
+pub fn start_window_drag(app: &tauri::AppHandle) -> Result<(), String> {
+    let window = app.get_webview_window("main").ok_or("panelHidden")?;
+    if !window.is_visible().unwrap_or(false) {
+        return Err("panelHidden".into());
+    }
+    window
+        .start_dragging()
+        .map_err(|_| "previewUnavailable".into())
+}
+
+/// 编辑和详情在当前工作区居中，退出时恢复底部面板；不修改设置或粘贴目标。
 fn layout_panel(
     app: &tauri::AppHandle,
     window: &tauri::WebviewWindow,
     monitor: &tauri::Monitor,
-    expanded: bool,
+    view: PanelView,
 ) -> Result<(), String> {
     let area = monitor.work_area();
     let scale = monitor.scale_factor();
@@ -638,11 +665,18 @@ fn layout_panel(
         .settings()
         .map(|s| s.preferences.panel_height)
         .unwrap_or(340);
-    let (width, height) = if expanded {
+    let (width, height) = if view != PanelView::History {
         let margin = (24.0 * scale).round() as u32;
+        let (logical_width, logical_height) = if view == PanelView::Editor {
+            (560.0, 390.0)
+        } else {
+            (1200.0, 800.0)
+        };
         (
-            ((1200.0 * scale).round() as u32).min(area.size.width.saturating_sub(margin).max(1)),
-            ((800.0 * scale).round() as u32).min(area.size.height.saturating_sub(margin).max(1)),
+            ((logical_width * scale).round() as u32)
+                .min(area.size.width.saturating_sub(margin).max(1)),
+            ((logical_height * scale).round() as u32)
+                .min(area.size.height.saturating_sub(margin).max(1)),
         )
     } else {
         (
@@ -652,11 +686,22 @@ fn layout_panel(
     };
     let x = area.position.x + (area.size.width - width) as i32 / 2;
     let y = area.position.y
-        + if expanded {
+        + if view != PanelView::History {
             (area.size.height - height) as i32 / 2
         } else {
             (area.size.height - height) as i32
         };
+    // 历史的 640px 最小宽度不能阻止 560px 编辑器；关闭后恢复原约束。
+    window
+        .set_min_size(Some(tauri::LogicalSize::new(
+            if view == PanelView::Editor {
+                320.0
+            } else {
+                640.0
+            },
+            220.0,
+        )))
+        .map_err(|_| "previewUnavailable")?;
     window
         .set_size(tauri::PhysicalSize::new(width, height))
         .map_err(|_| "previewUnavailable")?;

@@ -42,3 +42,6 @@ button,input,select,textarea{font-family:inherit}button{border-radius:6px}button
 
 /* 卡片标题按卡片边长分级；中等面板仍保留时间和 Ctrl 数字提示。by AI.Coding */
 .small-cards .clip-card .card-title{font-size:12px}.small-cards .card-heading time{display:none}.tiny-cards .clip-card .card-title{font-size:10px}
+
+/* 编辑时隐藏但不卸载历史，避免多余卡片透出，同时保留搜索、滚动和选择状态。by AI.Coding */
+.editor-mode>:not(.edit-shade){visibility:hidden!important;pointer-events:none}.editor-mode{border-radius:12px}.editor-mode .edit-shade{padding:0;background:var(--bg)}.editor-mode .text-editor{max-height:100vh;border:0;border-radius:0}.editor-titlebar{cursor:move;user-select:none;touch-action:none}.editor-titlebar button{cursor:pointer}

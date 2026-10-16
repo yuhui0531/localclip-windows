@@ -66,6 +66,12 @@ try{
  await check('favorite and category assignment',async()=>{await card(1).click({button:'right'});await choose('收藏');await page.waitForFunction(()=>window.testItems[1].favorite);await menu.getByRole('menuitem',{name:'加入分类'}).click();await menu.getByRole('menuitemcheckbox').click();await page.waitForFunction(()=>window.testItems[1].categoryIDs.includes('a'));await page.keyboard.press('Escape');});
  await check('transform explicitly pastes even with copy default',async()=>{await card(1).click({button:'right'});await menu.getByRole('menuitem',{name:/转换后粘贴/}).click();await menu.getByRole('menuitem',{name:'转为大写'}).click();assert.equal(await page.evaluate(()=>window.testCalls.filter(v=>v.command==='perform').at(-1).r.action),'directPaste');});
  await check('locate history paginates beyond first page and retains selected ID',async()=>{await search.fill('Generated 120');await page.waitForFunction(()=>document.querySelectorAll('.clip-card').length===1);await card(0).click({button:'right'});await menu.getByRole('menuitem',{name:/在历史中定位/}).click();await page.waitForFunction(()=>document.querySelector('.clip-card.selected')?.textContent.includes('Generated 120'));assert((await page.locator('.history').evaluate(el=>el.scrollLeft))>1000);assert.equal(await search.inputValue(),'');});
+ // 保留隐藏历史的布局，避免晚页记录在编辑窗口缩小时跳回开头。by AI.Coding
+ await check('closing compact editor retains late history selection and scroll',async()=>{
+  const selected=page.locator('.clip-card.selected');const before=await selected.textContent();const left=await page.locator('.history').evaluate(el=>el.scrollLeft);assert(left>1000);
+  await selected.click({button:'right'});await choose('编辑内容');await page.getByLabel('文本内容').waitFor();await page.setViewportSize({width:560,height:390});await page.waitForTimeout(100);await page.getByRole('button',{name:'取消',exact:true}).click();await page.setViewportSize({width:1200,height:340});await page.waitForTimeout(100);
+  assert.equal(await page.locator('.clip-card.selected').textContent(),before);assert(Math.abs(await page.locator('.history').evaluate(el=>el.scrollLeft)-left)<1);
+ });
  await check('locate category clears previous filters',async()=>{await page.locator('.clip-card.selected').click({button:'right'});await menu.getByRole('menuitem',{name:'在分类中定位'}).click();await menu.getByRole('menuitem',{name:'Generated category',exact:true}).click();await page.waitForFunction(()=>document.querySelector('.filter-bar .category-filter.active')&&document.querySelector('.clip-card.selected')?.textContent.includes('Generated 120'));});
  await check('Space preview toggle and Ctrl+O open',async()=>{await page.locator('.clip-card.selected').click();await page.keyboard.press('Space');await page.getByLabel('条目预览').waitFor();await page.keyboard.press('Escape');await page.locator('.clip-card.selected').focus();await page.keyboard.press('Control+o');await page.waitForFunction(()=>window.testCalls.some(v=>v.command==='open_item'&&v.r.index===0));});
  await check('save action wired',async()=>{await page.locator('.clip-card.selected').click({button:'right'});await choose('存储为文件…');await page.waitForFunction(()=>window.testCalls.some(v=>v.command==='save_as'));});
@@ -79,6 +85,18 @@ try{
   assert((await page.getByLabel('文本内容').inputValue()).endsWith('const answer = 42;'));assert(await page.getByText('保存修改后将使用纯文本，原有富文本格式会被替换。').isVisible());
   await page.setViewportSize({width:1200,height:800});const rect=await page.getByRole('dialog',{name:'编辑内容'}).boundingBox();assert(rect.height>=350&&rect.height<=430&&rect.y+rect.height<=800);assert((await page.getByLabel('文本内容').boundingBox()).height>=200);await page.screenshot({path:'reports/raw/edit018-browser-editor.png'});
  });
+ // 编辑只显示自己的表面；标题拖动交给原生窗口，正文和按钮不得启动拖动。by AI.Coding
+ await check('editor hides underlying history and requests compact native layout',async()=>{
+  assert(await page.getByRole('dialog',{name:'编辑内容'}).isVisible());assert(!(await page.locator('.toolbar').isVisible()));assert(!(await page.locator('.history').isVisible()));assert(!(await page.locator('.status-bar').isVisible()));
+  assert(await page.evaluate(()=>{const r=window.testCalls.filter(v=>v.command==='set_detail_view').at(-1).r;return r.expanded&&r.editor;}));
+  await page.setViewportSize({width:560,height:390});await page.waitForTimeout(100);const rect=await page.getByRole('dialog',{name:'编辑内容'}).boundingBox();assert(rect.x>=0&&rect.y>=0&&rect.x+rect.width<=560&&rect.y+rect.height<=390);assert(await page.getByRole('button',{name:'保存',exact:true}).isVisible());await page.screenshot({path:'reports/raw/editor0111-browser.png'});
+  await page.setViewportSize({width:1200,height:800});
+ });
+ await check('only primary title-bar dragging starts native window movement',async()=>{
+  const count=()=>page.evaluate(()=>window.testCalls.filter(v=>v.command==='start_window_drag').length);
+  const before=await count();const title=await page.locator('.editor-titlebar h2').boundingBox();await page.mouse.move(title.x+10,title.y+10);await page.mouse.down();await page.mouse.move(title.x+60,title.y+30);await page.mouse.up();assert.equal(await count(),before+1);
+  await page.getByLabel('文本内容').click();await page.getByLabel('取消编辑',{exact:true}).dispatchEvent('pointerdown',{button:0,isPrimary:true,bubbles:true});await page.locator('.editor-titlebar').dispatchEvent('pointerdown',{button:2,isPrimary:true,bubbles:true});assert.equal(await count(),before+1);
+ });
  await check('editing keyboard and IME cannot trigger history actions; cancel preserves content',async()=>{
   const before=await page.evaluate(()=>window.testCalls.filter(v=>['perform','delete'].includes(v.command)).length);
   await page.getByLabel('文本内容').fill('cancelled draft');await page.evaluate(()=>window.testPanelShown());await page.waitForFunction(()=>document.activeElement?.getAttribute('aria-label')==='文本内容');assert.equal(await page.getByLabel('文本内容').inputValue(),'cancelled draft');assert(await page.evaluate(()=>window.testCalls.filter(v=>v.command==='set_detail_view').at(-1).r.expanded));await page.keyboard.press('Enter');await page.keyboard.press('Delete');await page.keyboard.press('Control+f');assert(await page.getByLabel('文本内容').evaluate(el=>el===document.activeElement));
@@ -86,6 +104,7 @@ try{
   await page.getByLabel('文本内容').dispatchEvent('keydown',{key:'Enter',ctrlKey:true,isComposing:true,bubbles:true});assert.equal(await page.evaluate(()=>window.testCalls.filter(v=>v.command==='edit_text'&&v.r.text!==undefined).length),0);
   await page.keyboard.press('Tab');await page.keyboard.press('Tab');await page.keyboard.press('Tab');assert(await page.getByRole('dialog',{name:'编辑内容'}).evaluate(el=>el.contains(document.activeElement)));
   await page.getByRole('button',{name:'取消',exact:true}).click();assert((await page.evaluate(()=>window.testItems[1].fullText)).endsWith('const answer = 42;'));assert.equal(await page.evaluate(()=>window.testCalls.filter(v=>['perform','delete'].includes(v.command)).length),before);
+  await page.waitForFunction(()=>{const r=window.testCalls.filter(v=>v.command==='set_detail_view').at(-1).r;return !r.editor&&!r.expanded;});assert(await page.locator('.toolbar').isVisible());assert(await page.locator('.history').isVisible());
  });
  await check('failed save retains draft; successful save preserves metadata and refreshes highlighting',async()=>{
   await card(1).click({button:'right'});await choose('编辑内容');await page.getByLabel('文本内容').fill('');assert(await page.getByRole('button',{name:'保存',exact:true}).isDisabled());

@@ -796,7 +796,18 @@ pub async fn queue_status(app: tauri::AppHandle, request: Value) -> Result<Value
 /// 在主线程按 IPC 顺序切换布局，避免快速开关详情时旧尺寸覆盖新状态。
 #[tauri::command]
 pub fn set_detail_view(app: tauri::AppHandle, request: Value) -> Result<Value> {
-    desktop::set_detail_view(&app, request["expanded"].as_bool().ok_or("invalidRequest")?)?;
+    desktop::set_detail_view(
+        &app,
+        request["expanded"].as_bool().ok_or("invalidRequest")?,
+        request["editor"].as_bool().unwrap_or(false),
+    )?;
+    Ok(Value::Null)
+}
+
+/// 编辑标题栏请求系统窗口拖动，保持正文选择、保存和取消按钮的普通鼠标行为。
+#[tauri::command]
+pub fn start_window_drag(app: tauri::AppHandle) -> Result<Value> {
+    desktop::start_window_drag(&app)?;
     Ok(Value::Null)
 }
 
