@@ -239,6 +239,19 @@ fn pdf(bytes: &[u8]) -> Option<Vec<u8>> {
 mod tests {
     use super::*;
     #[test]
+    fn pdf_first_page_renders_without_a_shell_preview_provider() {
+        let png = document(
+            "unused-local-path.pdf",
+            Some(include_bytes!("../../tests/fixtures/one-page.pdf")),
+        )
+        .unwrap();
+        assert!(png.starts_with(b"\x89PNG\r\n\x1a\n"));
+        let decoded = image::load_from_memory(&png).unwrap();
+        assert_eq!(decoded.width(), 640);
+        assert_eq!(decoded.height(), 640);
+    }
+
+    #[test]
     fn no_extension_images_decode_and_rewritten_files_change_version() {
         let root = std::env::temp_dir().join(format!("LocalClip-preview-{}", std::process::id()));
         fs::create_dir_all(&root).unwrap();
