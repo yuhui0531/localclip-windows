@@ -7,6 +7,8 @@ use std::{io::Cursor, path::PathBuf, sync::Arc};
 /// 可选第二个参数引用由测试驱动创建的 Windows 文件，用于真实拖出验收。
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let file_url = std::env::args().nth(2);
+    // 可选 OCR 图由测试驱动生成；只进入新建的隔离数据库。
+    let ocr_image = std::env::args().nth(3).map(std::fs::read).transpose()?;
     let root = PathBuf::from(
         std::env::args()
             .nth(1)
@@ -46,7 +48,38 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             3 => format!("function generated{i}() {{ return true; }}"),
             _ => format!("测试便笺 {i}\r\n保留换行与中文。"),
         };
-        let payload = if i == 0 && file_url.is_some() {
+        let payload = if matches!(i, 117 | 118) && ocr_image.is_some() {
+            let base = file_url
+                .as_ref()
+                .ok_or("file URL required for OCR fixture")?
+                .rsplit_once('/')
+                .ok_or("invalid file URL")?
+                .0;
+            let name = if i == 117 {
+                "LocalClip-generated-open.txt"
+            } else {
+                "generated-ocr.png"
+            };
+            Payload {
+                items: vec![Item {
+                    representations: vec![Representation {
+                        format: "text/uri-list".into(),
+                        data: format!("{base}/{name}").into_bytes(),
+                    }],
+                    ..Default::default()
+                }],
+            }
+        } else if i == 119 && ocr_image.is_some() {
+            let mut mixed = Payload::text("Generated mixed OCR card 119");
+            mixed.items.push(Item {
+                representations: vec![Representation {
+                    format: "image/png".into(),
+                    data: ocr_image.clone().unwrap(),
+                }],
+                ..Default::default()
+            });
+            mixed
+        } else if i == 0 && file_url.is_some() {
             // 文件只由外部测试驱动在隔离目录创建，不读取个人文件。
             Payload {
                 items: vec![Item {
@@ -69,7 +102,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 items: vec![Item {
                     representations: vec![Representation {
                         format: "image/png".into(),
-                        data: bytes.into_inner(),
+                        data: ocr_image.clone().unwrap_or_else(|| bytes.into_inner()),
                     }],
                     declared_types: vec!["image/png".into()],
                     plain_text: None,
