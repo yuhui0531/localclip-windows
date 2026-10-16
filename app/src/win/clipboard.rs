@@ -560,3 +560,40 @@ pub(crate) fn write_guarded(
         missing,
     ))
 }
+
+#[cfg(test)]
+mod snapshot_tests {
+    use super::*;
+    /// OCR 可以替换开始时的外部剪贴板，但不能覆盖随后发生的新复制。
+    #[test]
+    fn snapshot_write_accepts_original_owner_and_rejects_intervening_copy() {
+        let external = MessageWindow::new().unwrap();
+        let app = MessageWindow::new().unwrap();
+        let (before, _) = write(external.0, &Payload::text("generated original")).unwrap();
+        let (newer, _) = write(external.0, &Payload::text("generated newer")).unwrap();
+        assert!(matches!(
+            write_guarded(
+                app.0,
+                &Payload::text("generated OCR"),
+                Some(before.sequence),
+                false
+            ),
+            Err("clipboardChanged")
+        ));
+        assert_eq!(unsafe { GetClipboardSequenceNumber() }, newer.sequence);
+        assert!(
+            write_guarded(
+                app.0,
+                &Payload::text("generated OCR"),
+                Some(newer.sequence),
+                false
+            )
+            .is_ok()
+        );
+        unsafe {
+            OpenClipboard(Some(app.0)).unwrap();
+            EmptyClipboard().unwrap();
+            CloseClipboard().unwrap();
+        }
+    }
+}

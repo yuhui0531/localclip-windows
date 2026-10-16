@@ -10,6 +10,11 @@ fn image_paths_survive_drop_and_modified_exports_are_not_reused() {
     let reused = cache.prepare(b"original image", "png").unwrap();
     assert_eq!(first.path, reused.path);
     assert!(!reused.created);
+    cache.cancel(&reused);
+    assert!(first.path.exists());
+    let cancelled = cache.prepare(b"cancelled export", "png").unwrap();
+    cache.cancel(&cancelled);
+    assert!(!cancelled.path.exists());
     std::fs::write(&first.path, b"externally edited").unwrap();
     let next = cache.prepare(b"original image", "png").unwrap();
     assert_ne!(first.path, next.path);
