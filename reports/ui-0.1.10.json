@@ -1,0 +1,81 @@
+{
+  "version": "0.1.10",
+  "source": "93d38b61e4c0ed8e6c2964df534799ab749028b6",
+  "macOSReference": "284dc5beaf78cf090f78953e8b125a9f12dc10d8",
+  "pullRequest": 8,
+  "installersRun": 38957765635,
+  "installersStatus": "success",
+  "ciRuns": [
+    38957759820,
+    38957769207
+  ],
+  "ciStatus": "success",
+  "local": {
+    "rustTests": 49,
+    "crashCycles": 50,
+    "clippy": "passed",
+    "format": "passed",
+    "frontendBuild": "passed",
+    "menuEditorChecks": 19,
+    "previewChecks": 15,
+    "detailImageLayoutChecks": 11,
+    "macOSAlignmentChecks": 13,
+    "screenshotsInspected": [
+      "light",
+      "dark",
+      "settings",
+      "compact",
+      "short",
+      "narrow",
+      "tall-compact"
+    ]
+  },
+  "native": {
+    "status": "pending_app_exit",
+    "plannedScripts": [
+      "reports/raw/ui0110-native.ps1",
+      "reports/raw/ui0110-parity-native.ps1"
+    ]
+  },
+  "installation": {
+    "status": "not_started",
+    "lastVerifiedInstalledVersion": "0.1.8",
+    "runningPid": 10964,
+    "reason": "Installed app still running; tray exit requested before isolated retest and data-preserving upgrade"
+  },
+  "antivirus": {
+    "status": "passed",
+    "scanner": "Microsoft Defender",
+    "scans": 4,
+    "threatsDetected": 0,
+    "enabled": true,
+    "realtimeEnabled": true,
+    "settingsChanged": false,
+    "engine": "1.1.26090.9",
+    "signature": "1.461.59.0"
+  },
+  "limitations": [
+    "Unsigned manual-test build under existing signing-key decision",
+    "360 not available for same-environment rescan",
+    "Generic kind icons when source-app artwork unavailable",
+    "Windows system fonts and Ctrl shortcuts; no macOS native vibrancy",
+    "No new full target-application drag acceptance matrix"
+  ],
+  "packages": [
+    {
+      "arch": "arm64",
+      "msiSha256": "C98D5593648D5B480B65B79E8E517F18D08027616714CF851DBFD0DA3A083B4E",
+      "exeSha256": "2A4788C03DD18512BC100A4FC23D68291969FA173C3C59A5D6B34401DAB8F60E"
+    },
+    {
+      "arch": "x64",
+      "msiSha256": "BB292747B6977454A4946ABF0FD790CC78E2B83C172E663DB31F685A76C26A90",
+      "exeSha256": "B3FFE6D944CBE8A4D9DB7983D2354FD2C1C8E4503B9C9162968966280E3A2503"
+    }
+  ],
+  "verifiedCiRun": 38957759820,
+  "ciByRun": {
+    "38957759820": "success",
+    "38957769207": "in_progress_at_last_check"
+  }
+}

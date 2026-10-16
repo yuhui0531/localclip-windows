@@ -5,7 +5,7 @@
   "installersRun": 38953011112,
   "installersStatus": "success",
   "ciRun": 38952947385,
-  "ciStatus": "in_progress",
+  "ciStatus": "success",
   "local": {
     "menuEditorChecks": 19,
     "frontendBuild": "passed",
@@ -47,5 +47,6 @@
     "Unsigned manual test build under existing signing key decision",
     "360 scan unavailable",
     "Final 0.1.9 native validation and installation pending app exit; no claim they passed"
-  ]
+  ],
+  "supersededBy": "0.1.10"
 }
