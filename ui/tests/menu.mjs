@@ -32,6 +32,13 @@ await page.addInitScript(()=>{
  if(command==='transform_menu')return [{transform:'uppercase',title:'转为大写',applicable:true}];
  if(command==='ocr_copy')return window.testOcrPending?new Promise(resolve=>{window.testOcrResolve=resolve;}):{status:'ocrCopied',lines:1};
  if(command==='ocr_cancel'){window.testOcrResolve?.({status:'cancelled'});return {};}
+ // 编辑模拟仅用于浏览器事件验证；存储事务另由 Rust 集成测试覆盖。
+ if(command==='edit_text'){
+  const v=items.find(v=>v.id===r.id);
+  if(r.text===undefined)return {text:v.fullText??v.preview,fingerprint:'generated-version',richText:Boolean(v.richText)};
+  if(window.testEditError)throw window.testEditError;
+  v.fullText=r.text;v.preview=r.text.slice(0,180);emit();return {saved:true};
+ }
  if(command==='set_title'){items.find(v=>v.id===r.id).title=r.value;emit();return {};}
  if(command==='set_favorite'){items.find(v=>v.id===r.id).favorite=r.value;emit();return {};}
  if(command==='assign_categories')return {token:'assign',needsConfirmation:false};
@@ -65,6 +72,32 @@ try{
  await check('mixed filter and category plus destination',async()=>{await page.getByRole('button',{name:'全部历史',exact:true}).click();await page.getByRole('button',{name:'混合',exact:true}).click();await page.waitForFunction(()=>document.querySelector('.clip-card')?.classList.contains('kind-mixed'));await page.getByLabel('管理分类').click();await page.locator('.settings h2').filter({hasText:'分类'}).waitFor();await page.getByLabel('关闭设置').click();});
  await check('file menu omits unsupported Save As and category creation remains available',async()=>{await page.getByRole('button',{name:'全部历史',exact:true}).click();await page.locator('.clip-card.kind-file').click({button:'right'});assert.equal(await menu.getByRole('menuitem',{name:'存储为文件…'}).count(),0);await menu.getByRole('menuitem',{name:'加入分类'}).click();await menu.getByRole('button',{name:'新建分类…'}).click();await page.locator('.settings h2').filter({hasText:'分类'}).waitFor();await page.getByLabel('关闭设置').click();});
  await check('OCR progress cancellation and hidden-content guard',async()=>{await page.getByRole('button',{name:'全部历史',exact:true}).click();await page.evaluate(()=>{window.testOcrPending=true;});await page.locator('.clip-card.kind-image').click({button:'right'});await choose('复制图中文字');await page.locator('.ocr-progress').waitFor();await page.locator('.ocr-progress').getByRole('button',{name:'取消',exact:true}).click();await page.waitForFunction(()=>!document.querySelector('.ocr-progress'));assert(await page.evaluate(()=>window.testCalls.some(v=>v.command==='ocr_cancel')));await page.evaluate(()=>{window.testOcrPending=false;window.testSettings.hideContents=true;window.testEmit();});await page.locator('.hidden-content').first().waitFor();await page.locator('.clip-card.kind-image').click({button:'right'});assert(await menu.getByRole('menuitem',{name:'复制图中文字',exact:true}).isDisabled());await page.keyboard.press('Escape');await page.evaluate(()=>{window.testSettings.hideContents=false;window.testEmit();});await page.waitForFunction(()=>!document.querySelector('.hidden-content'));});
+ await check('edit entry excludes images/files and opens full text from code card',async()=>{
+  await page.getByRole('button',{name:'全部历史',exact:true}).click();await card(0).click({button:'right'});assert.equal(await menu.getByRole('menuitem',{name:'编辑内容',exact:true}).count(),0);await page.keyboard.press('Escape');
+  await page.evaluate(()=>{window.testItems[1].fullText='// generated line\n'.repeat(100)+'const answer = 42;';window.testItems[1].richText=true;});
+  await card(1).click({button:'right'});await choose('编辑内容');await page.getByRole('dialog',{name:'编辑内容'}).waitFor();
+  assert((await page.getByLabel('文本内容').inputValue()).endsWith('const answer = 42;'));assert(await page.getByText('保存修改后将使用纯文本，原有富文本格式会被替换。').isVisible());
+  await page.setViewportSize({width:1200,height:800});const rect=await page.getByRole('dialog',{name:'编辑内容'}).boundingBox();assert(rect.height>650&&rect.y+rect.height<=800);
+ });
+ await check('editing keyboard and IME cannot trigger history actions; cancel preserves content',async()=>{
+  const before=await page.evaluate(()=>window.testCalls.filter(v=>['perform','delete'].includes(v.command)).length);
+  await page.getByLabel('文本内容').fill('cancelled draft');await page.keyboard.press('Enter');await page.keyboard.press('Delete');await page.keyboard.press('Control+f');assert(await page.getByLabel('文本内容').evaluate(el=>el===document.activeElement));
+  await page.getByLabel('文本内容').dispatchEvent('keydown',{key:'Escape',isComposing:true,bubbles:true});assert(await page.getByRole('dialog',{name:'编辑内容'}).isVisible());
+  await page.getByLabel('文本内容').dispatchEvent('keydown',{key:'Enter',ctrlKey:true,isComposing:true,bubbles:true});assert.equal(await page.evaluate(()=>window.testCalls.filter(v=>v.command==='edit_text'&&v.r.text!==undefined).length),0);
+  await page.keyboard.press('Tab');await page.keyboard.press('Tab');await page.keyboard.press('Tab');assert(await page.getByRole('dialog',{name:'编辑内容'}).evaluate(el=>el.contains(document.activeElement)));
+  await page.getByRole('button',{name:'取消',exact:true}).click();assert((await page.evaluate(()=>window.testItems[1].fullText)).endsWith('const answer = 42;'));assert.equal(await page.evaluate(()=>window.testCalls.filter(v=>['perform','delete'].includes(v.command)).length),before);
+ });
+ await check('failed save retains draft; successful save preserves metadata and refreshes highlighting',async()=>{
+  await card(1).click({button:'right'});await choose('编辑内容');await page.getByLabel('文本内容').fill('');assert(await page.getByRole('button',{name:'保存',exact:true}).isDisabled());
+  await page.getByLabel('文本内容').fill('function edited() { return 42; }');await page.evaluate(()=>{window.testEditError='DuplicateContent';});await page.keyboard.press('Control+Enter');await page.getByRole('alert').filter({hasText:'历史中已存在相同内容'}).waitFor();assert.equal(await page.getByLabel('文本内容').inputValue(),'function edited() { return 42; }');
+  await page.evaluate(()=>{window.testEditError=null;});await page.keyboard.press('Control+Enter');await page.getByRole('dialog',{name:'编辑内容'}).waitFor({state:'detached'});await card(1).locator('.hljs-keyword').first().waitFor();
+  assert.deepEqual(await page.evaluate(()=>{const v=window.testItems[1];return [v.title,v.favorite,v.categoryIDs,v.fullText];}),['Renamed generated code',true,['a'],'function edited() { return 42; }']);
+ });
+ await check('details edit entry and hiding contents clears unsaved draft',async()=>{
+  await card(1).click({button:'right'});await menu.getByRole('menuitem',{name:/^详情/}).click();await page.getByLabel('条目详情').getByRole('button',{name:'编辑内容',exact:true}).click();await page.getByLabel('文本内容').fill('private draft');
+  await page.evaluate(()=>{window.testSettings.hideContents=true;window.testEmit();});await page.getByRole('dialog',{name:'编辑内容'}).waitFor({state:'detached'});await page.locator('.hidden-content').first().waitFor();await card(1).click({button:'right'});assert(await menu.getByRole('menuitem',{name:'编辑内容',exact:true}).isDisabled());await page.keyboard.press('Escape');
+  await page.evaluate(()=>{window.testSettings.hideContents=false;window.testEmit();});await page.waitForFunction(()=>!document.querySelector('.hidden-content'));assert.equal(await page.evaluate(()=>window.testItems[1].fullText),'function edited() { return 42; }');await page.setViewportSize({width:1200,height:340});
+ });
  await check('delete wired and code highlight retained',async()=>{await page.getByRole('button',{name:'全部历史',exact:true}).click();await page.locator('.code-preview .hljs-keyword').first().waitFor();await card(3).click({button:'right'});await menu.getByRole('menuitem',{name:/^删除/}).click();await page.waitForFunction(()=>window.testCalls.some(v=>v.command==='delete'));});
  assert.deepEqual(errors,[]);console.log(JSON.stringify({checks,passed:checks.length,errors}));
 }finally{await browser.close();await new Promise(r=>server.close(r));}

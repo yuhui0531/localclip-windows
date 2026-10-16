@@ -23,6 +23,7 @@
     "allow-ocr-cancel",
     "allow-set-favorite",
     "allow-set-title",
+    "allow-edit-text",
     "allow-delete",
     "allow-undo-delete",
     "allow-categories",

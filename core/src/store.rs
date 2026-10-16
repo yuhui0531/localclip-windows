@@ -1,3 +1,4 @@
+//! 本地历史事务、索引与显式编辑。by AI.Coding
 use crate::{
     domain::{self, DAY_MS, Item, Kind, MIB, Payload, Representation, Settings, Source},
     schema, search,
@@ -31,6 +32,11 @@ pub enum StoreError {
     Unavailable,
     PolicyChanged,
     DuplicateName,
+    DuplicateContent,
+    StaleEdit,
+    InvalidText,
+    NotEditable,
+    ContentsHidden,
 }
 impl std::fmt::Display for StoreError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -71,6 +77,12 @@ impl Default for Options {
             before_commit: Arc::new(|| Ok(())),
         }
     }
+}
+/// 编辑快照仅返回完整文本和乐观锁，不写剪贴板。by AI.Coding
+pub struct EditableText {
+    pub text: String,
+    pub fingerprint: String,
+    pub rich_text: bool,
 }
 pub struct Snapshot {
     pub capture_id: String,
@@ -521,6 +533,64 @@ impl HistoryStore {
                             params![i as i64, category, id],
                         )?;
                     }
+                    Ok(())
+                },
+            )?;
+            Ok(())
+        })
+    }
+    /// 只允许单条纯文本/链接/富文本，隐藏及过期记录不可读取。
+    pub fn editable_text(&self, id: &str) -> Result<EditableText> {
+        self.read(|db| editable_text(db, id, (self.now)()))
+    }
+    /// 原位替换正文；元数据不动，重复或并发冲突不合并、不覆盖。
+    pub fn edit_text(&self, id: String, expected: String, text: String) -> Result<()> {
+        if text.is_empty() || text.contains('\0') || text.len() as u64 > 50 * MIB {
+            return Err(StoreError::InvalidText);
+        }
+        self.write(move |w| {
+            let current = editable_text(&w.db, &id, (w.options.now)())?;
+            if current.fingerprint != expected {
+                return Err(StoreError::StaleEdit);
+            }
+            // 未改正文保留原始富文本表示及存储修订号。
+            if current.text == text {
+                return Ok(());
+            }
+            let payload = Payload::text(&text);
+            let hash = payload.fingerprint();
+            if scalar(
+                &w.db,
+                "SELECT COUNT(*) FROM clips WHERE contentHash=? AND id<>?",
+                params![hash, id],
+            )? > 0
+            {
+                return Err(StoreError::DuplicateContent);
+            }
+            let settings = schema::read_settings(&w.db)?;
+            w.mutate(
+                Commit {
+                    settings: &settings,
+                    growth: 8192 + payload.byte_count() * 6,
+                    trim: false,
+                    allow_over: false,
+                    protect: Some(&id),
+                    operation: "",
+                },
+                |db| {
+                    // 只替换子项，不删除 clip，保留收藏、分类位置、标题、来源与复制时间。
+                    db.execute("DELETE FROM items WHERE clipID=?", [&id])?;
+                    db.execute("DELETE FROM thumbnails WHERE clipID=?", [&id])?;
+                    db.execute(
+                        "UPDATE clips SET contentHash=?,kind=?,previewText=? WHERE id=?",
+                        params![
+                            hash,
+                            payload.kind().as_str(),
+                            text.graphemes(true).take(180).collect::<String>(),
+                            id
+                        ],
+                    )?;
+                    insert_items(db, &id, &payload)?;
                     Ok(())
                 },
             )?;
@@ -994,6 +1064,11 @@ fn insert_payload(
             preview
         ],
     )?;
+    insert_items(db, id, payload)
+}
+/// 捕获与编辑共用表示、去重 blob 与全文索引写入。
+fn insert_items(db: &Connection, id: &str, payload: &Payload) -> Result<()> {
+    let texts: Vec<_> = payload.items.iter().map(extracted).collect();
     for (i, item) in payload.items.iter().enumerate() {
         db.execute(
             "INSERT INTO items VALUES(?,?,?)",
@@ -1033,6 +1108,32 @@ fn insert_payload(
         }
     }
     Ok(())
+}
+/// 在同一读事务或写入队列中取得完整正文及指纹，避免摘要截断或竞态。
+fn editable_text(db: &Connection, id: &str, now: i64) -> Result<EditableText> {
+    let settings = schema::read_settings(db)?;
+    if settings.preferences.hide_contents {
+        return Err(StoreError::ContentsHidden);
+    }
+    let summary = summary_by_id(db, id)?;
+    if !visible(&summary, &settings, now) {
+        return Err(StoreError::NotFound);
+    }
+    let payload = read_payload(db, id)?;
+    if payload.items.len() != 1
+        || !matches!(payload.kind(), Kind::Text | Kind::Url | Kind::RichText)
+    {
+        return Err(StoreError::NotEditable);
+    }
+    let text = extracted(&payload.items[0]).ok_or(StoreError::NotEditable)?;
+    Ok(EditableText {
+        text,
+        fingerprint: payload.fingerprint(),
+        rich_text: payload.items[0]
+            .representations
+            .iter()
+            .any(|r| matches!(r.format.as_str(), "text/html" | "text/rtf")),
+    })
 }
 fn read_payload(db: &Connection, id: &str) -> Result<Payload> {
     let mut q =

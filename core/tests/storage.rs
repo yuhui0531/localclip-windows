@@ -538,3 +538,278 @@ fn update_snapshot_is_consistent_and_never_overwrites_existing_backup() {
     assert_eq!(std::fs::read(destination).unwrap(), before);
     assert_eq!(store.integrity_check().unwrap(), "ok");
 }
+
+// 编辑必须更新正文索引与输出表示，同时保留用户组织信息。by AI.Coding
+#[test]
+fn edit_text_preserves_metadata_and_updates_search_and_deduplication() {
+    let f = Fixture::new(Settings::default());
+    let Ingest::Inserted(id) = f.ingest(Payload::text("old generated text")) else {
+        panic!("insert")
+    };
+    f.store()
+        .rename(id.clone(), Some("Keep title".into()))
+        .unwrap();
+    let p = f
+        .store()
+        .preview(Change::Favorite(vec![id.clone()], true))
+        .unwrap();
+    f.store().apply(p.token).unwrap();
+    let category = f
+        .store()
+        .create_category("Keep category".into(), "00aa00".into())
+        .unwrap();
+    let p = f
+        .store()
+        .preview(Change::Category(vec![id.clone()], category.clone(), true))
+        .unwrap();
+    f.store().apply(p.token).unwrap();
+    let before = f.store().summary(&id).unwrap();
+    let draft = f.store().editable_text(&id).unwrap();
+    let text = format!("{}\nconst answer = 42;", "generated ".repeat(100));
+    f.store()
+        .edit_text(id.clone(), draft.fingerprint, text.clone())
+        .unwrap();
+    let after = f.store().summary(&id).unwrap();
+    assert_eq!(after.title, before.title);
+    assert!(after.favorite && after.protected);
+    assert_eq!(after.copy_count, before.copy_count);
+    assert_eq!(after.last_copied_at, before.last_copied_at);
+    assert_eq!(after.first_copied_at, before.first_copied_at);
+    assert_eq!(f.store().memberships(&id).unwrap(), vec![category]);
+    assert_eq!(
+        f.store().payload(&id).unwrap().canonical(),
+        Payload::text(&text).canonical()
+    );
+    assert!(
+        f.store()
+            .search(SearchRequest {
+                literal: "old generated".into(),
+                ..Default::default()
+            })
+            .unwrap()
+            .items
+            .is_empty()
+    );
+    assert_eq!(
+        f.store()
+            .search(SearchRequest {
+                literal: "answer = 42".into(),
+                ..Default::default()
+            })
+            .unwrap()
+            .items[0]
+            .id,
+        id
+    );
+    assert_eq!(f.ingest(Payload::text(&text)), Ingest::Deduplicated(id));
+}
+
+// 冲突、重复和非法输入不能覆盖任一记录。by AI.Coding
+#[test]
+fn edit_text_rejects_stale_duplicate_invalid_and_hidden_content() {
+    let f = Fixture::new(Settings::default());
+    let Ingest::Inserted(id) = f.ingest(Payload::text("first")) else {
+        panic!("insert")
+    };
+    f.ingest(Payload::text("second"));
+    let draft = f.store().editable_text(&id).unwrap();
+    for text in ["", "bad\0text"] {
+        assert_eq!(
+            f.store()
+                .edit_text(id.clone(), draft.fingerprint.clone(), text.into()),
+            Err(StoreError::InvalidText)
+        );
+    }
+    assert_eq!(
+        f.store()
+            .edit_text(id.clone(), draft.fingerprint.clone(), "second".into()),
+        Err(StoreError::DuplicateContent)
+    );
+    f.store()
+        .edit_text(id.clone(), draft.fingerprint.clone(), "changed".into())
+        .unwrap();
+    assert_eq!(
+        f.store()
+            .edit_text(id.clone(), draft.fingerprint, "stale".into()),
+        Err(StoreError::StaleEdit)
+    );
+    let draft = f.store().editable_text(&id).unwrap();
+    let mut settings = f.store().settings().unwrap();
+    settings.preferences.hide_contents = true;
+    f.store().update_settings(settings).unwrap();
+    assert!(matches!(
+        f.store().editable_text(&id),
+        Err(StoreError::ContentsHidden)
+    ));
+    assert_eq!(
+        f.store()
+            .edit_text(id.clone(), draft.fingerprint, "hidden".into()),
+        Err(StoreError::ContentsHidden)
+    );
+    assert_eq!(
+        f.store().payload(&id).unwrap().plain_text().unwrap(),
+        "changed"
+    );
+}
+
+// 未改正文不剥离格式；改动后不再输出过期 HTML/RTF。by AI.Coding
+#[test]
+fn edit_text_rich_formats_noop_and_url_reclassification() {
+    let f = Fixture::new(Settings::default());
+    let mut payload = Payload::text("original");
+    payload.items[0].representations.push(Representation {
+        format: "text/html".into(),
+        data: b"<b>original</b>".to_vec(),
+    });
+    let Ingest::Inserted(id) = f.ingest(payload.clone()) else {
+        panic!("insert")
+    };
+    let draft = f.store().editable_text(&id).unwrap();
+    assert!(draft.rich_text);
+    let revision = f.store().revision().unwrap();
+    f.store()
+        .edit_text(id.clone(), draft.fingerprint.clone(), draft.text)
+        .unwrap();
+    assert_eq!(f.store().revision().unwrap(), revision);
+    assert_eq!(
+        f.store().payload(&id).unwrap().canonical(),
+        payload.canonical()
+    );
+    f.store()
+        .edit_text(id.clone(), draft.fingerprint, "https://example.com".into())
+        .unwrap();
+    assert_eq!(
+        f.store().summary(&id).unwrap().kind,
+        localclip_core::domain::Kind::Url
+    );
+    assert_eq!(
+        f.store().payload(&id).unwrap().items[0]
+            .representations
+            .len(),
+        1
+    );
+    let draft = f.store().editable_text(&id).unwrap();
+    f.store()
+        .edit_text(id.clone(), draft.fingerprint, "ordinary text".into())
+        .unwrap();
+    assert_eq!(
+        f.store().summary(&id).unwrap().kind,
+        localclip_core::domain::Kind::Text
+    );
+}
+
+// 不可编辑类型、删除及到期由存储层拒绝，不能靠 UI 绕过。by AI.Coding
+#[test]
+fn edit_text_rejects_non_text_deleted_and_expired() {
+    let f = Fixture::new(Settings::default());
+    for payload in [
+        Payload {
+            items: vec![Item {
+                representations: vec![Representation {
+                    format: "image/png".into(),
+                    data: vec![1, 2, 3],
+                }],
+                ..Default::default()
+            }],
+        },
+        Payload {
+            items: vec![Item {
+                representations: vec![Representation {
+                    format: "text/uri-list".into(),
+                    data: b"file:///C:/generated.txt".to_vec(),
+                }],
+                ..Default::default()
+            }],
+        },
+        Payload {
+            items: vec![
+                Payload::text("one").items.remove(0),
+                Payload::text("two").items.remove(0),
+            ],
+        },
+    ] {
+        let Ingest::Inserted(id) = f.ingest(payload.clone()) else {
+            panic!("insert")
+        };
+        assert!(matches!(
+            f.store().editable_text(&id),
+            Err(StoreError::NotEditable)
+        ));
+        assert_eq!(
+            f.store()
+                .edit_text(id.clone(), payload.fingerprint(), "text".into()),
+            Err(StoreError::NotEditable)
+        );
+        assert_eq!(
+            f.store().payload(&id).unwrap().canonical(),
+            payload.canonical()
+        );
+    }
+    let Ingest::Inserted(id) = f.ingest(Payload::text("expiring")) else {
+        panic!("insert")
+    };
+    let draft = f.store().editable_text(&id).unwrap();
+    f.now
+        .fetch_add(31 * localclip_core::domain::DAY_MS, Ordering::SeqCst);
+    assert_eq!(
+        f.store()
+            .edit_text(id.clone(), draft.fingerprint.clone(), "new".into()),
+        Err(StoreError::NotFound)
+    );
+    let p = f.store().preview(Change::Delete(vec![id.clone()])).unwrap();
+    f.store().apply(p.token).unwrap();
+    assert_eq!(
+        f.store().edit_text(id, draft.fingerprint, "new".into()),
+        Err(StoreError::NotFound)
+    );
+}
+
+// 编辑配额不足不驱逐别的记录；提交失败回滚所有正文和索引。by AI.Coding
+#[test]
+fn edit_text_quota_and_commit_failure_roll_back() {
+    let mut f = Fixture::new(Settings {
+        quota_bytes: 512 * 1024,
+        ..Default::default()
+    });
+    let Ingest::Inserted(id) = f.ingest(Payload::text("keep original")) else {
+        panic!("insert")
+    };
+    let draft = f.store().editable_text(&id).unwrap();
+    assert_eq!(
+        f.store()
+            .edit_text(id.clone(), draft.fingerprint.clone(), "x".repeat(400_000)),
+        Err(StoreError::QuotaFull)
+    );
+    assert_eq!(
+        f.store().payload(&id).unwrap().plain_text().unwrap(),
+        "keep original"
+    );
+    let revision = f.store().revision().unwrap();
+    drop(f.store.take());
+    f.store = Some(
+        HistoryStore::open(
+            f.root.join("history.sqlite"),
+            Options {
+                available_space: Arc::new(|| Ok(u64::MAX)),
+                before_commit: Arc::new(|| Err(StoreError::IoFailure)),
+                now: Arc::new({
+                    let clock = f.now.clone();
+                    move || clock.load(Ordering::SeqCst)
+                }),
+                ..Default::default()
+            },
+        )
+        .unwrap(),
+    );
+    assert_eq!(
+        f.store()
+            .edit_text(id.clone(), draft.fingerprint, "failed".into()),
+        Err(StoreError::IoFailure)
+    );
+    assert_eq!(
+        f.store().payload(&id).unwrap().plain_text().unwrap(),
+        "keep original"
+    );
+    assert_eq!(f.store().revision().unwrap(), revision);
+    assert_eq!(f.store().integrity_check().unwrap(), "ok");
+}

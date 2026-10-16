@@ -344,6 +344,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
             crate::commands::ocr_cancel,
             crate::commands::set_favorite,
             crate::commands::set_title,
+            crate::commands::edit_text,
             crate::commands::delete,
             crate::commands::undo_delete,
             crate::commands::categories,

@@ -476,6 +476,36 @@ fn dispatch(app: &tauri::AppHandle, name: &str, request: Value) -> Result<Value>
                 .and_then(|s| summary(store, s, hide))
                 .or(Ok(Value::Null))
         }
+        "edit_text" => {
+            // 编辑是显式用户动作：仅主面板可见时读取/保存，正文不进入事件或日志。
+            if !app
+                .get_webview_window("main")
+                .is_some_and(|w| w.is_visible().unwrap_or(false))
+            {
+                return Err("panelHidden".into());
+            }
+            let id = string(&request, "id")?;
+            if request.get("text").is_some() {
+                store
+                    .edit_text(
+                        id.into(),
+                        string(&request, "fingerprint")?.into(),
+                        string(&request, "text")?.into(),
+                    )
+                    .map_err(error)?;
+                changed(app, "content");
+                Ok(json!({"saved":true}))
+            } else {
+                let draft = store.editable_text(id).map_err(error)?;
+                // 读取后再次验证隐私开关；UI 同时丢弃已关闭的编辑请求。
+                if store.settings().map_err(error)?.preferences.hide_contents {
+                    return Err("contentsHidden".into());
+                }
+                Ok(
+                    json!({"text":draft.text,"fingerprint":draft.fingerprint,"richText":draft.rich_text}),
+                )
+            }
+        }
         "set_title" => {
             let id = string(&request, "id")?;
             store
@@ -899,6 +929,14 @@ pub async fn pause(app: tauri::AppHandle, request: Value) -> Result<Value> {
 #[tauri::command]
 pub async fn resume(app: tauri::AppHandle, request: Value) -> Result<Value> {
     tauri::async_runtime::spawn_blocking(move || dispatch(&app, "resume", request))
+        .await
+        .map_err(|_| "commandUnavailable".to_string())?
+}
+
+/// 编辑读取/写入交给存储工作线程，不阻塞窗口消息。by AI.Coding
+#[tauri::command]
+pub async fn edit_text(app: tauri::AppHandle, request: Value) -> Result<Value> {
+    tauri::async_runtime::spawn_blocking(move || dispatch(&app, "edit_text", request))
         .await
         .map_err(|_| "commandUnavailable".to_string())?
 }

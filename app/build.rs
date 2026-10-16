@@ -22,6 +22,7 @@ fn main() {
                 "ocr_cancel",
                 "set_favorite",
                 "set_title",
+                "edit_text",
                 "delete",
                 "undo_delete",
                 "categories",
