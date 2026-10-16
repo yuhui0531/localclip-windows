@@ -1,0 +1,135 @@
+{
+  "version": "0.1.7",
+  "applicationSource": "0c8f15ca4ef24c884963e258267807477484deab",
+  "ciRun": 38940410368,
+  "installerRun": 38940449968,
+  "artifacts": [
+    {
+      "arch": "arm64",
+      "msiSha256": "A80D48385AA204783A167B8AD0B8B4146BE4C9D2E90746AEA6680327486EE7CE",
+      "exeSha256": "716FEADEE0D55EA9EB1613DC328D3254C9A92C0B2A75D9AA252FEF264ABB939F"
+    },
+    {
+      "arch": "x64",
+      "msiSha256": "6A30278485B00832A1172BAEB182B328376E11A7FEBB4F0B16A2F2FB5EBEDBA2",
+      "exeSha256": "538072C7543292F7E1525FB6A5F141E6D3B7B51665E92E73347AAA091BDC766B"
+    }
+  ],
+  "automated": {
+    "focusedPreviewCases": 15,
+    "browserLayoutAndCardCases": 11,
+    "browserMenuCases": 14,
+    "localRustTests": 43,
+    "crashCycles": 50
+  },
+  "native": {
+    "checks": [
+      {
+        "name": "test capture initially paused",
+        "passed": true
+      },
+      {
+        "name": "native capture generated_HL017_long",
+        "passed": true
+      },
+      {
+        "name": "native capture generated_HL017_rich",
+        "passed": true
+      },
+      {
+        "name": "native capture HL017_prose",
+        "passed": true
+      },
+      {
+        "name": "long code card has highlighted tokens",
+        "passed": true
+      },
+      {
+        "name": "long detail preserves exact full text",
+        "passed": true
+      },
+      {
+        "name": "long detail token has visible syntax color",
+        "passed": true
+      },
+      {
+        "name": "long detail has no executable source markup",
+        "passed": true
+      },
+      {
+        "name": "HTML-backed code uses syntax rendering",
+        "passed": true
+      },
+      {
+        "name": "ordinary rich text keeps sandboxed preview",
+        "passed": true
+      }
+    ],
+    "exeSha256": "716feadee0d55ea9eb1613dc328d3254c9a92c0b2a75d9aa252fef264abb939f",
+    "privacy": {
+      "hidden": true,
+      "exeSha256": "716feadee0d55ea9eb1613dc328d3254c9a92c0b2a75d9aa252fef264abb939f",
+      "before": {
+        "previews": 5,
+        "coloredTokens": 1671
+      },
+      "restored": true
+    }
+  },
+  "antivirus": {
+    "engine": {
+      "AMProductVersion": "4.18.26070.9",
+      "AMEngineVersion": "1.1.26090.9",
+      "AntivirusSignatureVersion": "1.461.55.0",
+      "AntivirusSignatureLastUpdated": "/Date(1792135120000)/",
+      "RealTimeProtectionEnabled": true
+    },
+    "results": [
+      {
+        "arch": "arm64",
+        "file": "LocalClip_0.1.7_arm64.msi",
+        "sha256": "A80D48385AA204783A167B8AD0B8B4146BE4C9D2E90746AEA6680327486EE7CE",
+        "exitCode": 0,
+        "fileExistsAfterScan": true
+      },
+      {
+        "arch": "arm64",
+        "file": "localclip-arm64.exe",
+        "sha256": "716FEADEE0D55EA9EB1613DC328D3254C9A92C0B2A75D9AA252FEF264ABB939F",
+        "exitCode": 0,
+        "fileExistsAfterScan": true
+      },
+      {
+        "arch": "x64",
+        "file": "LocalClip_0.1.7_x64.msi",
+        "sha256": "6A30278485B00832A1172BAEB182B328376E11A7FEBB4F0B16A2F2FB5EBEDBA2",
+        "exitCode": 0,
+        "fileExistsAfterScan": true
+      },
+      {
+        "arch": "x64",
+        "file": "localclip-x64.exe",
+        "sha256": "538072C7543292F7E1525FB6A5F141E6D3B7B51665E92E73347AAA091BDC766B",
+        "exitCode": 0,
+        "fileExistsAfterScan": true
+      }
+    ]
+  },
+  "installation": {
+    "version": "0.1.7",
+    "exeSha256": "716FEADEE0D55EA9EB1613DC328D3254C9A92C0B2A75D9AA252FEF264ABB939F",
+    "allExistingDataFilesUnchangedBeforeLaunch": true,
+    "verifiedDataFileCount": 6,
+    "antivirusEnabled": true,
+    "realtimeEnabled": true
+  },
+  "msiExitCode": 0,
+  "idlePauseRestored": true,
+  "limits": [
+    "Exact user language/sample not supplied; generated card regression verified.",
+    "Highlight prefix is bounded to 16,384 UTF-16 units; Details retain all text.",
+    "No Windows 10/x64 desktop or 360 resolution claim.",
+    "Prior full drag/paste/cache acceptance is 0.1.6 evidence; current preview change does not modify those output paths."
+  ],
+  "harnessNote": "Initial CF_HTML string fixture was rejected as unsupported. Explicit UTF-8 CF_HTML bytes passed on the unchanged executable."
+}
