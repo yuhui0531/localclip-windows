@@ -12,7 +12,18 @@ fn vectors(name: &str) -> Vec<Value> {
         document["metadata"]["macosCommit"],
         "c097591431c00982ad34186068064b40965c95fd"
     );
-    document["cases"].as_array().unwrap().clone()
+    // 保留原始导出向量，仅覆盖 0.3.38 明确变更的五例，其他断言仍逐项执行。by AI.Coding
+    let overrides: Value = serde_json::from_str(include_str!("macos-038-overrides.json")).unwrap();
+    let mut cases = document["cases"].as_array().unwrap().clone();
+    if let Some(entries) = overrides[name].as_object() {
+        for (index, fields) in entries {
+            cases[index.parse::<usize>().unwrap()]
+                .as_object_mut()
+                .unwrap()
+                .extend(fields.as_object().unwrap().clone());
+        }
+    }
+    cases
 }
 
 fn string<'a>(case: &'a Value, key: &str) -> &'a str {

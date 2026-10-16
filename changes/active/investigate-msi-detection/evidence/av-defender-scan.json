@@ -1,0 +1,102 @@
+﻿{
+    "engine":  {
+                   "AMProductVersion":  "4.18.26070.9",
+                   "AMEngineVersion":  "1.1.26080.3",
+                   "AntivirusSignatureVersion":  "1.459.691.0",
+                   "AntivirusSignatureLastUpdated":  "\/Date(1791821204000)\/",
+                   "RealTimeProtectionEnabled":  true
+               },
+    "results":  [
+                    {
+                        "output":  "Scan starting...\r\nScan finished.\r\nScanning C:\\Users\\Public\\Documents\\LocalClip-AV-dc5f9a126ffc4409b88f934af0aa12be\\arm64\\LocalClip_0.1.3_arm64.msi found no threats.\r\n",
+                        "exitCode":  0,
+                        "fileExistsAfterScan":  true,
+                        "sha256":  "070560E012583ABC902E5164055FA67818ADEF0D11976514DEB502E8D6275665",
+                        "arch":  "arm64",
+                        "seconds":  0.76275339999999991,
+                        "file":  "LocalClip_0.1.3_arm64.msi"
+                    },
+                    {
+                        "output":  "Scan starting...\r\nScan finished.\r\nScanning C:\\Users\\Public\\Documents\\LocalClip-AV-dc5f9a126ffc4409b88f934af0aa12be\\arm64\\localclip-demo.exe found no threats.\r\n",
+                        "exitCode":  0,
+                        "fileExistsAfterScan":  true,
+                        "sha256":  "8BA535DAA78EF1BF72872FA8B2F6E7DFE8F00A36501BC943F5992F2FD0975AE6",
+                        "arch":  "arm64",
+                        "seconds":  0.0405151,
+                        "file":  "localclip-demo.exe"
+                    },
+                    {
+                        "output":  "Scan starting...\r\nScan finished.\r\nScanning C:\\Users\\Public\\Documents\\LocalClip-AV-dc5f9a126ffc4409b88f934af0aa12be\\arm64\\localclip.exe found no threats.\r\n",
+                        "exitCode":  0,
+                        "fileExistsAfterScan":  true,
+                        "sha256":  "0CDA00860D3BE2FA24E8580174DC78A1384F5A190C0DB65A946A1DB9267C596E",
+                        "arch":  "arm64",
+                        "seconds":  0.049391899999999996,
+                        "file":  "localclip.exe"
+                    },
+                    {
+                        "output":  "Scan starting...\r\nScan finished.\r\nScanning C:\\Users\\Public\\Documents\\LocalClip-AV-dc5f9a126ffc4409b88f934af0aa12be\\arm64\\ui_fixture.exe found no threats.\r\n",
+                        "exitCode":  0,
+                        "fileExistsAfterScan":  true,
+                        "sha256":  "98ECE9D0A841C052501C03A39BE05588B27745E76F4EC6CA752A0B79E6FE71D8",
+                        "arch":  "arm64",
+                        "seconds":  0.038041599999999995,
+                        "file":  "ui_fixture.exe"
+                    },
+                    {
+                        "output":  "Scan starting...\r\nScan finished.\r\nScanning C:\\Users\\Public\\Documents\\LocalClip-AV-dc5f9a126ffc4409b88f934af0aa12be\\arm64\\WixUIWixca.dll found no threats.\r\n",
+                        "exitCode":  0,
+                        "fileExistsAfterScan":  true,
+                        "sha256":  "7F47D98AB25CFEA9B3A2E898C3376CC9BA1CD893B4948B0C27CAA530FD0E34CC",
+                        "arch":  "arm64",
+                        "seconds":  0.037526,
+                        "file":  "WixUIWixca.dll"
+                    },
+                    {
+                        "output":  "Scan starting...\r\nScan finished.\r\nScanning C:\\Users\\Public\\Documents\\LocalClip-AV-dc5f9a126ffc4409b88f934af0aa12be\\x64\\LocalClip_0.1.3_x64.msi found no threats.\r\n",
+                        "exitCode":  0,
+                        "fileExistsAfterScan":  true,
+                        "sha256":  "2B31D48DF6E3E6B0B20BD6F34183AA3F63564BE6F01373B3108FD91E8976DD37",
+                        "arch":  "x64",
+                        "seconds":  1.1166607,
+                        "file":  "LocalClip_0.1.3_x64.msi"
+                    },
+                    {
+                        "output":  "Scan starting...\r\nScan finished.\r\nScanning C:\\Users\\Public\\Documents\\LocalClip-AV-dc5f9a126ffc4409b88f934af0aa12be\\x64\\localclip-demo.exe found no threats.\r\n",
+                        "exitCode":  0,
+                        "fileExistsAfterScan":  true,
+                        "sha256":  "CAD3AD2076B12B3A53060A4D91B1317EC51FE068CDEBB8BCB324EB48E6839990",
+                        "arch":  "x64",
+                        "seconds":  0.1148915,
+                        "file":  "localclip-demo.exe"
+                    },
+                    {
+                        "output":  "Scan starting...\r\nScan finished.\r\nScanning C:\\Users\\Public\\Documents\\LocalClip-AV-dc5f9a126ffc4409b88f934af0aa12be\\x64\\localclip.exe found no threats.\r\n",
+                        "exitCode":  0,
+                        "fileExistsAfterScan":  true,
+                        "sha256":  "FC67318103CF89A05499380160C3DEEEA2FC581CD9040D9F9522F60C1F224593",
+                        "arch":  "x64",
+                        "seconds":  0.3166738,
+                        "file":  "localclip.exe"
+                    },
+                    {
+                        "output":  "Scan starting...\r\nScan finished.\r\nScanning C:\\Users\\Public\\Documents\\LocalClip-AV-dc5f9a126ffc4409b88f934af0aa12be\\x64\\ui_fixture.exe found no threats.\r\n",
+                        "exitCode":  0,
+                        "fileExistsAfterScan":  true,
+                        "sha256":  "3D6D022FD418DF67F77D14F19D215D025A67E1024BE10ABD2EB8AEDBE1D292FC",
+                        "arch":  "x64",
+                        "seconds":  0.2032649,
+                        "file":  "ui_fixture.exe"
+                    },
+                    {
+                        "output":  "Scan starting...\r\nScan finished.\r\nScanning C:\\Users\\Public\\Documents\\LocalClip-AV-dc5f9a126ffc4409b88f934af0aa12be\\x64\\WixUIWixca.dll found no threats.\r\n",
+                        "exitCode":  0,
+                        "fileExistsAfterScan":  true,
+                        "sha256":  "7F47D98AB25CFEA9B3A2E898C3376CC9BA1CD893B4948B0C27CAA530FD0E34CC",
+                        "arch":  "x64",
+                        "seconds":  0.019651599999999998,
+                        "file":  "WixUIWixca.dll"
+                    }
+                ],
+    "localDirectory":  "C:\\Users\\Public\\Documents\\LocalClip-AV-dc5f9a126ffc4409b88f934af0aa12be"
+}

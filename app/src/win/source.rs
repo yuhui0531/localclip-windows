@@ -213,7 +213,8 @@ impl Target {
                 cbSize: std::mem::size_of::<GUITHREADINFO>() as u32,
                 ..Default::default()
             };
-            GetGUIThreadInfo(GetWindowThreadProcessId(window, None), &mut info).ok()?;
+            // 初始焦点不可读仍保存应用身份，实际发送前重新固定焦点。by AI.Coding
+            let _ = GetGUIThreadInfo(GetWindowThreadProcessId(window, None), &mut info);
             Some(Self {
                 window: window.0 as isize,
                 pid,

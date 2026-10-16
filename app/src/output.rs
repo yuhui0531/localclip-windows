@@ -1,8 +1,12 @@
+//! 合并与转换输出预算，避免读取多条记录造成无界内存增长。by AI.Coding
 use localclip_core::{
     domain::{Payload, Representation},
     transform::{Join, Transform},
 };
 
+pub const LIMIT: u64 = 50 * 1024 * 1024;
+
+/// 输入和派生输出均执行 50 MiB 上限。
 pub fn compose(
     records: Vec<Payload>,
     plain: bool,
@@ -14,6 +18,14 @@ pub fn compose(
     if records.is_empty() {
         return Err("notFound");
     }
+    if records
+        .iter()
+        .map(Payload::byte_count)
+        .try_fold(0u64, |sum, n| sum.checked_add(n))
+        .is_none_or(|n| n > LIMIT)
+    {
+        return Err("outputTooLarge");
+    }
     let style = Join::parse(join).ok_or("invalidRequest")?;
     if let Some(transform) = transform {
         let values = records
@@ -24,8 +36,14 @@ pub fn compose(
         return Transform::parse(transform)
             .ok_or("invalidRequest")?
             .apply(&value, language, offset)
-            .map(|v| Payload::text(&v))
-            .map_err(|_| "transformUnavailable");
+            .map_err(|_| "transformUnavailable")
+            .and_then(|v| {
+                if v.len() as u64 > LIMIT {
+                    Err("outputTooLarge")
+                } else {
+                    Ok(Payload::text(&v))
+                }
+            });
     }
     if records.len() == 1 && !plain && join == "newline" {
         return Ok(records.into_iter().next().unwrap());
@@ -48,6 +66,9 @@ pub fn compose(
         .map(|p| p.plain_text().ok_or("unsupported"))
         .collect::<Result<Vec<_>, _>>()?;
     let text = style.join(&values.iter().map(String::as_str).collect::<Vec<_>>());
+    if text.len() as u64 > LIMIT {
+        return Err("outputTooLarge");
+    }
     let mut payload = Payload::text(&text);
     if !plain && join == "newline" {
         let items = records.iter().flat_map(|p| &p.items).collect::<Vec<_>>();

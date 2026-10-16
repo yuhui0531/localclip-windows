@@ -101,7 +101,7 @@ pub fn output_with_code_files(
     if !modifiers_released {
         return result("modifiersHeld");
     }
-    let Some(target) = target else {
+    let Some(mut target) = target else {
         return result("targetUnavailable");
     };
     let Some(process) = target.validate() else {
@@ -124,11 +124,21 @@ pub fn output_with_code_files(
                 ..Default::default()
             };
             // 前台 HWND 可先于子控件恢复；两者都吻合后才继续。by AI.Coding
-            if GetForegroundWindow() == window
-                && GetGUIThreadInfo(GetWindowThreadProcessId(window, None), &mut focus).is_ok()
-                && focus.hwndFocus.0 as isize == target.focus
-            {
-                break;
+            if GetForegroundWindow() == window {
+                let readable =
+                    GetGUIThreadInfo(GetWindowThreadProcessId(window, None), &mut focus).is_ok();
+                // 只对打开时未知的焦点采用首次恢复结果，已知控件仍严格匹配。
+                if target.focus == 0 {
+                    target.focus = if readable {
+                        focus.hwndFocus.0 as isize
+                    } else {
+                        0
+                    };
+                    break;
+                }
+                if readable && focus.hwndFocus.0 as isize == target.focus {
+                    break;
+                }
             }
             if start.elapsed() >= Duration::from_millis(150) {
                 return result(if GetForegroundWindow() == window {
@@ -196,7 +206,10 @@ pub fn output_with_code_files(
             key(VK_V, true),
             key(VK_CONTROL, true),
         ]);
-        if GetForegroundWindow() != window {
+        if GetForegroundWindow() != window
+            || target.focus != 0
+                && Target::capture(window).is_none_or(|current| current.focus != target.focus)
+        {
             if smart_paste == Some("converted") {
                 listener.copy_checked(payload.clone(), Some(sequence))?;
             }

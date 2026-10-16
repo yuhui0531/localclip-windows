@@ -1,3 +1,4 @@
+//! 中立剪贴板类型；富文本归入文本但保留原始表示。by AI.Coding
 pub use crate::web::web_link;
 use sha2::{Digest, Sha256};
 use std::collections::BTreeSet;
@@ -221,7 +222,7 @@ impl Payload {
             };
         }
         if types.contains("text/rtf") || types.contains("text/html") {
-            return Kind::RichText;
+            return Kind::Text;
         }
         if types.contains("text/uri") {
             return Kind::Url;

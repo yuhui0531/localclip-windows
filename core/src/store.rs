@@ -1118,7 +1118,10 @@ fn search_db(db: &Connection, request: SearchRequest, now: i64) -> Result<Search
         clauses.push("isFavorite=1".into());
     }
     for kind in request.kind.into_iter().chain(request.kind_intersection) {
-        if kind == Kind::Image {
+        if kind == Kind::Text {
+            // 旧 Windows 数据原地兼容，不清库或丢弃富文本表示。by AI.Coding
+            clauses.push("kind IN ('text','richText')".into());
+        } else if kind == Kind::Image {
             clauses.push("(kind='image' OR (kind='file' AND EXISTS(SELECT 1 FROM text_content WHERE clipID=clips.id) AND NOT EXISTS(SELECT 1 FROM text_content WHERE clipID=clips.id AND clip_image_path(plainText)=0)))".into());
         } else {
             clauses.push("kind=?".into());

@@ -6,3 +6,6 @@ html:has(body.feedback-window){background:transparent}.feedback-window #root{hei
 /* 滚动条保留命中区域，停止滚动后隐藏，避免卡片高度跳动。by AI.Coding */
 .history.scrolling,.history.scrollbar-hover{scrollbar-color:#9cafaa transparent}
 @media (forced-colors:active){.history{scrollbar-color:auto}}
+
+/* 按需大小标签不遮挡卡片操作。by AI.Coding */
+.card-size{font-size:11px;color:var(--muted);padding:0 14px;min-height:14px}.detail-body pre{max-height:260px;overflow:auto}.card-content pre{margin:0}

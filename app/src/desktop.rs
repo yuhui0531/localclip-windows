@@ -447,6 +447,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
                 .text("resume", "恢复采集")
                 .separator()
                 .text("settings", "设置")
+                .text("about", "关于 LocalClip")
                 .text("updates", "检查更新")
                 .text("stopQueue", "结束粘贴队列")
                 .separator()
@@ -463,7 +464,21 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
                     let action = event.id.as_ref();
                     match action {
                         "history" => request_panel(app, false),
-                        "settings" | "updates" => request_panel(app, true),
+                        "settings" => request_panel(app, true),
+                        "about" | "updates" => {
+                            request_panel(app, true);
+                            let _ = app.emit("settings-page", json!({"tab":"about"}));
+                            if action == "updates" {
+                                let handle = app.clone();
+                                tauri::async_runtime::spawn(async move {
+                                    if let Err(reason) =
+                                        crate::update::check(handle.clone(), true).await
+                                    {
+                                        feedback(&handle, json!({"status":reason}));
+                                    }
+                                });
+                            }
+                        }
                         "stopQueue" => stop_queue(app),
                         "quit" => app.exit(0),
                         "pause15" | "pause60" | "pause" | "resume" => {

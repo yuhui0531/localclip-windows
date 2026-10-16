@@ -1,0 +1,70 @@
+﻿[
+    {
+        "mainMatchesCiExecutable":  true,
+        "arch":  "arm64",
+        "files":  [
+                      {
+                          "signer":  null,
+                          "signature":  "NotSigned",
+                          "sha256":  "8BA535DAA78EF1BF72872FA8B2F6E7DFE8F00A36501BC943F5992F2FD0975AE6",
+                          "file":  "localclip-demo.exe",
+                          "bytes":  3694080
+                      },
+                      {
+                          "signer":  null,
+                          "signature":  "NotSigned",
+                          "sha256":  "0CDA00860D3BE2FA24E8580174DC78A1384F5A190C0DB65A946A1DB9267C596E",
+                          "file":  "localclip.exe",
+                          "bytes":  16607744
+                      },
+                      {
+                          "signer":  null,
+                          "signature":  "NotSigned",
+                          "sha256":  "98ECE9D0A841C052501C03A39BE05588B27745E76F4EC6CA752A0B79E6FE71D8",
+                          "file":  "ui_fixture.exe",
+                          "bytes":  2543104
+                      },
+                      {
+                          "signer":  "CN=WiX Toolset (.NET Foundation), O=WiX Toolset (.NET Foundation), L=Redmond, S=Washington, C=US, SERIALNUMBER=603 389 068, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.2=Washington, OID.1.3.6.1.4.1.311.60.2.1.3=US",
+                          "signature":  "Valid",
+                          "sha256":  "7F47D98AB25CFEA9B3A2E898C3376CC9BA1CD893B4948B0C27CAA530FD0E34CC",
+                          "file":  "WixUIWixca.dll",
+                          "bytes":  135440
+                      }
+                  ]
+    },
+    {
+        "mainMatchesCiExecutable":  true,
+        "arch":  "x64",
+        "files":  [
+                      {
+                          "signer":  null,
+                          "signature":  "NotSigned",
+                          "sha256":  "CAD3AD2076B12B3A53060A4D91B1317EC51FE068CDEBB8BCB324EB48E6839990",
+                          "file":  "localclip-demo.exe",
+                          "bytes":  4405760
+                      },
+                      {
+                          "signer":  null,
+                          "signature":  "NotSigned",
+                          "sha256":  "FC67318103CF89A05499380160C3DEEEA2FC581CD9040D9F9522F60C1F224593",
+                          "file":  "localclip.exe",
+                          "bytes":  19527168
+                      },
+                      {
+                          "signer":  null,
+                          "signature":  "NotSigned",
+                          "sha256":  "3D6D022FD418DF67F77D14F19D215D025A67E1024BE10ABD2EB8AEDBE1D292FC",
+                          "file":  "ui_fixture.exe",
+                          "bytes":  3141120
+                      },
+                      {
+                          "signer":  "CN=WiX Toolset (.NET Foundation), O=WiX Toolset (.NET Foundation), L=Redmond, S=Washington, C=US, SERIALNUMBER=603 389 068, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.2=Washington, OID.1.3.6.1.4.1.311.60.2.1.3=US",
+                          "signature":  "Valid",
+                          "sha256":  "7F47D98AB25CFEA9B3A2E898C3376CC9BA1CD893B4948B0C27CAA530FD0E34CC",
+                          "file":  "WixUIWixca.dll",
+                          "bytes":  135440
+                      }
+                  ]
+    }
+]

@@ -1,0 +1,43 @@
+{
+  "source": "rea 844924e / Domain.swift and SearchQueryParser.swift; intentionally supersedes exactly five baseline cases",
+  "kind": {
+    "3": {
+      "kind": "text"
+    },
+    "4": {
+      "kind": "text"
+    }
+  },
+  "query": {
+    "9": {
+      "expected": {
+        "categoryIDs": [],
+        "favorites": false,
+        "kind": null,
+        "labels": [],
+        "literal": "type:rich",
+        "problems": []
+      }
+    },
+    "10": {
+      "expected": {
+        "categoryIDs": [],
+        "favorites": false,
+        "kind": null,
+        "labels": [],
+        "literal": "type:richtext",
+        "problems": []
+      }
+    },
+    "16": {
+      "expected": {
+        "categoryIDs": [],
+        "favorites": false,
+        "kind": null,
+        "labels": [],
+        "literal": "type:富文本",
+        "problems": []
+      }
+    }
+  }
+}

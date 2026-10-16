@@ -19,7 +19,12 @@ use windows::{
 type Policy = Arc<dyn Fn() -> Result<Settings> + Send + Sync>;
 type Captured = Arc<dyn Fn(Result<Capture>, i64, i64) + Send + Sync>;
 enum Command {
-    Copy(Payload, Option<u32>, mpsc::Sender<Result<(u32, usize)>>),
+    Copy(
+        Payload,
+        Option<u32>,
+        bool,
+        mpsc::Sender<Result<(u32, usize)>>,
+    ),
 }
 struct State {
     policy: Policy,
@@ -82,8 +87,10 @@ unsafe extern "system" fn procedure(window: HWND, message: u32, w: WPARAM, l: LP
                 LRESULT(0)
             }
             WM_APP => {
-                while let Ok(Command::Copy(payload, expected, reply)) = state.commands.try_recv() {
-                    let result = clipboard::write_checked(window, &payload, expected).map(
+                while let Ok(Command::Copy(payload, expected, owner, reply)) =
+                    state.commands.try_recv()
+                {
+                    let result = clipboard::write_guarded(window, &payload, expected, owner).map(
                         |(receipt, missing)| {
                             let sequence = receipt.sequence;
                             state.receipt = Some(receipt);
@@ -197,9 +204,21 @@ impl Listener {
     }
     /// 返回本次写入序号，转换和回退只替换本次仍持有的剪贴板。by AI.Coding
     pub fn copy_checked(&self, payload: Payload, expected: Option<u32>) -> Result<(u32, usize)> {
+        self.copy_guarded(payload, expected, true)
+    }
+    /// OCR 只在用户开始识别后的剪贴板未变化时提交结果。by AI.Coding
+    pub fn copy_snapshot(&self, payload: Payload, sequence: u32) -> Result<(u32, usize)> {
+        self.copy_guarded(payload, Some(sequence), false)
+    }
+    fn copy_guarded(
+        &self,
+        payload: Payload,
+        expected: Option<u32>,
+        owner: bool,
+    ) -> Result<(u32, usize)> {
         let (tx, rx) = mpsc::channel();
         self.commands
-            .send(Command::Copy(payload, expected, tx))
+            .send(Command::Copy(payload, expected, owner, tx))
             .map_err(|_| "accessUnavailable")?;
         unsafe {
             PostMessageW(

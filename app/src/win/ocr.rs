@@ -23,68 +23,91 @@ impl Drop for Apartment {
 }
 
 fn bitmap(payload: &Payload, cancelled: &AtomicBool) -> Result<SoftwareBitmap, &'static str> {
-    let item = payload.items.first().ok_or("unsupported")?;
-    for (format, decoder_format) in [
-        ("image/png", image::ImageFormat::Png),
-        ("image/jpeg", image::ImageFormat::Jpeg),
-        ("image/x-win-dibv5", image::ImageFormat::Bmp),
-    ] {
-        if cancelled.load(Ordering::SeqCst) {
-            return Err("cancelled");
-        }
-        let Some(raw) = item.representation(format) else {
+    for item in &payload.items {
+        // 文件引用优先真实内容；图标失败时继续下一项而非识别图标。by AI.Coding
+        if item.file_path().is_some() {
+            if let Some(path) = super::preview::path(item)
+                && let Some(bytes) = super::preview::read(&path)
+            {
+                let candidate = Payload {
+                    items: vec![localclip_core::domain::Item {
+                        representations: vec![localclip_core::domain::Representation {
+                            format: "image/png".into(),
+                            data: bytes,
+                        }],
+                        ..Default::default()
+                    }],
+                };
+                if let Ok(bitmap) = bitmap(&candidate, cancelled) {
+                    return Ok(bitmap);
+                }
+            }
             continue;
-        };
-        let bmp;
-        let bytes = if decoder_format == image::ImageFormat::Bmp {
-            bmp = match dibv5_to_bmp(raw) {
-                Some(v) => v,
-                None => continue,
+        }
+        for (format, decoder_format) in [
+            ("image/png", image::ImageFormat::Png),
+            ("image/jpeg", image::ImageFormat::Jpeg),
+            ("image/x-win-dibv5", image::ImageFormat::Bmp),
+        ] {
+            if cancelled.load(Ordering::SeqCst) {
+                return Err("cancelled");
+            }
+            let Some(raw) = item.representation(format) else {
+                continue;
             };
-            bmp.as_slice()
-        } else {
-            raw
-        };
-        let Ok((width, height)) =
-            image::ImageReader::with_format(std::io::Cursor::new(bytes), decoder_format)
-                .into_dimensions()
-        else {
-            continue;
-        };
-        if width as u64 * height as u64 > 40_000_000 {
-            return Err("tooManyPixels");
-        }
-        let stream = InMemoryRandomAccessStream::new().map_err(|_| "ocrUnavailable")?;
-        let writer = DataWriter::CreateDataWriter(&stream).map_err(|_| "ocrUnavailable")?;
-        writer.WriteBytes(bytes).map_err(|_| "ocrUnavailable")?;
-        writer
-            .StoreAsync()
-            .map_err(|_| "ocrUnavailable")?
-            .join()
-            .map_err(|_| "ocrUnavailable")?;
-        writer.DetachStream().map_err(|_| "ocrUnavailable")?;
-        stream.Seek(0).map_err(|_| "ocrUnavailable")?;
-        let decoder = match BitmapDecoder::CreateAsync(&stream).and_then(|v| v.join()) {
-            Ok(v) => v,
-            Err(_) => continue,
-        };
-        if cancelled.load(Ordering::SeqCst) {
-            return Err("cancelled");
-        }
-        let width = decoder.PixelWidth().map_err(|_| "ocrUnavailable")?;
-        let height = decoder.PixelHeight().map_err(|_| "ocrUnavailable")?;
-        if width as u64 * height as u64 > 40_000_000 {
-            return Err("tooManyPixels");
-        }
-        let limit = OcrEngine::MaxImageDimension().map_err(|_| "ocrUnavailable")?;
-        if width > limit || height > limit {
-            return Err("engineDimensionLimit");
-        }
-        if let Ok(bitmap) = decoder
-            .GetSoftwareBitmapConvertedAsync(BitmapPixelFormat::Bgra8, BitmapAlphaMode::Ignore)
-            .and_then(|v| v.join())
-        {
-            return Ok(bitmap);
+            let bmp;
+            let bytes = if decoder_format == image::ImageFormat::Bmp {
+                bmp = match dibv5_to_bmp(raw) {
+                    Some(v) => v,
+                    None => continue,
+                };
+                bmp.as_slice()
+            } else {
+                raw
+            };
+            let Ok((width, height)) = image::ImageReader::new(std::io::Cursor::new(bytes))
+                .with_guessed_format()
+                .ok()
+                .and_then(|r| r.into_dimensions().ok())
+                .ok_or("unsupported")
+            else {
+                continue;
+            };
+            if width as u64 * height as u64 > 40_000_000 {
+                return Err("tooManyPixels");
+            }
+            let stream = InMemoryRandomAccessStream::new().map_err(|_| "ocrUnavailable")?;
+            let writer = DataWriter::CreateDataWriter(&stream).map_err(|_| "ocrUnavailable")?;
+            writer.WriteBytes(bytes).map_err(|_| "ocrUnavailable")?;
+            writer
+                .StoreAsync()
+                .map_err(|_| "ocrUnavailable")?
+                .join()
+                .map_err(|_| "ocrUnavailable")?;
+            writer.DetachStream().map_err(|_| "ocrUnavailable")?;
+            stream.Seek(0).map_err(|_| "ocrUnavailable")?;
+            let decoder = match BitmapDecoder::CreateAsync(&stream).and_then(|v| v.join()) {
+                Ok(v) => v,
+                Err(_) => continue,
+            };
+            if cancelled.load(Ordering::SeqCst) {
+                return Err("cancelled");
+            }
+            let width = decoder.PixelWidth().map_err(|_| "ocrUnavailable")?;
+            let height = decoder.PixelHeight().map_err(|_| "ocrUnavailable")?;
+            if width as u64 * height as u64 > 40_000_000 {
+                return Err("tooManyPixels");
+            }
+            let limit = OcrEngine::MaxImageDimension().map_err(|_| "ocrUnavailable")?;
+            if width > limit || height > limit {
+                return Err("engineDimensionLimit");
+            }
+            if let Ok(bitmap) = decoder
+                .GetSoftwareBitmapConvertedAsync(BitmapPixelFormat::Bgra8, BitmapAlphaMode::Ignore)
+                .and_then(|v| v.join())
+            {
+                return Ok(bitmap);
+            }
         }
     }
     Err("unsupported")

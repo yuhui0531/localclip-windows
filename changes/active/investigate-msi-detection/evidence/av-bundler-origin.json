@@ -1,0 +1,7 @@
+{
+  "cliVersion": "2.12.2",
+  "source": "https://raw.githubusercontent.com/tauri-apps/tauri/tauri-cli-v2.12.2/crates/tauri-bundler/src/bundle/windows/msi/main.wxs",
+  "upstreamSha256": "e371a01628a06730828f9bd24111feacb8bec53c250ccec4b46df756fe0a0198",
+  "actionExactlyMatchesOfficialTemplate": true,
+  "action": "<CustomAction Id='DownloadAndInvokeBootstrapper' Directory=\"INSTALLDIR\" Execute=\"deferred\" ExeCommand='powershell.exe -NoProfile -windowstyle hidden try [\\{] [\\[]Net.ServicePointManager[\\]]::SecurityProtocol = [\\[]Net.SecurityProtocolType[\\]]::Tls12 [\\}] catch [\\{][\\}]; Invoke-WebRequest -Uri \"https://go.microsoft.com/fwlink/p/?LinkId=2124703\" -OutFile \"$env:TEMP\\MicrosoftEdgeWebview2Setup.exe\" ; Start-Process -FilePath \"$env:TEMP\\MicrosoftEdgeWebview2Setup.exe\" -ArgumentList ({{webview_installer_args}} &apos;/install&apos;) -Wait' Return='check'/>"
+}

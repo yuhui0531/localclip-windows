@@ -457,6 +457,16 @@ pub fn write_checked(
     payload: &Payload,
     expected: Option<u32>,
 ) -> Result<(Receipt, usize)> {
+    write_guarded(window, payload, expected, true)
+}
+
+/// 在 OpenClipboard 临界区内校验序号；OCR 不要求原内容属于本应用。by AI.Coding
+pub(crate) fn write_guarded(
+    window: HWND,
+    payload: &Payload,
+    expected: Option<u32>,
+    require_owner: bool,
+) -> Result<(Receipt, usize)> {
     payload.validate()?;
     let mut blocks = Vec::new();
     let mut missing = 0;
@@ -525,7 +535,8 @@ pub fn write_checked(
     {
         let _open = open(window)?;
         if expected.is_some_and(|sequence| unsafe {
-            GetClipboardSequenceNumber() != sequence || GetClipboardOwner().ok() != Some(window)
+            GetClipboardSequenceNumber() != sequence
+                || require_owner && GetClipboardOwner().ok() != Some(window)
         }) {
             return Err("clipboardChanged");
         }

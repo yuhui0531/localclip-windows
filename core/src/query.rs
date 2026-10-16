@@ -59,7 +59,6 @@ pub fn parse(
                 let (kind, label) = match lower.as_str() {
                     "text" | "文本" => (Kind::Text, "文本"),
                     "url" | "link" | "链接" => (Kind::Url, "链接"),
-                    "rich" | "richtext" | "富文本" => (Kind::RichText, "富文本"),
                     "image" | "img" | "图片" => (Kind::Image, "图片"),
                     "file" | "文件" => (Kind::File, "文件"),
                     "mixed" | "混合" => (Kind::Mixed, "混合"),

@@ -1,3 +1,4 @@
+//! 内容感知缩略图与有界缓存。by AI.Coding
 use crate::desktop::AppState;
 use image::ImageReader;
 use localclip_core::{domain::Payload, export::dibv5_to_bmp};
@@ -55,15 +56,17 @@ fn thumbnail(payload: &Payload) -> Option<Vec<u8>> {
             }
         }
         if item.file_path().is_some() {
-            let path = crate::win::formats::url_to_path(
-                std::str::from_utf8(item.representation("text/uri-list")?).ok()?,
-            )?;
-            if localclip_core::domain::is_image_file(&path)
-                && std::fs::metadata(&path).ok()?.len() <= 50 * 1_048_576
-                && let Ok(bytes) = std::fs::read(path)
-            {
-                candidates.push(bytes);
+            if let Some(path) = crate::win::preview::path(item) {
+                let bytes = crate::win::preview::read(&path);
+                if let Some(png) = bytes.as_deref().and_then(crate::win::preview::image) {
+                    return Some(png);
+                }
+                if let Some(png) = crate::win::preview::document(&path, bytes.as_deref()) {
+                    return Some(png);
+                }
             }
+            // 文件图标不是内容预览，文件本身失败时不误用其剪贴板图标。
+            continue;
         }
         for bytes in candidates {
             let Ok(reader) = ImageReader::new(Cursor::new(&bytes)).with_guessed_format() else {
@@ -105,12 +108,29 @@ pub fn response(app: &tauri::AppHandle, uri: &tauri::http::Uri) -> tauri::http::
             return None;
         }
         state.runtime.store.summary(&id).ok()?;
-        let key = format!("{}:{}", state.runtime.store.revision().ok()?, id);
+        let payload = state.runtime.store.payload(&id).ok()?;
+        let info = crate::win::preview::info(&payload);
+        let key = format!(
+            "{}:{}:{}",
+            state.runtime.store.revision().ok()?,
+            id,
+            info["fileVersion"]
+        );
         if let Some(bytes) = state.thumbs.lock().ok()?.get(&key) {
             return Some((*bytes).clone());
         }
-        let payload = state.runtime.store.payload(&id).ok()?;
         let bytes = thumbnail(&payload)?;
+        if state
+            .runtime
+            .store
+            .settings()
+            .ok()?
+            .preferences
+            .hide_contents
+        {
+            return None;
+        }
+        state.runtime.store.summary(&id).ok()?;
         // Do not retain a result that completed after the panel was hidden.
         if app
             .get_webview_window("main")

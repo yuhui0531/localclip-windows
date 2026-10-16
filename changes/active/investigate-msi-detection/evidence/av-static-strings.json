@@ -1,0 +1,56 @@
+[
+  {
+    "file": "arm64/localclip-demo.exe",
+    "strings": {
+      "powershell.exe": false,
+      "-EncodedCommand": false,
+      "update-pending.json": false,
+      "LocalClip could not confirm": false
+    }
+  },
+  {
+    "file": "arm64/localclip.exe",
+    "strings": {
+      "powershell.exe": true,
+      "-EncodedCommand": true,
+      "update-pending.json": true,
+      "LocalClip could not confirm": true
+    }
+  },
+  {
+    "file": "arm64/ui_fixture.exe",
+    "strings": {
+      "powershell.exe": false,
+      "-EncodedCommand": false,
+      "update-pending.json": false,
+      "LocalClip could not confirm": false
+    }
+  },
+  {
+    "file": "x64/localclip-demo.exe",
+    "strings": {
+      "powershell.exe": false,
+      "-EncodedCommand": false,
+      "update-pending.json": false,
+      "LocalClip could not confirm": false
+    }
+  },
+  {
+    "file": "x64/localclip.exe",
+    "strings": {
+      "powershell.exe": true,
+      "-EncodedCommand": true,
+      "update-pending.json": true,
+      "LocalClip could not confirm": true
+    }
+  },
+  {
+    "file": "x64/ui_fixture.exe",
+    "strings": {
+      "powershell.exe": false,
+      "-EncodedCommand": false,
+      "update-pending.json": false,
+      "LocalClip could not confirm": false
+    }
+  }
+]

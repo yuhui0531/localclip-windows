@@ -16,6 +16,8 @@ pub fn export_drag(
     owner: HWND,
     payload: Payload,
     language: Option<String>,
+    smart_files: bool,
+    cache: &crate::drag_cache::DragCache,
 ) -> Result<bool, &'static str> {
     // IPC 调度期间已松开鼠标则取消，不能让拖拽锁住后续失焦行为。
     if unsafe { GetAsyncKeyState(VK_LBUTTON.0 as i32) } >= 0 {
@@ -30,13 +32,60 @@ pub fn export_drag(
     }
     let _ole = Ole;
     let data = drag_data(&payload, language.as_deref())?;
-    unsafe {
+    // 同时提供正文和原文件，接收程序自行选择；句柄保持到拖动结束。
+    let _locked = smart_text(&data, &payload, smart_files)?;
+    let exported = if payload.kind() == localclip_core::domain::Kind::Image {
+        let file = export::prepare(&payload, None, None).ok_or("unsupported")?;
+        let saved = cache
+            .prepare(&file.bytes, file.extension)
+            .map_err(|_| "exportCacheUnavailable")?;
+        let paths = vec![saved.path.to_string_lossy().into_owned()];
+        let bytes = super::formats::encode_dropfiles(&paths).ok_or("unsupported")?;
+        if let Err(e) = set_bytes(&data, 15, &bytes) {
+            cache.cancel(&saved);
+            return Err(e);
+        }
+        Some(saved)
+    } else {
+        None
+    };
+    let result = unsafe {
         // 清除 WebView 的鼠标捕获，让 OLE 接管后续移动及松开。
         let _ = ReleaseCapture();
         SHDoDragDrop(Some(owner), &data, None::<&IDropSource>, DROPEFFECT_COPY)
             .map(|effect| effect == DROPEFFECT_COPY)
             .map_err(|_| "dragUnavailable")
+    };
+    if result != Ok(true)
+        && let Some(saved) = exported
+    {
+        cache.cancel(&saved);
     }
+    result
+}
+
+/// 原路径和正文并存；失败整组保留原文件，读取句柄由调用者保持。
+fn smart_text(
+    data: &IDataObject,
+    payload: &Payload,
+    allowed: bool,
+) -> Result<Option<super::code_file::Files>, &'static str> {
+    if !allowed {
+        return Ok(None);
+    }
+    let Ok(mut files) = super::code_file::Files::open(payload) else {
+        return Ok(None);
+    };
+    let Ok(text) = files.read() else {
+        return Ok(None);
+    };
+    let bytes: Vec<u8> = text
+        .encode_utf16()
+        .chain([0])
+        .flat_map(u16::to_le_bytes)
+        .collect();
+    set_bytes(data, 13, &bytes)?;
+    Ok(Some(files))
 }
 
 /// 同一内容按目标协商为文本或虚拟文件；只有真实文件才发布 CF_HDROP。
@@ -308,7 +357,7 @@ mod tests {
         let root =
             std::env::temp_dir().join(format!("LocalClip-drag-protocol-{}", std::process::id()));
         std::fs::create_dir_all(&root).unwrap();
-        let path = root.join("generated.txt");
+        let path = root.join("generated.rs");
         std::fs::write(&path, b"generated").unwrap();
         let url = super::super::formats::path_to_url(path.to_str().unwrap()).unwrap();
         let payload = Payload {
@@ -329,6 +378,24 @@ mod tests {
             unsafe { data.QueryGetData(&format(13, -1, TYMED_HGLOBAL)) },
             S_OK
         );
+        assert!(smart_text(&data, &payload, false).unwrap().is_none());
+        let locked = smart_text(&data, &payload, true).unwrap().unwrap();
+        assert_eq!(
+            unsafe { data.QueryGetData(&format(13, -1, TYMED_HGLOBAL)) },
+            S_OK
+        );
+        assert_eq!(
+            unsafe { data.QueryGetData(&format(15, -1, TYMED_HGLOBAL)) },
+            S_OK
+        );
+        assert_eq!(
+            &bytes(&data, 13)[..18],
+            &"generated"
+                .encode_utf16()
+                .flat_map(u16::to_le_bytes)
+                .collect::<Vec<_>>()
+        );
+        drop(locked);
         assert!(path.exists());
         std::fs::remove_dir_all(root).unwrap();
     }

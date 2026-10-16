@@ -17,6 +17,7 @@ use std::{
 
 pub struct Runtime {
     pub store: Arc<HistoryStore>,
+    pub drag_cache: Mutex<crate::drag_cache::DragCache>,
     root: std::path::PathBuf,
     listener: Mutex<Option<Listener>>,
     tracker: Mutex<Option<Tracker>>,
@@ -105,6 +106,7 @@ impl Runtime {
         let tracker = Tracker::start(foreground_changed)?;
         Ok(Self {
             root: root.to_owned(),
+            drag_cache: Mutex::new(crate::drag_cache::DragCache::new(root.join("DragImages"))),
             store,
             listener: Mutex::new(Some(listener)),
             tracker: Mutex::new(Some(tracker)),
@@ -139,6 +141,8 @@ impl Runtime {
         languages: &[String],
         cancelled: &AtomicBool,
     ) -> Result<(usize, Vec<String>)> {
+        let sequence =
+            unsafe { windows::Win32::System::DataExchange::GetClipboardSequenceNumber() };
         let payload = self.store.payload(id).map_err(|_| "notFound")?;
         let settings = self.store.settings().map_err(|_| "storageUnavailable")?;
         let result = ocr::recognize(
@@ -163,7 +167,13 @@ impl Runtime {
             return Ok((0, result.missing_languages));
         }
         let lines = result.text.lines().count();
-        self.output(Payload::text(&result.text), None, false, true, || {})?;
+        self.store.summary(id).map_err(|_| "notFound")?;
+        self.listener
+            .lock()
+            .map_err(|_| "accessUnavailable")?
+            .as_ref()
+            .ok_or("accessUnavailable")?
+            .copy_snapshot(Payload::text(&result.text), sequence)?;
         Ok((lines, result.missing_languages))
     }
     pub fn free_disk_bytes(&self) -> Result<u64> {

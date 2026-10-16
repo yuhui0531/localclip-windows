@@ -52,7 +52,7 @@ fn summary(store: &HistoryStore, s: Summary, hide: bool) -> Result<Value> {
         inspector::badge(&s.preview, s.preview.len() >= 180, now(), offset())
     };
     Ok(
-        json!({"id":s.id,"firstCopiedAtMs":s.first_copied_at,"lastCopiedAtMs":s.last_copied_at,"copyCount":s.copy_count,"favorite":s.favorite,"protected":s.protected,"kind":s.kind.as_str(),"sourceName":s.source.name,"sourceAppID":s.source.app_id,"sourceBasis":s.source.basis,"preview":if hide {""} else {&s.preview},"context":if hide {""} else {&s.context},"title":s.title,"categoryIDs":memberships,"types":types,"byteCount":bytes,"badge":badge}),
+        json!({"id":s.id,"firstCopiedAtMs":s.first_copied_at,"lastCopiedAtMs":s.last_copied_at,"copyCount":s.copy_count,"favorite":s.favorite,"protected":s.protected,"kind":if s.kind==Kind::RichText {"text"} else {s.kind.as_str()},"sourceName":s.source.name,"sourceAppID":s.source.app_id,"sourceBasis":s.source.basis,"preview":if hide {""} else {&s.preview},"context":if hide {""} else {&s.context},"title":s.title,"categoryIDs":memberships,"types":types,"byteCount":bytes,"badge":badge}),
     )
 }
 fn settings_document(s: &Settings) -> Value {
@@ -74,7 +74,25 @@ fn change(store: &HistoryStore, action: Change) -> Result<Value> {
 }
 fn perform_output(app: &tauri::AppHandle, request: &Value) -> Result<Value> {
     let state = app.state::<AppState>();
+    if !app
+        .get_webview_window("main")
+        .is_some_and(|w| w.is_visible().unwrap_or(false))
+    {
+        return Err("panelHidden".into());
+    }
     let ids = ids(request)?;
+    // 正文载入之前只读计数，防止多选输出先分配过量内存。
+    let total = ids.iter().try_fold(0u64, |sum, id| {
+        state
+            .runtime
+            .store
+            .metadata(id)
+            .map_err(error)
+            .and_then(|(_, n)| sum.checked_add(n).ok_or("outputTooLarge".into()))
+    })?;
+    if total > output::LIMIT {
+        return Err("outputTooLarge".into());
+    }
     let settings = state.runtime.store.settings().map_err(error)?;
     if settings.preferences.hide_contents && request["transform"].is_string() {
         return Err("contentsHidden".into());
@@ -110,6 +128,9 @@ fn perform_output(app: &tauri::AppHandle, request: &Value) -> Result<Value> {
         return Err("invalidRequest".into());
     }
     if request["drag"].as_bool() == Some(true) {
+        if settings.preferences.hide_contents {
+            return Err("contentsHidden".into());
+        }
         // 原生拖拽必须回到拥有窗口输入队列的 UI STA，不能从后台线程启动。
         if state.modal.swap(true, Ordering::SeqCst) {
             return Err("interactionBusy".into());
@@ -128,6 +149,13 @@ fn perform_output(app: &tauri::AppHandle, request: &Value) -> Result<Value> {
                             windows::Win32::Foundation::HWND(h.0),
                             payload,
                             language,
+                            smart_files,
+                            &drag_app
+                                .state::<AppState>()
+                                .runtime
+                                .drag_cache
+                                .lock()
+                                .map_err(|_| "exportCacheUnavailable")?,
                         )
                     });
                 let _ = tx.send(result);
@@ -265,7 +293,18 @@ fn dispatch(app: &tauri::AppHandle, name: &str, request: Value) -> Result<Value>
             let id = string(&request, "id")?;
             let s = summary(store, store.summary(id).map_err(error)?, hide)?;
             let payload = store.payload(id).map_err(error)?;
-            let items = payload.items.iter().map(|i|json!({"types":i.representations.iter().map(|r|&r.format).collect::<Vec<_>>(),"plainText":if hide {None} else {i.plain_text.as_deref()},"html":if hide {None} else {i.representation("text/html").and_then(|b|std::str::from_utf8(b).ok())},"hasImage":i.representations.iter().any(|r|r.format.starts_with("image/")) || i.file_path().is_some_and(|p|localclip_core::domain::is_image_file(&p))})).collect::<Vec<_>>();
+            if request["previewOnly"].as_bool() == Some(true) {
+                if hide {
+                    return Err("contentsHidden".into());
+                }
+                let result = crate::win::preview::info(&payload);
+                if store.settings().map_err(error)?.preferences.hide_contents {
+                    return Err("contentsHidden".into());
+                }
+                store.summary(id).map_err(error)?;
+                return Ok(result);
+            }
+            let items = payload.items.iter().map(|i|json!({"types":i.representations.iter().map(|r|&r.format).collect::<Vec<_>>(),"plainText":if hide {None} else {i.plain_text.as_deref()},"html":if hide {None} else {i.representation("text/html").and_then(|b|std::str::from_utf8(b).ok())},"hasImage":i.representations.iter().any(|r|r.format.starts_with("image/")) || i.file_path().is_some()})).collect::<Vec<_>>();
             Ok(json!({"categoryIDs":s["categoryIDs"],"summary":s,"items":items}))
         }
         "perform" => perform_output(app, &request),
@@ -409,6 +448,15 @@ fn dispatch(app: &tauri::AppHandle, name: &str, request: Value) -> Result<Value>
             let p = store
                 .preview(Change::Delete(ids(&request)?))
                 .map_err(error)?;
+            let protected = ids(&request)?
+                .iter()
+                .filter(|id| store.summary(id).is_ok_and(|s| s.protected))
+                .count();
+            if p.affected_count > 1 || protected > 0 {
+                return Ok(
+                    json!({"confirmation":true,"token":p.token,"affectedCount":p.affected_count,"protectedCount":protected}),
+                );
+            }
             store.apply(p.token).map_err(error)?;
             changed(app, "deleted");
             Ok(json!({"undoAvailable":store.undo_available().map_err(error)?}))
@@ -560,13 +608,28 @@ fn dispatch(app: &tauri::AppHandle, name: &str, request: Value) -> Result<Value>
                 .map_err(error)?;
             changed(app, "changed");
             Ok(
-                json!({"affectedCount":result.removed,"needsConfirmation":false,"message":"设置已更新"}),
+                json!({"undoAvailable":store.undo_available().map_err(error)?,"affectedCount":result.removed,"needsConfirmation":false,"message":"设置已更新"}),
             )
         }
         "usage" => {
+            // 手动清理与正在进行的拖放互斥，避免接收方尚未读取就删除。
+            let cache = state
+                .runtime
+                .drag_cache
+                .lock()
+                .map_err(|_| "exportCacheUnavailable")?;
+            if request["clearDragImages"].as_bool() == Some(true) {
+                if request["confirmed"].as_bool() != Some(true)
+                    || state.modal.load(Ordering::SeqCst)
+                {
+                    return Err("interactionBusy".into());
+                }
+                cache.clear().map_err(|_| "exportCacheUnavailable")?;
+            }
+            let drag_bytes = cache.bytes().map_err(|_| "exportCacheUnavailable")?;
             let u = store.usage().map_err(error)?;
             Ok(
-                json!({"totalBytes":u.database,"ordinaryBytes":u.ordinary_payload,"protectedBytes":u.protected_payload,"walBytes":u.wal,"freeDiskBytes":state.runtime.free_disk_bytes().map_err(String::from)?,"undoAvailable":store.undo_available().map_err(error)?}),
+                json!({"dragImageBytes":drag_bytes,"totalBytes":u.database,"ordinaryBytes":u.ordinary_payload,"protectedBytes":u.protected_payload,"walBytes":u.wal,"freeDiskBytes":state.runtime.free_disk_bytes().map_err(String::from)?,"undoAvailable":store.undo_available().map_err(error)?}),
             )
         }
         "capture_status" => Ok(state
