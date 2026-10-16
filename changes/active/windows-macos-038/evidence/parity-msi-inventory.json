@@ -1,0 +1,505 @@
+{
+  "antivirus": [
+    {
+      "displayName": "Windows Defender",
+      "productState": 397568,
+      "pathToSignedProductExe": "windowsdefender://"
+    }
+  ],
+  "processes": [
+    {
+      "ProcessName": "MsMpEng",
+      "Id": 3416,
+      "Path": null
+    }
+  ],
+  "defender": {
+    "AMServiceEnabled": true,
+    "AntivirusEnabled": true,
+    "RealTimeProtectionEnabled": true,
+    "AntivirusSignatureVersion": "1.461.55.0",
+    "AntivirusSignatureLastUpdated": "/Date(1792135120000)/"
+  },
+  "packages": [
+    {
+      "exeSha256": "C594DA3FD4EE3F833A6AD11BF61C5E14264B3DBC0168DC782D047DEB9844C32D",
+      "msiSignature": "NotSigned",
+      "tables": {
+        "Media": [
+          [
+            "1",
+            "#app.cab"
+          ]
+        ],
+        "InstallExecuteSequence": [
+          [
+            "AppSearch",
+            "",
+            "50"
+          ],
+          [
+            "CostInitialize",
+            "",
+            "800"
+          ],
+          [
+            "FileCost",
+            "",
+            "900"
+          ],
+          [
+            "CostFinalize",
+            "",
+            "1000"
+          ],
+          [
+            "InstallValidate",
+            "",
+            "1400"
+          ],
+          [
+            "InstallInitialize",
+            "",
+            "1500"
+          ],
+          [
+            "InstallFiles",
+            "",
+            "4000"
+          ],
+          [
+            "InstallFinalize",
+            "",
+            "6600"
+          ],
+          [
+            "CreateShortcuts",
+            "",
+            "4500"
+          ],
+          [
+            "PublishFeatures",
+            "",
+            "6300"
+          ],
+          [
+            "PublishProduct",
+            "",
+            "6400"
+          ],
+          [
+            "LaunchApplication",
+            "AUTOLAUNCHAPP AND NOT Installed",
+            "6601"
+          ],
+          [
+            "SetARPNOMODIFY",
+            "",
+            "1401"
+          ],
+          [
+            "DeleteLocalClipHistory",
+            "REMOVE=\"ALL\" AND REMOVELOCALCLIPHISTORY=\"1\" AND NOT UPGRADINGPRODUCTCODE",
+            "3499"
+          ],
+          [
+            "InvokeBootstrapper",
+            "NOT(REMOVE OR INSTALLED_WEBVIEW2_VERSION)",
+            "6599"
+          ],
+          [
+            "SetARPINSTALLLOCATION",
+            "",
+            "1001"
+          ],
+          [
+            "FindRelatedProducts",
+            "",
+            "25"
+          ],
+          [
+            "LaunchConditions",
+            "",
+            "100"
+          ],
+          [
+            "ValidateProductID",
+            "",
+            "700"
+          ],
+          [
+            "MigrateFeatureStates",
+            "",
+            "1200"
+          ],
+          [
+            "ProcessComponents",
+            "",
+            "1600"
+          ],
+          [
+            "UnpublishFeatures",
+            "",
+            "1800"
+          ],
+          [
+            "RemoveRegistryValues",
+            "",
+            "2600"
+          ],
+          [
+            "RemoveShortcuts",
+            "Installed AND NOT UPGRADINGPRODUCTCODE",
+            "3200"
+          ],
+          [
+            "RemoveFiles",
+            "",
+            "3500"
+          ],
+          [
+            "WriteRegistryValues",
+            "",
+            "5000"
+          ],
+          [
+            "RegisterUser",
+            "",
+            "6000"
+          ],
+          [
+            "RegisterProduct",
+            "",
+            "6100"
+          ],
+          [
+            "RemoveExistingProducts",
+            "",
+            "1501"
+          ]
+        ],
+        "File": [
+          [
+            "Path",
+            "dhwkceda.exe|localclip.exe",
+            "16794624",
+            "0.1.4.0"
+          ]
+        ],
+        "Binary": [
+          [
+            "MicrosoftEdgeWebview2Setup.exe"
+          ],
+          [
+            "WixUIWixca"
+          ],
+          [
+            "WixUI_Bmp_Banner"
+          ],
+          [
+            "WixUI_Bmp_Dialog"
+          ],
+          [
+            "WixUI_Ico_Exclam"
+          ],
+          [
+            "WixUI_Ico_Info"
+          ],
+          [
+            "WixUI_Bmp_New"
+          ],
+          [
+            "WixUI_Bmp_Up"
+          ]
+        ],
+        "CustomAction": [
+          [
+            "LaunchApplication",
+            "210",
+            "Path",
+            "[LAUNCHAPPARGS]"
+          ],
+          [
+            "WixUIValidatePath",
+            "65",
+            "WixUIWixca",
+            "ValidatePath"
+          ],
+          [
+            "WixUIPrintEula",
+            "65",
+            "WixUIWixca",
+            "PrintEula"
+          ],
+          [
+            "SetARPNOMODIFY",
+            "51",
+            "ARPNOMODIFY",
+            "1"
+          ],
+          [
+            "DeleteLocalClipHistory",
+            "1042",
+            "Path",
+            "--uninstall-history-confirmed"
+          ],
+          [
+            "InvokeBootstrapper",
+            "1026",
+            "MicrosoftEdgeWebview2Setup.exe",
+            "/silent /install"
+          ],
+          [
+            "SetARPINSTALLLOCATION",
+            "51",
+            "ARPINSTALLLOCATION",
+            "[INSTALLDIR]"
+          ]
+        ]
+      },
+      "msiSha256": "73EFCB29B0EC498ED5F548434EB6B12AC984490DED180E05C0D226AD66543B85",
+      "arch": "arm64",
+      "exeSignature": "NotSigned"
+    },
+    {
+      "exeSha256": "E2BDBF6D90C40C53C49575A30ECA689A3A88692B8BC636BF28BC138CBD62DC46",
+      "msiSignature": "NotSigned",
+      "tables": {
+        "Media": [
+          [
+            "1",
+            "#app.cab"
+          ]
+        ],
+        "InstallExecuteSequence": [
+          [
+            "AppSearch",
+            "",
+            "50"
+          ],
+          [
+            "CostInitialize",
+            "",
+            "800"
+          ],
+          [
+            "FileCost",
+            "",
+            "900"
+          ],
+          [
+            "CostFinalize",
+            "",
+            "1000"
+          ],
+          [
+            "InstallValidate",
+            "",
+            "1400"
+          ],
+          [
+            "InstallInitialize",
+            "",
+            "1500"
+          ],
+          [
+            "InstallFiles",
+            "",
+            "4000"
+          ],
+          [
+            "InstallFinalize",
+            "",
+            "6600"
+          ],
+          [
+            "CreateShortcuts",
+            "",
+            "4500"
+          ],
+          [
+            "PublishFeatures",
+            "",
+            "6300"
+          ],
+          [
+            "PublishProduct",
+            "",
+            "6400"
+          ],
+          [
+            "LaunchApplication",
+            "AUTOLAUNCHAPP AND NOT Installed",
+            "6601"
+          ],
+          [
+            "SetARPNOMODIFY",
+            "",
+            "1401"
+          ],
+          [
+            "DeleteLocalClipHistory",
+            "REMOVE=\"ALL\" AND REMOVELOCALCLIPHISTORY=\"1\" AND NOT UPGRADINGPRODUCTCODE",
+            "3499"
+          ],
+          [
+            "InvokeBootstrapper",
+            "NOT(REMOVE OR INSTALLED_WEBVIEW2_VERSION)",
+            "6599"
+          ],
+          [
+            "SetARPINSTALLLOCATION",
+            "",
+            "1001"
+          ],
+          [
+            "FindRelatedProducts",
+            "",
+            "25"
+          ],
+          [
+            "LaunchConditions",
+            "",
+            "100"
+          ],
+          [
+            "ValidateProductID",
+            "",
+            "700"
+          ],
+          [
+            "MigrateFeatureStates",
+            "",
+            "1200"
+          ],
+          [
+            "ProcessComponents",
+            "",
+            "1600"
+          ],
+          [
+            "UnpublishFeatures",
+            "",
+            "1800"
+          ],
+          [
+            "RemoveRegistryValues",
+            "",
+            "2600"
+          ],
+          [
+            "RemoveShortcuts",
+            "Installed AND NOT UPGRADINGPRODUCTCODE",
+            "3200"
+          ],
+          [
+            "RemoveFiles",
+            "",
+            "3500"
+          ],
+          [
+            "WriteRegistryValues",
+            "",
+            "5000"
+          ],
+          [
+            "RegisterUser",
+            "",
+            "6000"
+          ],
+          [
+            "RegisterProduct",
+            "",
+            "6100"
+          ],
+          [
+            "RemoveExistingProducts",
+            "",
+            "1501"
+          ]
+        ],
+        "File": [
+          [
+            "Path",
+            "dhwkceda.exe|localclip.exe",
+            "19806208",
+            "0.1.4.0"
+          ]
+        ],
+        "Binary": [
+          [
+            "MicrosoftEdgeWebview2Setup.exe"
+          ],
+          [
+            "WixUIWixca"
+          ],
+          [
+            "WixUI_Bmp_Banner"
+          ],
+          [
+            "WixUI_Bmp_Dialog"
+          ],
+          [
+            "WixUI_Ico_Exclam"
+          ],
+          [
+            "WixUI_Ico_Info"
+          ],
+          [
+            "WixUI_Bmp_New"
+          ],
+          [
+            "WixUI_Bmp_Up"
+          ]
+        ],
+        "CustomAction": [
+          [
+            "LaunchApplication",
+            "210",
+            "Path",
+            "[LAUNCHAPPARGS]"
+          ],
+          [
+            "WixUIValidatePath",
+            "65",
+            "WixUIWixca",
+            "ValidatePath"
+          ],
+          [
+            "WixUIPrintEula",
+            "65",
+            "WixUIWixca",
+            "PrintEula"
+          ],
+          [
+            "SetARPNOMODIFY",
+            "51",
+            "ARPNOMODIFY",
+            "1"
+          ],
+          [
+            "DeleteLocalClipHistory",
+            "1042",
+            "Path",
+            "--uninstall-history-confirmed"
+          ],
+          [
+            "InvokeBootstrapper",
+            "1026",
+            "MicrosoftEdgeWebview2Setup.exe",
+            "/silent /install"
+          ],
+          [
+            "SetARPINSTALLLOCATION",
+            "51",
+            "ARPINSTALLLOCATION",
+            "[INSTALLDIR]"
+          ]
+        ]
+      },
+      "msiSha256": "A8A88AF54195F87DFD4108E32D9378BE2848AB3CA9EAC90DE71329FC15175406",
+      "arch": "x64",
+      "exeSignature": "NotSigned"
+    }
+  ]
+}

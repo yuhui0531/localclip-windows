@@ -1,0 +1,12 @@
+{
+  "testAppStopped": true,
+  "generatedTabActive": false,
+  "vmPauseIdleRestored": "on",
+  "personalInstallationUnchanged": true,
+  "referenceMacosCommit": "844924e",
+  "referenceFinalStatus": [
+    " M macos-app/Sources/LocalClipMac/UI/HistoryView.swift",
+    " M macos-app/Sources/LocalClipMac/UI/HistoryViewModel.swift"
+  ],
+  "referenceNote": "Read-only reference; concurrent uncommitted edits were left untouched."
+}

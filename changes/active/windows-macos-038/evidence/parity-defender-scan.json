@@ -1,0 +1,84 @@
+{
+  "engine": {
+    "AMProductVersion": "4.18.26070.9",
+    "AMEngineVersion": "1.1.26090.9",
+    "AntivirusSignatureVersion": "1.461.55.0",
+    "AntivirusSignatureLastUpdated": "/Date(1792135120000)/",
+    "RealTimeProtectionEnabled": true
+  },
+  "results": [
+    {
+      "output": "Scan starting...\r\nScan finished.\r\nScanning C:\\Users\\Public\\Documents\\LocalClip-AV-47b36f8e83e24b00bd45f40b9d5100f0\\arm64\\LocalClip_0.1.4_arm64.msi found no threats.\r\n",
+      "exitCode": 0,
+      "fileExistsAfterScan": true,
+      "sha256": "73EFCB29B0EC498ED5F548434EB6B12AC984490DED180E05C0D226AD66543B85",
+      "arch": "arm64",
+      "seconds": 1.4655998,
+      "file": "LocalClip_0.1.4_arm64.msi"
+    },
+    {
+      "output": "Scan starting...\r\nScan finished.\r\nScanning C:\\Users\\Public\\Documents\\LocalClip-AV-47b36f8e83e24b00bd45f40b9d5100f0\\arm64\\localclip.exe found no threats.\r\n",
+      "exitCode": 0,
+      "fileExistsAfterScan": true,
+      "sha256": "C594DA3FD4EE3F833A6AD11BF61C5E14264B3DBC0168DC782D047DEB9844C32D",
+      "arch": "arm64",
+      "seconds": 0.0854979,
+      "file": "localclip.exe"
+    },
+    {
+      "output": "Scan starting...\r\nScan finished.\r\nScanning C:\\Users\\Public\\Documents\\LocalClip-AV-47b36f8e83e24b00bd45f40b9d5100f0\\arm64\\MicrosoftEdgeWebview2Setup.exe found no threats.\r\n",
+      "exitCode": 0,
+      "fileExistsAfterScan": true,
+      "sha256": "C90F9CDCEC5E1997E581127DD1CB4526C239551908E9ADBFE63AD14671BDCC94",
+      "arch": "arm64",
+      "seconds": 0.0567308,
+      "file": "MicrosoftEdgeWebview2Setup.exe"
+    },
+    {
+      "output": "Scan starting...\r\nScan finished.\r\nScanning C:\\Users\\Public\\Documents\\LocalClip-AV-47b36f8e83e24b00bd45f40b9d5100f0\\arm64\\WixUIWixca.dll found no threats.\r\n",
+      "exitCode": 0,
+      "fileExistsAfterScan": true,
+      "sha256": "7F47D98AB25CFEA9B3A2E898C3376CC9BA1CD893B4948B0C27CAA530FD0E34CC",
+      "arch": "arm64",
+      "seconds": 0.034693299999999996,
+      "file": "WixUIWixca.dll"
+    },
+    {
+      "output": "Scan starting...\r\nScan finished.\r\nScanning C:\\Users\\Public\\Documents\\LocalClip-AV-47b36f8e83e24b00bd45f40b9d5100f0\\x64\\LocalClip_0.1.4_x64.msi found no threats.\r\n",
+      "exitCode": 0,
+      "fileExistsAfterScan": true,
+      "sha256": "A8A88AF54195F87DFD4108E32D9378BE2848AB3CA9EAC90DE71329FC15175406",
+      "arch": "x64",
+      "seconds": 1.0730309,
+      "file": "LocalClip_0.1.4_x64.msi"
+    },
+    {
+      "output": "Scan starting...\r\nScan finished.\r\nScanning C:\\Users\\Public\\Documents\\LocalClip-AV-47b36f8e83e24b00bd45f40b9d5100f0\\x64\\localclip.exe found no threats.\r\n",
+      "exitCode": 0,
+      "fileExistsAfterScan": true,
+      "sha256": "E2BDBF6D90C40C53C49575A30ECA689A3A88692B8BC636BF28BC138CBD62DC46",
+      "arch": "x64",
+      "seconds": 0.4454457,
+      "file": "localclip.exe"
+    },
+    {
+      "output": "Scan starting...\r\nScan finished.\r\nScanning C:\\Users\\Public\\Documents\\LocalClip-AV-47b36f8e83e24b00bd45f40b9d5100f0\\x64\\MicrosoftEdgeWebview2Setup.exe found no threats.\r\n",
+      "exitCode": 0,
+      "fileExistsAfterScan": true,
+      "sha256": "C90F9CDCEC5E1997E581127DD1CB4526C239551908E9ADBFE63AD14671BDCC94",
+      "arch": "x64",
+      "seconds": 0.045803699999999996,
+      "file": "MicrosoftEdgeWebview2Setup.exe"
+    },
+    {
+      "output": "Scan starting...\r\nScan finished.\r\nScanning C:\\Users\\Public\\Documents\\LocalClip-AV-47b36f8e83e24b00bd45f40b9d5100f0\\x64\\WixUIWixca.dll found no threats.\r\n",
+      "exitCode": 0,
+      "fileExistsAfterScan": true,
+      "sha256": "7F47D98AB25CFEA9B3A2E898C3376CC9BA1CD893B4948B0C27CAA530FD0E34CC",
+      "arch": "x64",
+      "seconds": 0.0425812,
+      "file": "WixUIWixca.dll"
+    }
+  ],
+  "localDirectory": "C:\\Users\\Public\\Documents\\LocalClip-AV-47b36f8e83e24b00bd45f40b9d5100f0"
+}

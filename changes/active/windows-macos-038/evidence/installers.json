@@ -1,0 +1,14 @@
+[
+  {
+    "arch": "arm64",
+    "file": "LocalClip_0.1.4_arm64.msi",
+    "bytes": 8716288,
+    "sha256": "73efcb29b0ec498ed5f548434eb6b12ac984490ded180e05c0d226ad66543b85"
+  },
+  {
+    "arch": "x64",
+    "file": "LocalClip_0.1.4_x64.msi",
+    "bytes": 9207808,
+    "sha256": "a8a88af54195f87dfd4108e32d9378be2848ab3ca9eac90de71329fc15175406"
+  }
+]

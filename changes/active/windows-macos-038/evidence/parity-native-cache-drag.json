@@ -1,0 +1,64 @@
+{
+  "cases": [
+    {
+      "drop": {
+        "path": "C:\\Users\\Public\\Documents\\LocalClip-parity-20261016\\history\\DragImages\\f5b7f2d9e66ceeb0de5e16a3e05dfc055aed1ba3e84e35d79f129c371ed88669-0.png",
+        "textMatches": false,
+        "existsDuringDrop": true,
+        "unicode": false
+      },
+      "case": "image",
+      "existsAfterDrag": true,
+      "passed": true
+    },
+    {
+      "drop": {
+        "path": "C:\\Users\\Public\\Documents\\LocalClip-parity-20261016\\history\\DragImages\\f5b7f2d9e66ceeb0de5e16a3e05dfc055aed1ba3e84e35d79f129c371ed88669-0.png",
+        "textMatches": false,
+        "existsDuringDrop": true,
+        "unicode": false
+      },
+      "case": "image-reuse",
+      "existsAfterDrag": true,
+      "passed": true
+    },
+    {
+      "drop": {
+        "path": "C:\\Users\\Public\\Documents\\LocalClip-parity-20261016\\history\\DragImages\\f5b7f2d9e66ceeb0de5e16a3e05dfc055aed1ba3e84e35d79f129c371ed88669-1.png",
+        "textMatches": false,
+        "existsDuringDrop": true,
+        "unicode": false
+      },
+      "case": "image-modified",
+      "existsAfterDrag": true,
+      "passed": true
+    },
+    {
+      "drop": {
+        "path": "C:\\Users\\Public\\Documents\\LocalClip-parity-20261016\\source\\sample.rs",
+        "textMatches": false,
+        "existsDuringDrop": true,
+        "unicode": false
+      },
+      "case": "file-off",
+      "existsAfterDrag": true,
+      "passed": true
+    },
+    {
+      "drop": {
+        "path": "C:\\Users\\Public\\Documents\\LocalClip-parity-20261016\\source\\sample.rs",
+        "textMatches": true,
+        "existsDuringDrop": true,
+        "unicode": true
+      },
+      "case": "file-on",
+      "existsAfterDrag": true,
+      "passed": true
+    }
+  ],
+  "exeSha256": "c594da3fd4ee3f833a6ad11bf61c5e14264b3dbc0168dc782d047deb9844c32d",
+  "confirmationRequired": true,
+  "sourcePreserved": true,
+  "cacheBytes": 1644,
+  "clearedBytes": 0
+}

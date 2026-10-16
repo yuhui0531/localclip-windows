@@ -1,0 +1,13 @@
+{
+  "toolchain": "Rust 1.90.0",
+  "suites": 20,
+  "passed": 41,
+  "failed": 0,
+  "ignored": 0,
+  "crashIterations": 50,
+  "nativeWindowsTests": "not included in macOS test totals",
+  "clippy": "passed with 1.90.0",
+  "frontend": "typecheck and Vite build passed",
+  "previewCases": 10,
+  "applicationSource": "e12e640b5c4a6688163a556530d223297847d105"
+}

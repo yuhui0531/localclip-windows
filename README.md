@@ -5,6 +5,10 @@ Implementation proceeds through the gated phases in the Windows PRD (2026-10-14 
 
 Behavior baseline: LocalClip macOS **0.3.29 (51)**, `macosCommit` **c097591431c00982ad34186068064b40965c95fd**.
 The reference repository is read-only. No macOS history is read, imported, or migrated.
+Windows 0.1.4 also incorporates the user-visible macOS 0.3.38 (`844924e`) changes
+described in the [behavior mapping](changes/active/windows-macos-038/parity.md).
+The original vector baseline remains intact; explicit changed expectations are
+recorded in `core/tests/macos-038-overrides.json`.
 
 ## Structure
 
@@ -71,8 +75,10 @@ x64 MSI on Intel/AMD Windows. Builds are provided as GitHub Actions artifacts by
 The current build is unsigned and has no updater public key; automatic installation
 is disabled. It is a manual-test build, not a fully accepted production release.
 
-The MSI uses Microsoft's WebView2 bootstrapper if the runtime is absent. Launch
-LocalClip from the Start menu. It starts in the tray; press **Ctrl+Shift+V** to open
+The MSI uses Microsoft's WebView2 bootstrapper if the runtime is absent.
+The bootstrapper is embedded and Microsoft-signed; development/test executables
+are excluded from the MSI. These packaging changes do not remove app features.
+Launch LocalClip from the Start menu. It starts in the tray; press **Ctrl+Shift+V** to open
 history. Copy test text, images or files, then use the panel to search or restore.
 The queue's **Ctrl+Shift+Alt+V** shortcut is registered only while a queue is active.
 Default output sends a paste command to the saved target; an application can reject
@@ -82,6 +88,13 @@ Data lives in `%LOCALAPPDATA%\LocalClip\History`. There is no macOS import or cl
 sync. Exclude applications or pause capture in settings when needed. Sensitive
 clipboard markers are checked before content reads, but applications that supply no
 marker cannot be recognized as holding sensitive data.
+
+Dragged images use persistent, independent files under the history directory's
+`DragImages` folder so documents can keep referencing them. Settings → Storage
+shows their size and offers confirmed cleanup. Cleanup preserves history images
+but can break documents that still reference exported paths. With smart code-file
+paste enabled, dragging a supported code file offers both its source text and its
+original file path; the receiving application chooses the format.
 
 Uninstall preserves history/settings by default. The full MSI uninstall UI offers
 **Also delete this Windows user's history and settings**, initially unchecked.
