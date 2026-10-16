@@ -99,6 +99,10 @@ pub fn info(payload: &Payload) -> serde_json::Value {
 }
 /// 根据真实编码生成缩略图，不依赖文件扩展名。
 pub fn image(bytes: &[u8]) -> Option<Vec<u8>> {
+    image_preview(bytes, false)
+}
+/// 详情保留原始像素供缩放查看；仍沿用输入大小和四千万像素上限。
+pub fn image_preview(bytes: &[u8], full: bool) -> Option<Vec<u8>> {
     let reader = image::ImageReader::new(Cursor::new(bytes))
         .with_guessed_format()
         .ok()?;
@@ -108,10 +112,12 @@ pub fn image(bytes: &[u8]) -> Option<Vec<u8>> {
     }
     let decoded = image::load_from_memory(bytes).ok()?;
     let mut out = Cursor::new(Vec::new());
-    decoded
-        .thumbnail(640, 480)
-        .write_to(&mut out, image::ImageFormat::Png)
-        .ok()?;
+    let rendered = if full {
+        decoded
+    } else {
+        decoded.thumbnail(640, 480)
+    };
+    rendered.write_to(&mut out, image::ImageFormat::Png).ok()?;
     Some(out.into_inner())
 }
 struct Apartment;
@@ -251,6 +257,19 @@ fn pdf(bytes: &[u8]) -> Option<Vec<u8>> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    /// 原始像素仅用于详情，卡片保持原来的轻量尺寸。
+    #[test]
+    fn detail_preserves_pixels_while_card_remains_bounded() {
+        let mut bytes = Cursor::new(Vec::new());
+        image::RgbaImage::new(1200, 1800)
+            .write_to(&mut bytes, image::ImageFormat::Png)
+            .unwrap();
+        let full = image::load_from_memory(&image_preview(bytes.get_ref(), true).unwrap()).unwrap();
+        assert_eq!((full.width(), full.height()), (1200, 1800));
+        let card = image::load_from_memory(&image(bytes.get_ref()).unwrap()).unwrap();
+        assert!(card.width() <= 640 && card.height() <= 480);
+    }
+
     #[test]
     fn pdf_first_page_renders_without_a_shell_preview_provider() {
         let png = document(

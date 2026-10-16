@@ -339,6 +339,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
             crate::commands::queue_stop,
             crate::commands::queue_status,
             crate::commands::set_pinned,
+            crate::commands::set_detail_view,
             crate::commands::ocr_copy,
             crate::commands::ocr_cancel,
             crate::commands::set_favorite,
@@ -596,6 +597,7 @@ pub fn hide_panel(app: &tauri::AppHandle) {
         cache.clear();
     }
 }
+/// 普通历史沿屏幕底部显示；每次召回都恢复用户保存的高度。
 fn position_panel(app: &tauri::AppHandle, window: &tauri::WebviewWindow) {
     let Ok(cursor) = app.cursor_position() else {
         return;
@@ -603,21 +605,63 @@ fn position_panel(app: &tauri::AppHandle, window: &tauri::WebviewWindow) {
     let Ok(Some(monitor)) = app.monitor_from_point(cursor.x, cursor.y) else {
         return;
     };
-    let state = app.state::<AppState>();
-    let logical_height = state
+    let _ = layout_panel(app, window, &monitor, false);
+}
+
+/// 只允许切换详情/历史两种受限布局，不向前端开放任意窗口尺寸或位置。
+pub fn set_detail_view(app: &tauri::AppHandle, expanded: bool) -> Result<(), String> {
+    let window = app.get_webview_window("main").ok_or("panelHidden")?;
+    if expanded && !window.is_visible().unwrap_or(false) {
+        return Err("panelHidden".into());
+    }
+    let monitor = window
+        .current_monitor()
+        .map_err(|_| "previewUnavailable")?
+        .ok_or("previewUnavailable")?;
+    layout_panel(app, &window, &monitor, expanded)
+}
+
+/// 详情在当前显示器工作区居中，退出时恢复底部面板；不修改持久设置或粘贴目标。
+fn layout_panel(
+    app: &tauri::AppHandle,
+    window: &tauri::WebviewWindow,
+    monitor: &tauri::Monitor,
+    expanded: bool,
+) -> Result<(), String> {
+    let area = monitor.work_area();
+    let scale = monitor.scale_factor();
+    let logical_height = app
+        .state::<AppState>()
         .runtime
         .store
         .settings()
         .map(|s| s.preferences.panel_height)
         .unwrap_or(340);
-    let area = monitor.work_area();
-    let height =
-        ((logical_height as f64 * monitor.scale_factor()).round() as u32).min(area.size.height);
-    let _ = window.set_size(tauri::PhysicalSize::new(area.size.width, height));
-    let _ = window.set_position(tauri::PhysicalPosition::new(
-        area.position.x,
-        area.position.y + area.size.height as i32 - height as i32,
-    ));
+    let (width, height) = if expanded {
+        let margin = (24.0 * scale).round() as u32;
+        (
+            ((1200.0 * scale).round() as u32).min(area.size.width.saturating_sub(margin).max(1)),
+            ((800.0 * scale).round() as u32).min(area.size.height.saturating_sub(margin).max(1)),
+        )
+    } else {
+        (
+            area.size.width,
+            ((logical_height as f64 * scale).round() as u32).min(area.size.height),
+        )
+    };
+    let x = area.position.x + (area.size.width - width) as i32 / 2;
+    let y = area.position.y
+        + if expanded {
+            (area.size.height - height) as i32 / 2
+        } else {
+            (area.size.height - height) as i32
+        };
+    window
+        .set_size(tauri::PhysicalSize::new(width, height))
+        .map_err(|_| "previewUnavailable")?;
+    window
+        .set_position(tauri::PhysicalPosition::new(x, y))
+        .map_err(|_| "previewUnavailable".to_string())
 }
 
 pub fn feedback(app: &tauri::AppHandle, value: serde_json::Value) {

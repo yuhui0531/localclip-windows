@@ -18,6 +18,7 @@
     "allow-queue-stop",
     "allow-queue-status",
     "allow-set-pinned",
+    "allow-set-detail-view",
     "allow-ocr-copy",
     "allow-ocr-cancel",
     "allow-set-favorite",

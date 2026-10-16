@@ -41,7 +41,8 @@ impl Cache {
         bytes
     }
 }
-fn thumbnail(payload: &Payload) -> Option<Vec<u8>> {
+/// 卡片请求缩略图，详情请求原始像素；两者缓存分离且不写入历史数据。
+fn thumbnail(payload: &Payload, full: bool) -> Option<Vec<u8>> {
     for item in &payload.items {
         let mut candidates = Vec::new();
         for format in ["image/png", "image/jpeg", "image/x-win-dibv5"] {
@@ -58,7 +59,10 @@ fn thumbnail(payload: &Payload) -> Option<Vec<u8>> {
         if item.file_path().is_some() {
             if let Some(path) = crate::win::preview::path(item) {
                 let bytes = crate::win::preview::read(&path);
-                if let Some(png) = bytes.as_deref().and_then(crate::win::preview::image) {
+                if let Some(png) = bytes
+                    .as_deref()
+                    .and_then(|b| crate::win::preview::image_preview(b, full))
+                {
                     return Some(png);
                 }
                 if let Some(png) = crate::win::preview::document(&path, bytes.as_deref()) {
@@ -82,11 +86,12 @@ fn thumbnail(payload: &Payload) -> Option<Vec<u8>> {
                 continue;
             };
             let mut out = Cursor::new(Vec::new());
-            if decoded
-                .thumbnail(640, 480)
-                .write_to(&mut out, image::ImageFormat::Png)
-                .is_ok()
-            {
+            let rendered = if full {
+                decoded
+            } else {
+                decoded.thumbnail(640, 480)
+            };
+            if rendered.write_to(&mut out, image::ImageFormat::Png).is_ok() {
                 return Some(out.into_inner());
             }
         }
@@ -96,6 +101,9 @@ fn thumbnail(payload: &Payload) -> Option<Vec<u8>> {
 pub fn response(app: &tauri::AppHandle, uri: &tauri::http::Uri) -> tauri::http::Response<Vec<u8>> {
     let result = (|| {
         let id = thumbnail_id(uri.host()?, uri.path())?;
+        let full = uri
+            .query()
+            .is_some_and(|q| q.split('&').any(|part| part == "view=full"));
         let state = app.state::<AppState>();
         if state
             .runtime
@@ -111,7 +119,8 @@ pub fn response(app: &tauri::AppHandle, uri: &tauri::http::Uri) -> tauri::http::
         let payload = state.runtime.store.payload(&id).ok()?;
         let info = crate::win::preview::info(&payload);
         let key = format!(
-            "{}:{}:{}",
+            "{}:{}:{}:{}",
+            full,
             state.runtime.store.revision().ok()?,
             id,
             info["fileVersion"]
@@ -119,7 +128,7 @@ pub fn response(app: &tauri::AppHandle, uri: &tauri::http::Uri) -> tauri::http::
         if let Some(bytes) = state.thumbs.lock().ok()?.get(&key) {
             return Some((*bytes).clone());
         }
-        let bytes = thumbnail(&payload)?;
+        let bytes = thumbnail(&payload, full)?;
         if state
             .runtime
             .store

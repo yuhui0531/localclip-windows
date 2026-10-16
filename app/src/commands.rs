@@ -763,6 +763,13 @@ pub async fn queue_status(app: tauri::AppHandle, request: Value) -> Result<Value
         .map_err(|_| "commandUnavailable".to_string())?
 }
 
+/// 在主线程按 IPC 顺序切换布局，避免快速开关详情时旧尺寸覆盖新状态。
+#[tauri::command]
+pub fn set_detail_view(app: tauri::AppHandle, request: Value) -> Result<Value> {
+    desktop::set_detail_view(&app, request["expanded"].as_bool().ok_or("invalidRequest")?)?;
+    Ok(Value::Null)
+}
+
 #[tauri::command]
 pub async fn set_pinned(app: tauri::AppHandle, request: Value) -> Result<Value> {
     tauri::async_runtime::spawn_blocking(move || dispatch(&app, "set_pinned", request))

@@ -17,6 +17,7 @@ fn main() {
                 "queue_stop",
                 "queue_status",
                 "set_pinned",
+                "set_detail_view",
                 "ocr_copy",
                 "ocr_cancel",
                 "set_favorite",
