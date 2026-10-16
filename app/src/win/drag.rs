@@ -34,21 +34,7 @@ pub fn export_drag(
     let data = drag_data(&payload, language.as_deref())?;
     // 同时提供正文和原文件，接收程序自行选择；句柄保持到拖动结束。
     let _locked = smart_text(&data, &payload, smart_files)?;
-    let exported = if payload.kind() == localclip_core::domain::Kind::Image {
-        let file = export::prepare(&payload, None, None).ok_or("unsupported")?;
-        let saved = cache
-            .prepare(&file.bytes, file.extension)
-            .map_err(|_| "exportCacheUnavailable")?;
-        let paths = vec![saved.path.to_string_lossy().into_owned()];
-        let bytes = super::formats::encode_dropfiles(&paths).ok_or("unsupported")?;
-        if let Err(e) = set_bytes(&data, 15, &bytes) {
-            cache.cancel(&saved);
-            return Err(e);
-        }
-        Some(saved)
-    } else {
-        None
-    };
+    let exported = cache_image(&data, &payload, cache)?;
     let result = unsafe {
         // 清除 WebView 的鼠标捕获，让 OLE 接管后续移动及松开。
         let _ = ReleaseCapture();
@@ -62,6 +48,30 @@ pub fn export_drag(
         cache.cancel(&saved);
     }
     result
+}
+
+/// 只有内存图片需要导出副本；图片文件始终保持原路径，不能替换成图标。
+fn cache_image(
+    data: &IDataObject,
+    payload: &Payload,
+    cache: &crate::drag_cache::DragCache,
+) -> Result<Option<crate::drag_cache::Export>, &'static str> {
+    if payload.kind() != localclip_core::domain::Kind::Image
+        || payload.items.iter().any(|item| item.file_path().is_some())
+    {
+        return Ok(None);
+    }
+    let file = export::prepare(payload, None, None).ok_or("unsupported")?;
+    let saved = cache
+        .prepare(&file.bytes, file.extension)
+        .map_err(|_| "exportCacheUnavailable")?;
+    let paths = vec![saved.path.to_string_lossy().into_owned()];
+    let bytes = super::formats::encode_dropfiles(&paths).ok_or("unsupported")?;
+    if let Err(e) = set_bytes(data, 15, &bytes) {
+        cache.cancel(&saved);
+        return Err(e);
+    }
+    Ok(Some(saved))
 }
 
 /// 原路径和正文并存；失败整组保留原文件，读取句柄由调用者保持。
@@ -349,6 +359,44 @@ mod tests {
             b"[InternetShortcut]\r\nURL=https://example.com\r\n",
             "url",
         );
+    }
+
+    #[test]
+    fn image_file_drag_preserves_original_path_instead_of_exporting_its_icon() {
+        let _ole = Apartment::new();
+        let root =
+            std::env::temp_dir().join(format!("LocalClip-image-path-{}", std::process::id()));
+        std::fs::create_dir_all(&root).unwrap();
+        let path = root.join("generated.png");
+        std::fs::write(&path, b"generated original image bytes").unwrap();
+        let payload = Payload {
+            items: vec![Item {
+                representations: vec![
+                    Representation {
+                        format: "text/uri-list".into(),
+                        data: super::super::formats::path_to_url(path.to_str().unwrap())
+                            .unwrap()
+                            .into_bytes(),
+                    },
+                    Representation {
+                        format: "image/png".into(),
+                        data: b"different clipboard icon".to_vec(),
+                    },
+                ],
+                ..Default::default()
+            }],
+        };
+        let cache = crate::drag_cache::DragCache::new(root.join("DragImages"));
+        let data = drag_data(&payload, None).unwrap();
+        let original = bytes(&data, 15);
+        assert!(cache_image(&data, &payload, &cache).unwrap().is_none());
+        assert_eq!(bytes(&data, 15), original);
+        assert_eq!(
+            std::fs::read(&path).unwrap(),
+            b"generated original image bytes"
+        );
+        assert!(!root.join("DragImages").exists());
+        std::fs::remove_dir_all(root).unwrap();
     }
 
     #[test]
