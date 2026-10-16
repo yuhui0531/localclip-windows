@@ -1,0 +1,51 @@
+{
+  "version": "0.1.9",
+  "source": "efd29ede7e504fccf5167a665add875a7bfa5226",
+  "pullRequest": 8,
+  "installersRun": 38953011112,
+  "installersStatus": "success",
+  "ciRun": 38952947385,
+  "ciStatus": "in_progress",
+  "local": {
+    "menuEditorChecks": 19,
+    "frontendBuild": "passed",
+    "previousUnchangedCoreRustTests": 48,
+    "previousUnchangedPreviewChecks": 15,
+    "previousUnchangedLayoutChecks": 11
+  },
+  "packages": [
+    {
+      "arch": "arm64",
+      "msiSha256": "4F72E5526EDDA83759F35C1578F2EFC74AA45F77CB373BE59C2640640FCB214A",
+      "exeSha256": "52614E33A4395836D627128581D310483DEFAC18EB1511A4759EAB46DFEA311B"
+    },
+    {
+      "arch": "x64",
+      "msiSha256": "137E3AF1FDDC92BA1BE5CB1D06A5840F01DF3DFD442A067EAE0E85535DBE247F",
+      "exeSha256": "9C2F4A7061608E515BBEE5ED2E17019316DF3B79BCA52402BD7D299BC4097E6D"
+    }
+  ],
+  "antivirus": {
+    "scanner": "Microsoft Defender",
+    "scans": 4,
+    "allPassed": true,
+    "realtimeEnabled": true,
+    "settingsChanged": false
+  },
+  "native": {
+    "status": "pending_app_exit",
+    "plannedScript": "reports/raw/edit019-native.ps1",
+    "previousVersion": "0.1.8",
+    "previousChecksPassed": 12
+  },
+  "installation": {
+    "status": "not_started",
+    "lastVerifiedInstalledVersion": "0.1.8",
+    "reason": "Installed app running; asked user to quit before isolated final retest and upgrade"
+  },
+  "limitations": [
+    "Unsigned manual test build under existing signing key decision",
+    "360 scan unavailable",
+    "Final 0.1.9 native validation and installation pending app exit; no claim they passed"
+  ]
+}

@@ -1,0 +1,113 @@
+{
+  "version": "0.1.8",
+  "source": "5095ccd22f47ccea26c208435d31a89e74d98b5f",
+  "pullRequest": 8,
+  "installersRun": 38950260336,
+  "ciRun": 38950223638,
+  "ciStatus": "success",
+  "local": {
+    "rustTests": 48,
+    "menuEditorChecks": 18,
+    "previewChecks": 15,
+    "layoutChecks": 11,
+    "clippy": "passed",
+    "format": "passed",
+    "frontendBuild": "passed"
+  },
+  "native": {
+    "exeSha256": "9a63efe7d95ef52694f9425e89c0487bcb7ced0e4dd2d645785c28c72eb32835",
+    "checks": [
+      {
+        "name": "generated capture stays paused",
+        "passed": true
+      },
+      {
+        "name": "menu opens editor with full original text",
+        "passed": true
+      },
+      {
+        "name": "editor uses expanded window with visible controls",
+        "passed": true
+      },
+      {
+        "name": "cancel leaves stored body unchanged",
+        "passed": true
+      },
+      {
+        "name": "saved full text and metadata preserved",
+        "passed": true
+      },
+      {
+        "name": "search index drops old text and finds edited tail",
+        "passed": true
+      },
+      {
+        "name": "edited code card still has syntax colors",
+        "passed": true
+      },
+      {
+        "name": "reopening editor loads full saved body",
+        "passed": true
+      },
+      {
+        "name": "stale native edit rejected",
+        "passed": true
+      },
+      {
+        "name": "native clipboard copy returns edited full text",
+        "passed": true
+      },
+      {
+        "name": "plain text output has no stale HTML",
+        "passed": true
+      },
+      {
+        "name": "hide-contents blocks native edit read and save",
+        "passed": true
+      }
+    ],
+    "dataRoot": "C:\\Users\\Public\\Documents\\LocalClip-menu-20261016\\history-edit018"
+  },
+  "packages": [
+    {
+      "arch": "arm64",
+      "msiSha256": "28CF8798B0A97F07E96A30DCEE17DD48C9153369FA0A4CAB36A464AC9190D1B1",
+      "exeSha256": "9A63EFE7D95EF52694F9425E89C0487BCB7CED0E4DD2D645785C28C72EB32835"
+    },
+    {
+      "arch": "x64",
+      "msiSha256": "6EE41F5F849809C8A4C0E16ABA52B6CB321758F719DE04F181B629F77C6C363C",
+      "exeSha256": "3BB6412920DD1FFC5BD763876265DDE84DFED2F426D8EE61FED265720210BBD3"
+    }
+  ],
+  "antivirus": {
+    "scanner": "Microsoft Defender",
+    "scans": 4,
+    "allPassed": true,
+    "realtimeEnabled": true,
+    "settingsChanged": false
+  },
+  "installation": {
+    "allExistingDataFilesUnchangedBeforeLaunch": true,
+    "antivirusEnabled": true,
+    "exeSha256": "9A63EFE7D95EF52694F9425E89C0487BCB7CED0E4DD2D645785C28C72EB32835",
+    "verifiedDataFileCount": 6,
+    "version": "0.1.8",
+    "realtimeEnabled": true,
+    "backup": "C:\\Users\\ronny\\AppData\\Local\\LocalClip-UpgradeBackups\\before-0.1.8-20261017-030217",
+    "runningPid": 10964,
+    "installed": [
+      {
+        "DisplayVersion": "0.1.8",
+        "InstallLocation": "C:\\apps\\LocalClip\\"
+      }
+    ]
+  },
+  "limitations": [
+    "Unsigned manual-test build under existing signing-key decision",
+    "360 rescan not available",
+    "No new full external-target drag/paste/OCR acceptance matrix; output/cache/adapter tests and browser regression coverage retained"
+  ],
+  "supersededBy": "0.1.9",
+  "knownIssue": "Slow-save focus can leave disabled editor controls; corrected in 0.1.9."
+}
