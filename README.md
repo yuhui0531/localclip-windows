@@ -169,7 +169,7 @@ python3 scripts/check_phase0.py
 
 #### Code signing policy / 代码签名政策
 
-[中英文签名政策](CODE_SIGNING_POLICY.md) · [隐私政策](PRIVACY.md) · [SignPath 申请材料与条件核查](docs/signpath-application.md)。正在准备 SignPath Foundation 免费开源签名申请，尚未提交、获批或接入；当前安装包仍未签名。未来服务实际启用后，鸣谢措辞为“Free code signing provided by [SignPath.io](https://signpath.io), certificate by [SignPath Foundation](https://signpath.org)”；目前不代表已获赞助。
+[中英文签名政策](CODE_SIGNING_POLICY.md) · [隐私政策](PRIVACY.md) · [SignPath 申请材料与条件核查](docs/signpath-application.md)。SignPath Foundation 免费开源签名申请于 2026-10-17 **已提交，等待审核**，尚未获批；获批后再接入 CI。当前安装包仍未签名，自动更新暂不可用。未来服务实际启用后，鸣谢措辞为“Free code signing provided by [SignPath.io](https://signpath.io), certificate by [SignPath Foundation](https://signpath.org)”；目前不代表已获赞助。
 
 正式更新安装需要在 `app/updater-public-key.txt` 提交 minisign 公钥，并配置以下 CI secrets：
 
@@ -355,7 +355,7 @@ The exporter uses synthetic databases and never reads or migrates personal clipb
 
 #### Code signing policy
 
-[Bilingual signing policy](CODE_SIGNING_POLICY.md) · [Privacy policy](PRIVACY.md) · [SignPath application and eligibility review](docs/signpath-application.md). We are preparing a SignPath Foundation free OSS signing application; it has not been submitted, approved or integrated. Current packages remain unsigned. Once the service is approved and active, the planned attribution is “Free code signing provided by [SignPath.io](https://signpath.io), certificate by [SignPath Foundation](https://signpath.org)”; this is not a claim of current sponsorship.
+[Bilingual signing policy](CODE_SIGNING_POLICY.md) · [Privacy policy](PRIVACY.md) · [SignPath application and eligibility review](docs/signpath-application.md). The SignPath Foundation free OSS signing application was **submitted on 2026-10-17 and is awaiting review**. It has not been approved; CI integration will begin only after approval. Current packages remain unsigned and automatic updates remain unavailable. Once the service is approved and active, the planned attribution is “Free code signing provided by [SignPath.io](https://signpath.io), certificate by [SignPath Foundation](https://signpath.org)”; this is not a claim of current sponsorship.
 
 Production update installation requires a committed public minisign key in `app/updater-public-key.txt`, plus these CI secrets:
 

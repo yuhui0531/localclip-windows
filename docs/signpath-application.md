@@ -2,7 +2,9 @@
 
 Reviewed / 核查日期：2026-10-17. Source baseline / 源码基线：[`6c86bee`](https://github.com/yuhui0531/localclip-windows/commit/6c86beea8ddf1adad16e21e6366a6545d637039d), version `0.1.14`.
 
-**Prepared, not submitted or approved. / 材料已准备，申请尚未提交或获批。** This document contains public project information only; contact email belongs in the private application, not the repository. / 本文件仅含公开项目资料，联系人邮箱仅用于私下申请，不入库。
+**Submitted on 2026-10-17, awaiting review. / 2026-10-17 已提交，等待审核。** The application has not been approved; CI integration will begin only after approval. / 申请尚未获批，获批后再接入 CI。This document contains public project information only; contact email belongs in the private application, not the repository. / 本文件仅含公开项目资料，联系人邮箱仅用于私下申请，不入库。
+
+The application page displayed “Form submitted” and “Thank you, we'll be in touch soon.” Submission is confirmed, not acceptance into the program. / 申请页面显示上述提交成功回执；已确认提交，不代表基金会审核通过。
 
 ## Form answers / 表单填写内容
 
@@ -90,15 +92,14 @@ The Foundation's [conditions](https://signpath.org/terms) remain authoritative. 
 
 ## Owner actions / 维护者需操作
 
-1. Open the [application form](https://signpath.org/apply), paste the answers above and enter the private contact details. / 打开申请表，粘贴材料并填写私下联系人。
-2. Personally review the required Code of Conduct acceptance and personal-data processing consent before submission; optional marketing consent is not required for our request. Complete any CAPTCHA personally. / 本人核对行为准则与个人数据处理同意，并处理验证码；无需勾选可选营销订阅。
-3. Submit and retain the receipt; no submission or approval is claimed in this package. / 提交后保留回执；本材料未宣称已提交或获批。
-4. On invitation, activate SignPath, enable MFA and review the GitHub connector's requested repository access before granting it. Scope access to this repository. / 收到邀请后激活、开启 MFA，审阅并限制 GitHub 授权范围。
-5. Supply only non-secret organization ID/project/policy identifiers for integration. Enter `SIGNPATH_API_TOKEN` directly into GitHub Actions secrets; do not send passwords, OTPs, recovery codes or tokens in chat. / 仅提供非敏感项目标识；令牌直接填 GitHub secret，不在聊天发送。
+1. Completed: the maintainer submitted the [application form](https://signpath.org/apply) on 2026-10-17; the success receipt was checked. Do not submit a duplicate application. / 已完成：维护者于 2026-10-17 提交申请，已核验成功回执，无需重复提交。
+2. Await review email, including the spam folder, and respond to any requests for further project evidence. / 等待审核邮件（含垃圾邮件文件夹），按要求补充项目材料。
+3. After approval and invitation, activate SignPath, enable MFA and review the GitHub connector's requested repository access before granting it. Scope access to this repository. / 获批并收到邀请后激活、开启 MFA，审阅并限制 GitHub 授权范围。
+4. After approval, supply only non-secret organization ID/project/policy identifiers for CI integration. Enter `SIGNPATH_API_TOKEN` directly into GitHub Actions secrets; do not send passwords, OTPs, recovery codes or tokens in chat. / 获批后再接入 CI，仅提供非敏感项目标识；令牌直接填 GitHub secret，不在聊天发送。
 
 ## CI integration handoff, not implemented / CI 接入交接，尚未实施
 
-Keep the current application, installer behavior, version, history and settings unchanged during application preparation. / 本次准备期间不改变应用、安装器行为、版本、历史或设置。
+Keep the current application, installer behavior, version, history and settings unchanged while awaiting review. CI integration remains deferred until approval. / 等待审核期间不改变应用、安装器行为、版本、历史或设置；获批后再接入 CI。
 
 After approval, replace the PFX-only signing calls in [.github/workflows/release.yml](../.github/workflows/release.yml) with the [official SignPath Action](https://docs.signpath.io/trusted-build-systems/github). Upload unsigned hosted-build artifacts first; SignPath validates their origin. Its [artifact configuration](https://docs.signpath.io/artifact-configuration/) can sign the MSI and nested LocalClip executable while verifying, rather than overwriting, Microsoft's bootstrapper signature. Include standalone EXEs in the explicitly approved artifact configuration. Maintain per-release manual approval; do not sign local binaries or bypass origin checks.
 

@@ -6,7 +6,7 @@
 
 ### 当前状态与范围
 
-LocalClip for Windows 正在准备申请 SignPath Foundation 免费开源签名。**尚未提交申请、尚未获批、尚未接入 SignPath。** 已发布的 `v0.1.14` LocalClip EXE/MSI 仍未签名；本政策不会改变这些文件，也不会启用自动更新。
+LocalClip for Windows 的 SignPath Foundation 免费开源签名申请于 2026-10-17 **已提交，等待审核**。尚未获批、尚未接入 SignPath；**获批后再接入 CI**。已发布的 `v0.1.14` LocalClip EXE/MSI 仍未签名；本政策不会改变这些文件，也不会启用自动更新。
 
 申请范围为从[本仓库](https://github.com/yuhui0531/localclip-windows)公开源码构建的 Windows x64、ARM64 LocalClip 主程序及 MSI。只为本项目申请签名，不提供代签服务。第三方文件不使用本项目签名覆盖；微软 WebView2 引导程序保留其原有微软签名，其打包资格须由 SignPath 确认。
 
@@ -41,7 +41,7 @@ LocalClip for Windows 正在准备申请 SignPath Foundation 免费开源签名�
 
 ### Status and scope
 
-LocalClip for Windows is preparing an application for free open-source signing through SignPath Foundation. **The application has not been submitted or approved; SignPath is not integrated.** Published `v0.1.14` LocalClip EXEs/MSIs remain unsigned. This policy changes neither those files nor automatic update availability.
+LocalClip for Windows **submitted its application for free open-source signing through SignPath Foundation on 2026-10-17 and is awaiting review**. The application has not been approved and SignPath is not integrated; **CI integration will begin only after approval**. Published `v0.1.14` LocalClip EXEs/MSIs remain unsigned. This policy changes neither those files nor automatic update availability.
 
 The requested scope is the Windows x64 and ARM64 LocalClip executables and MSI installers built from this [public repository](https://github.com/yuhui0531/localclip-windows). We do not sign unrelated software. Third-party signatures must not be replaced with the project's signature. Microsoft's WebView2 bootstrapper retains its Microsoft signature; its inclusion requires SignPath's eligibility review.
 
