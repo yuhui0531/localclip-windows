@@ -1,0 +1,89 @@
+{
+  "version": "0.1.13",
+  "source": "3b862431d25139a1bffe836a74d40e7318baccc3",
+  "ciRun": 39005508887,
+  "ciStatus": "success",
+  "installersRun": 39005520962,
+  "installersStatus": "success",
+  "local": {
+    "frontendBuild": "passed",
+    "permissionConsistencyCommands": 35,
+    "lockedClippy": "passed",
+    "menuEditorChecks": 24,
+    "previewLayoutChecks": 11,
+    "macOSAlignmentChecks": 13,
+    "multiTargetOpenSelector": "passed",
+    "stableScreenshotsInspected": true
+  },
+  "native": {
+    "status": "passed",
+    "scope": "Generated data only; real title dragging, eight edge/corner resize directions for each dialog, minimum bounds, scrolling, history restoration and editor regression",
+    "detailWindowChecks": 18,
+    "detailNativeScreenshotInspected": true,
+    "minimum": {
+      "configuredLogical": [
+        480,
+        360
+      ],
+      "observedOuterPhysical": [
+        960,
+        720
+      ],
+      "observedClientCSS": [
+        467,
+        353
+      ],
+      "dpi": 2,
+      "repeatedShrinkClamped": true,
+      "controlsVisible": true
+    },
+    "editorWindowChecks": 17,
+    "windowChecks": 35,
+    "editorWindowScreenshotInspected": true,
+    "editorChecks": 13,
+    "uiParityChecks": 11,
+    "totalChecks": 59
+  },
+  "installation": {
+    "status": "installed_verified_running",
+    "lastVerifiedVersion": "0.1.12",
+    "personalExitRequested": true,
+    "personalAppExitConfirmed": true,
+    "version": "0.1.13",
+    "installedExeSha256": "EF56537AD8C21D584F65077B0F8A3893B3046A47AFE24BDA54CED4908C421B5C",
+    "installLocation": "C:\\apps\\LocalClip\\",
+    "msiExitCode": 0,
+    "verifiedDataFileCount": 6,
+    "allExistingDataFilesUnchangedBeforeLaunch": true,
+    "backup": "C:\\Users\\ronny\\AppData\\Local\\LocalClip-UpgradeBackups\\before-0.1.13-20261017-133904",
+    "runningPid": 4684,
+    "antivirusEnabled": true,
+    "realtimeEnabled": true
+  },
+  "antivirus": {
+    "status": "passed",
+    "settingsChanged": false,
+    "exclusionsAdded": false,
+    "scanner": "Microsoft Defender",
+    "scans": 4,
+    "realtimeEnabled": true,
+    "antivirusEnabled": true,
+    "signature": "1.461.64.0",
+    "sameEnvironment360Rescan": false
+  },
+  "limitations": [
+    "Full target-app drag/smart-paste/OCR matrix not rerun for this dialog correction."
+  ],
+  "packages": [
+    {
+      "arch": "arm64",
+      "msiSha256": "15788F1755F6C1876FE86CC7A0733480E27B0F568C5CF2D5F92B7AE14EB90A6E",
+      "exeSha256": "EF56537AD8C21D584F65077B0F8A3893B3046A47AFE24BDA54CED4908C421B5C"
+    },
+    {
+      "arch": "x64",
+      "msiSha256": "5AC63EB2462E64241D58F35CA8A4CC21FB9D309C2E92A2859F9140368B6DF543",
+      "exeSha256": "B6EA8BCA549CF6420EB7CC06F82D54DA5E6D2B28D16496610C44BB3263BA31D8"
+    }
+  ]
+}
