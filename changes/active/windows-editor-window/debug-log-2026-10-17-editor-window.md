@@ -18,3 +18,9 @@ Root chain: edit selected → shared expanded detail layout → enlarged history
 Self-check: both requested symptoms addressed; no data/schema/output/cache/OCR/highlight logic changed; no adjacent refactor or duplicate window lifecycle; Chinese file/method/fix comments present. Browser checks assert hidden history, compact bounds, title-only drag dispatch, restoration of late selection/scroll, cancellation, failed saves, IME, pending-save focus and hidden-content guards. Actual desktop movement is a separate native gate, not proven by mocked IPC.
 
 Native verification remains pending: process-only inspection still shows the personal app at C:\apps\LocalClip\localclip.exe, PID 10964 (last verified installed version 0.1.8). No personal history or clipboard was read; no personal process was stopped. Prepared native test scripts were syntax-validated without execution. No 0.1.11 installation is claimed.
+
+## Native correction — 0.1.12
+
+The first 0.1.11 native check confirmed the compact editor and hidden history, but actual title-bar movement failed. Trusted pointer events reached the title, then invoke returned `Command start_window_drag not allowed by ACL`. The handler was registered in desktop.rs but omitted from app/build.rs and main.json. No installer was run.
+
+Fix only the app command manifest and main-window ACL; the feedback window retains event-only access. No new OS privilege is requested. Add a build-time consistency check across the invoke handler, build manifest and window ACL. It fails on the broken source, then passes with both declarations added. Runtime UI/output/storage behavior is otherwise unchanged. Rebuild as 0.1.12 and rerun actual movement and editing checks before installation.

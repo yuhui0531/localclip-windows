@@ -25,14 +25,13 @@
   ],
   "dataSchemaPermissionsDependenciesChanged": false,
   "native": {
-    "status": "pending_app_exit",
-    "plannedWindowScript": "reports/raw/ui0111-window-native.ps1",
-    "plannedEditorScript": "reports/raw/ui0111-native.ps1",
+    "status": "failed_drag_permission",
     "actualMovementVerified": false,
-    "testScriptSyntaxValidated": true
+    "error": "Command start_window_drag not allowed by ACL",
+    "backgroundCheckPassed": true
   },
   "installation": {
-    "status": "not_started",
+    "status": "not_installed_native_gate_failed",
     "lastVerifiedInstalledVersion": "0.1.8",
     "runningPid": 10964,
     "reason": "Personal app running; isolated tests and upgrade require tray exit"
@@ -63,5 +62,6 @@
   "ciByRun": {
     "38960409040": "success",
     "38960415628": "in_progress_at_last_check"
-  }
+  },
+  "supersededBy": "0.1.12"
 }

@@ -18,6 +18,8 @@ fn main() {
                 "queue_status",
                 "set_pinned",
                 "set_detail_view",
+                // 标题拖动必须同时声明到构建清单及主窗口 ACL，注册处理函数还不足以调用。
+                "start_window_drag",
                 "ocr_copy",
                 "ocr_cancel",
                 "set_favorite",
