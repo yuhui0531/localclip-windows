@@ -1,0 +1,68 @@
+{
+  "version": "0.1.12",
+  "source": "c1bf9d31623d718a675f22e46b2dcd6207dd1f1f",
+  "pullRequest": 8,
+  "installersRun": 39003479132,
+  "installersStatus": "success",
+  "failedBuildRun": 39003259290,
+  "failedBuildCause": "Unrelated winapi-util lock version was changed during app version bump; exact prior dependency entry restored",
+  "ciRun": 39003474304,
+  "ciStatus": "success",
+  "local": {
+    "frontendBuild": "passed",
+    "lockedClippy": "passed",
+    "permissionConsistencyCommands": 34,
+    "menuEditorChecks": 22,
+    "macOSAlignmentChecks": 13
+  },
+  "native": {
+    "status": "passed",
+    "windowDragChecks": 4,
+    "editorChecks": 13,
+    "uiParityChecks": 11,
+    "priorArtifact": "0.1.11",
+    "priorArtifactDragRejectedByACL": true,
+    "priorSharedEditorHarnessChecksPassed": 13,
+    "priorTestHookCorrected": true,
+    "screenshotsInspected": true,
+    "scope": "Generated data only; actual window movement, editor save/cancel and metadata, highlighting, wheel, menus, OCR entry, cache controls and cleanup cancellation. Full target-app card-drag/smart-paste/OCR matrix not rerun."
+  },
+  "installation": {
+    "status": "installed_verified_running",
+    "lastVerifiedInstalledVersion": "0.1.8",
+    "personalAppExitConfirmed": true,
+    "version": "0.1.12",
+    "installLocation": "C:\\apps\\LocalClip\\",
+    "installedExeSha256": "A48931F058C95BCA917A1E99143E749E5B93BC5339FE9BBCCFC5AA345C0604B7",
+    "msiExitCode": 0,
+    "backup": "C:\\Users\\ronny\\AppData\\Local\\LocalClip-UpgradeBackups\\before-0.1.12-20261017-130653",
+    "verifiedDataFileCount": 6,
+    "allExistingDataFilesUnchangedBeforeLaunch": true,
+    "runningPid": 2356,
+    "antivirusEnabled": true,
+    "realtimeEnabled": true
+  },
+  "antivirus": {
+    "status": "passed",
+    "scanner": "Microsoft Defender",
+    "scans": 4,
+    "allPassed": true,
+    "realtimeEnabled": true,
+    "antivirusEnabled": true,
+    "signature": "1.461.64.0",
+    "settingsChanged": false,
+    "sameEnvironment360Rescan": false
+  },
+  "packages": [
+    {
+      "arch": "arm64",
+      "msiSha256": "2B0C27A39BD10DEA4D0A2A0039658070EFD65D3D1D1D64621F97BDE3404D9C85",
+      "exeSha256": "A48931F058C95BCA917A1E99143E749E5B93BC5339FE9BBCCFC5AA345C0604B7"
+    },
+    {
+      "arch": "x64",
+      "msiSha256": "C3ADD2DF1B9A751EB8997AFD5A4DC3AA73BCD937F86E4EDCD50FA559AA053EEE",
+      "exeSha256": "A7A1C6DFC2DFCFAC95896F8530EC1448F9F551E8E2A33CCE913CF4ADA044D2E2"
+    }
+  ]
+}
