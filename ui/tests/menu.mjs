@@ -59,6 +59,18 @@ const choose=label=>menu.getByRole('menuitem',{name:label,exact:true}).click();
 const search=page.getByLabel('搜索剪贴板历史');
 try{
  await page.goto(`http://127.0.0.1:${server.address().port}/index.html`);await card(0).waitFor();
+ // 双击正文不受默认复制影响，且只粘贴实际双击的卡片。by AI.Coding
+ await check('double-click pastes clicked card despite copy default and prior multi-selection',async()=>{
+  await card(0).click();await card(1).dispatchEvent('click',{ctrlKey:true,bubbles:true});assert.equal(await page.locator('.clip-card.selected').count(),2);
+  for(const i of [1,0,2]){const before=await page.evaluate(()=>window.testCalls.filter(v=>v.command==='perform').length);await card(i).locator('.card-content').dblclick();const calls=await page.evaluate(()=>window.testCalls.filter(v=>v.command==='perform'));assert.equal(calls.length,before+1);assert.equal(calls.at(-1).r.action,'directPaste');assert.deepEqual(calls.at(-1).r.ids,[String(i)]);}
+ });
+ await check('double-click keeps default preference and Enter copy behavior',async()=>{
+  assert.equal(await page.evaluate(()=>window.testSettings.defaultAction),'copy');await card(1).focus();await page.keyboard.press('Enter');assert.equal(await page.evaluate(()=>window.testCalls.filter(v=>v.command==='perform').at(-1).r.action),'copy');
+  await page.evaluate(()=>{window.testSettings.defaultAction='directPaste';window.testEmit();});await page.waitForFunction(()=>document.querySelector('.primary.action-button')?.textContent.includes('粘贴'));await card(1).locator('.card-content').dblclick();assert.equal(await page.evaluate(()=>window.testCalls.filter(v=>v.command==='perform').at(-1).r.action),'directPaste');await page.evaluate(()=>{window.testSettings.defaultAction='copy';window.testEmit();});await page.waitForFunction(()=>document.querySelector('.primary.action-button')?.textContent.includes('复制'));
+ });
+ await check('header rename and detail controls do not trigger automatic paste',async()=>{
+  const before=await page.evaluate(()=>window.testCalls.filter(v=>v.command==='perform').length);await card(1).locator('.card-header').dblclick();await page.getByRole('dialog',{name:'重命名'}).waitFor();await page.getByRole('button',{name:'取消',exact:true}).click();await card(1).getByRole('button',{name:'查看详情',exact:true}).dblclick();await page.getByRole('dialog',{name:'条目详情'}).waitFor();assert.equal(await page.evaluate(()=>window.testCalls.filter(v=>v.command==='perform').length),before);await page.keyboard.press('Escape');
+ });
  await check('right-click menu anchored and bounded; screenshot actions present',async()=>{await card(0).click({button:'right'});await menu.waitFor();const r=await menu.boundingBox();assert(r.x<400&&r.x>=0&&r.y>=0&&r.y+r.height<=340);for(const label of ['原格式复制','复制图中文字','重命名','收藏','加入分类','在历史中定位','在分类中定位','详情','预览','打开','存储为文件…','删除'])assert(await menu.locator('button').filter({hasText:label}).count());});
  await check('original copy overrides plain-text default',async()=>{await choose('原格式复制');assert.deepEqual(await page.evaluate(()=>window.testCalls.filter(v=>v.command==='perform').at(-1).r.format),'original');});
  await check('OCR reachable from card menu and detail',async()=>{await card(0).click({button:'right'});await choose('复制图中文字');await page.getByRole('status').filter({hasText:'已复制图中文字'}).waitFor();await card(0).click({button:'right'});await menu.getByRole('menuitem',{name:/^详情/}).click();await page.getByLabel('条目详情').getByRole('button',{name:'复制图中文字'}).click();assert.equal(await page.evaluate(()=>window.testCalls.filter(v=>v.command==='ocr_copy').length),2);await page.keyboard.press('Escape');});
