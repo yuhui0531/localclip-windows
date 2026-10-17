@@ -167,10 +167,14 @@ python3 scripts/check_phase0.py
 
 ### 签名、更新与验收
 
+#### Code signing policy / 代码签名政策
+
+[中英文签名政策](CODE_SIGNING_POLICY.md) · [隐私政策](PRIVACY.md) · [SignPath 申请材料与条件核查](docs/signpath-application.md)。正在准备 SignPath Foundation 免费开源签名申请，尚未提交、获批或接入；当前安装包仍未签名。未来服务实际启用后，鸣谢措辞为“Free code signing provided by [SignPath.io](https://signpath.io), certificate by [SignPath Foundation](https://signpath.org)”；目前不代表已获赞助。
+
 正式更新安装需要在 `app/updater-public-key.txt` 提交 minisign 公钥，并配置以下 CI secrets：
 
 - `WINDOWS_UPDATER_PRIVATE_KEY`、`WINDOWS_UPDATER_KEY_PASSWORD`。
-- `WINDOWS_CODESIGN_PFX_BASE64`、`WINDOWS_CODESIGN_PFX_PASSWORD`。
+- 当前 PFX 签名路径：`WINDOWS_CODESIGN_PFX_BASE64`、`WINDOWS_CODESIGN_PFX_PASSWORD`；SignPath 获批后需要另行接入云签名，不能仅填入这些 PFX secrets。
 
 不要将私钥提交到仓库。没有签名凭据时，工作流跳过相应签名并标记未签名产物。与应用版本一致的标签会创建**草稿** GitHub Release。下载更新不会自动安装；安装必须由用户明确触发，并经过签名、架构、版本校验和数据库快照。缺少公钥时，安装请求会被拒绝。
 
@@ -349,10 +353,14 @@ The exporter uses synthetic databases and never reads or migrates personal clipb
 
 ### Signing, updates, and acceptance
 
+#### Code signing policy
+
+[Bilingual signing policy](CODE_SIGNING_POLICY.md) · [Privacy policy](PRIVACY.md) · [SignPath application and eligibility review](docs/signpath-application.md). We are preparing a SignPath Foundation free OSS signing application; it has not been submitted, approved or integrated. Current packages remain unsigned. Once the service is approved and active, the planned attribution is “Free code signing provided by [SignPath.io](https://signpath.io), certificate by [SignPath Foundation](https://signpath.org)”; this is not a claim of current sponsorship.
+
 Production update installation requires a committed public minisign key in `app/updater-public-key.txt`, plus these CI secrets:
 
 - `WINDOWS_UPDATER_PRIVATE_KEY` and `WINDOWS_UPDATER_KEY_PASSWORD`.
-- `WINDOWS_CODESIGN_PFX_BASE64` and `WINDOWS_CODESIGN_PFX_PASSWORD`.
+- Current PFX signing path: `WINDOWS_CODESIGN_PFX_BASE64` and `WINDOWS_CODESIGN_PFX_PASSWORD`. SignPath requires a separate cloud-signing integration after approval, not merely values for these PFX secrets.
 
 Never commit private keys. The workflow skips unavailable signing credentials and labels unsigned artifacts. A version-matching tag creates a **draft** GitHub release. Update downloads never install automatically: installation requires an explicit user action, signature/architecture/version validation, and a database snapshot. Without the public key, installation requests are rejected.
 
