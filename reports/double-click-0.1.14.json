@@ -1,0 +1,176 @@
+{
+  "version": "0.1.14",
+  "source": "96863f4c4285ec52e506db9f4bfa6b5790be80e2",
+  "ciRun": 39007448138,
+  "ciStatus": "success",
+  "installersRun": 39007480824,
+  "installersStatus": "success",
+  "rootCause": "Card activation fell back to defaultAction=copy; native direct-paste engine remained present",
+  "fix": "Double-click explicitly uses directPaste and synchronously selects the clicked record ID",
+  "local": {
+    "frontendBuild": "passed",
+    "permissionConsistencyCommands": 35,
+    "format": "passed",
+    "lockedClippy": "passed",
+    "menuEditorChecks": 27,
+    "macOSAlignmentChecks": 13,
+    "redBeforeFix": "action=copy instead of directPaste"
+  },
+  "native": {
+    "status": "passed",
+    "scope": "Generated Notepad document; actual double-click receipt/focus/panel dismissal and exactly-once use, default Enter copy, retained card drag",
+    "checks": [
+      {
+        "name": "double-click receipt with default copy",
+        "passed": true
+      },
+      {
+        "name": "panel hides after double-click with default copy",
+        "passed": true
+      },
+      {
+        "name": "original Notepad target regains focus with default copy",
+        "passed": true
+      },
+      {
+        "name": "one activation increments usage exactly once with default copy",
+        "passed": true
+      },
+      {
+        "name": "default preference stays copy",
+        "passed": true
+      },
+      {
+        "name": "double-click receipt with default directPaste",
+        "passed": true
+      },
+      {
+        "name": "panel hides after double-click with default directPaste",
+        "passed": true
+      },
+      {
+        "name": "original Notepad target regains focus with default directPaste",
+        "passed": true
+      },
+      {
+        "name": "one activation increments usage exactly once with default directPaste",
+        "passed": true
+      },
+      {
+        "name": "default preference stays directPaste",
+        "passed": true
+      },
+      {
+        "name": "Enter retains copy-only preference without inserting text",
+        "passed": true
+      },
+      {
+        "name": "Enter still copies full chosen body",
+        "passed": true
+      },
+      {
+        "name": "text card drag still inserts into original Notepad document",
+        "passed": true
+      },
+      {
+        "name": "drag preserves all pre-existing text and inserts once",
+        "passed": true
+      },
+      {
+        "name": "generated capture stays paused after all native output tests",
+        "passed": true
+      }
+    ],
+    "exeSha256": "83BC42607F5A39CEC77367E25C66DB635006AAF6B40BE0360657EB431E35FA38"
+  },
+  "installation": {
+    "status": "verified",
+    "lastVerifiedVersion": "0.1.14",
+    "personalAppExitConfirmed": true,
+    "allExistingDataFilesUnchangedBeforeLaunch": true,
+    "antivirusEnabled": true,
+    "exeSha256": "83BC42607F5A39CEC77367E25C66DB635006AAF6B40BE0360657EB431E35FA38",
+    "verifiedDataFileCount": 6,
+    "version": "0.1.14",
+    "realtimeEnabled": true,
+    "backup": "C:\\Users\\ronny\\AppData\\Local\\LocalClip-UpgradeBackups\\before-0.1.14-20261017-141612",
+    "runningPid": 9592,
+    "installed": [
+      {
+        "DisplayVersion": "0.1.14",
+        "InstallLocation": "C:\\apps\\LocalClip\\"
+      }
+    ],
+    "path": "C:\\apps\\LocalClip\\localclip.exe",
+    "msiExitCode": 0
+  },
+  "antivirus": {
+    "status": "passed",
+    "settingsChanged": false,
+    "exclusionsAdded": false,
+    "scanner": "Microsoft Defender",
+    "engine": {
+      "AMProductVersion": "4.18.26090.9",
+      "AMEngineVersion": "1.1.26090.9",
+      "AntivirusSignatureVersion": "1.461.64.0",
+      "AntivirusSignatureLastUpdated": "/Date(1792186227000)/",
+      "AntivirusEnabled": true,
+      "RealTimeProtectionEnabled": true
+    },
+    "results": [
+      {
+        "output": "Scan starting...\r\nScan finished.\r\nScanning C:\\Users\\Public\\Documents\\LocalClip-AV-9f88c3addcfe46498942ee2d250c115c\\arm64\\LocalClip_0.1.14_arm64.msi found no threats.\r\n",
+        "exitCode": 0,
+        "fileExistsAfterScan": true,
+        "sha256": "3FBC1AAE3F473A7AB874884E2A9BC3320EE8CAFF1F9C69F85C0FFF3D8FA6D1AE",
+        "arch": "arm64",
+        "seconds": 0.49293479999999995,
+        "file": "LocalClip_0.1.14_arm64.msi"
+      },
+      {
+        "output": "Scan starting...\r\nScan finished.\r\nScanning C:\\Users\\Public\\Documents\\LocalClip-AV-9f88c3addcfe46498942ee2d250c115c\\arm64\\localclip-arm64.exe found no threats.\r\n",
+        "exitCode": 0,
+        "fileExistsAfterScan": true,
+        "sha256": "83BC42607F5A39CEC77367E25C66DB635006AAF6B40BE0360657EB431E35FA38",
+        "arch": "arm64",
+        "seconds": 0.051953,
+        "file": "localclip-arm64.exe"
+      },
+      {
+        "output": "Scan starting...\r\nScan finished.\r\nScanning C:\\Users\\Public\\Documents\\LocalClip-AV-bb12fd6a079448a8bfeaf9e03f15a0df\\x64\\LocalClip_0.1.14_x64.msi found no threats.\r\n",
+        "exitCode": 0,
+        "fileExistsAfterScan": true,
+        "sha256": "1E702B3C40014D7A0E5079CC7F4716E126714C063542676DE4B3EFFBC194D82B",
+        "arch": "x64",
+        "seconds": 0.7981071,
+        "file": "LocalClip_0.1.14_x64.msi"
+      },
+      {
+        "output": "Scan starting...\r\nScan finished.\r\nScanning C:\\Users\\Public\\Documents\\LocalClip-AV-bb12fd6a079448a8bfeaf9e03f15a0df\\x64\\localclip-x64.exe found no threats.\r\n",
+        "exitCode": 0,
+        "fileExistsAfterScan": true,
+        "sha256": "853C6A0CDA0F46CE481A0F6608A1AEA6A2C8C1E2B96EB412C830815BF78F3BA1",
+        "arch": "x64",
+        "seconds": 0.2944758,
+        "file": "localclip-x64.exe"
+      }
+    ],
+    "represents360Rescan": false
+  },
+  "packages": [
+    {
+      "arch": "arm64",
+      "msiSha256": "3FBC1AAE3F473A7AB874884E2A9BC3320EE8CAFF1F9C69F85C0FFF3D8FA6D1AE",
+      "exeSha256": "83BC42607F5A39CEC77367E25C66DB635006AAF6B40BE0360657EB431E35FA38"
+    },
+    {
+      "arch": "x64",
+      "msiSha256": "1E702B3C40014D7A0E5079CC7F4716E126714C063542676DE4B3EFFBC194D82B",
+      "exeSha256": "853C6A0CDA0F46CE481A0F6608A1AEA6A2C8C1E2B96EB412C830815BF78F3BA1"
+    }
+  ],
+  "limits": [
+    "The broader external target-app smart-paste/OCR matrix was not rerun for this event-routing fix.",
+    "Unsigned manual-test packages; no signing keys supplied."
+  ]
+}
