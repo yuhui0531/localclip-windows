@@ -83,7 +83,7 @@ try{
   await page.evaluate(()=>{window.testItems[1].fullText='// generated line\n'.repeat(100)+'const answer = 42;';window.testItems[1].richText=true;});
   await card(1).click({button:'right'});await choose('编辑内容');await page.getByRole('dialog',{name:'编辑内容'}).waitFor();
   assert((await page.getByLabel('文本内容').inputValue()).endsWith('const answer = 42;'));assert(await page.getByText('保存修改后将使用纯文本，原有富文本格式会被替换。').isVisible());
-  await page.setViewportSize({width:1200,height:800});const rect=await page.getByRole('dialog',{name:'编辑内容'}).boundingBox();assert(rect.height>=350&&rect.height<=430&&rect.y+rect.height<=800);assert((await page.getByLabel('文本内容').boundingBox()).height>=200);await page.screenshot({path:'reports/raw/edit018-browser-editor.png'});
+  await page.setViewportSize({width:1200,height:800});const rect=await page.getByRole('dialog',{name:'编辑内容'}).boundingBox();assert(rect.height>=350&&rect.y+rect.height<=800);assert((await page.getByLabel('文本内容').boundingBox()).height>=200);await page.screenshot({path:'reports/raw/edit018-browser-editor.png'});
  });
  // 编辑只显示自己的表面；标题拖动交给原生窗口，正文和按钮不得启动拖动。by AI.Coding
  await check('editor hides underlying history and requests compact native layout',async()=>{
@@ -91,6 +91,17 @@ try{
   assert(await page.evaluate(()=>{const r=window.testCalls.filter(v=>v.command==='set_detail_view').at(-1).r;return r.expanded&&r.editor;}));
   await page.setViewportSize({width:560,height:390});await page.waitForTimeout(100);const rect=await page.getByRole('dialog',{name:'编辑内容'}).boundingBox();assert(rect.x>=0&&rect.y>=0&&rect.x+rect.width<=560&&rect.y+rect.height<=390);assert(await page.getByRole('button',{name:'保存',exact:true}).isVisible());await page.screenshot({path:'reports/raw/editor0111-browser.png'});
   await page.setViewportSize({width:1200,height:800});
+ });
+ // 两种弹窗必须跟随整个原生视口，不能保留固定内框或透出历史边缘。by AI.Coding
+ await check('editor fills resized viewport and keeps long text and actions usable',async()=>{
+  for(const size of [{width:480,height:360},{width:800,height:600},{width:1400,height:900}]){await page.setViewportSize(size);const r=await page.getByRole('dialog',{name:'编辑内容'}).boundingBox();assert.equal(r.x,0);assert.equal(r.y,0);assert.equal(r.width,size.width);assert.equal(r.height,size.height);const t=await page.getByLabel('文本内容').boundingBox(),f=await page.locator('.text-editor footer').boundingBox();assert(t.height>80&&t.y+t.height<=f.y);assert(f.y+f.height<=size.height);assert(!(await page.locator('.history').isVisible()));}
+  assert(await page.getByLabel('文本内容').evaluate(el=>el.scrollHeight>el.clientHeight));
+  await page.screenshot({path:'reports/raw/dialog-editor-large.png'});
+  const before=await page.evaluate(()=>window.testCalls.filter(v=>v.command==='start_window_resize').length);
+  for(const direction of ['North','NorthEast','East','SouthEast','South','SouthWest','West','NorthWest'])await page.locator(`.window-resize[data-direction="${direction}"]`).dispatchEvent('pointerdown',{button:0,isPrimary:true,bubbles:true});
+  assert.equal(await page.evaluate(()=>window.testCalls.filter(v=>v.command==='start_window_resize').length),before+8);
+  await page.locator('.window-resize').first().dispatchEvent('pointerdown',{button:2,isPrimary:true,bubbles:true});assert.equal(await page.evaluate(()=>window.testCalls.filter(v=>v.command==='start_window_resize').length),before+8);
+  await page.setViewportSize({width:800,height:600});
  });
  await check('only primary title-bar dragging starts native window movement',async()=>{
   const count=()=>page.evaluate(()=>window.testCalls.filter(v=>v.command==='start_window_drag').length);
@@ -111,6 +122,16 @@ try{
   await page.getByLabel('文本内容').fill('function edited() { return 42; }');await page.evaluate(()=>{window.testEditError='DuplicateContent';});await page.keyboard.press('Control+Enter');await page.getByRole('alert').filter({hasText:'历史中已存在相同内容'}).waitFor();assert.equal(await page.getByLabel('文本内容').inputValue(),'function edited() { return 42; }');
   await page.evaluate(()=>{window.testEditError=null;});await page.keyboard.press('Control+Enter');await page.getByRole('dialog',{name:'编辑内容'}).waitFor({state:'detached'});await card(1).locator('.hljs-keyword').first().waitFor();
   assert.deepEqual(await page.evaluate(()=>{const v=window.testItems[1];return [v.title,v.favorite,v.categoryIDs,v.fullText];}),['Renamed generated code',true,['a'],'function edited() { return 42; }']);
+ });
+ await check('detail shares opaque draggable resizable surface and isolates history keys',async()=>{
+  await card(1).click({button:'right'});await menu.getByRole('menuitem',{name:/^详情/}).click();
+  assert(await page.evaluate(()=>{const r=window.testCalls.filter(v=>v.command==='set_detail_view').at(-1).r;return r.expanded&&r.detail&&!r.editor;}));
+  const old=await page.evaluate(()=>window.testCalls.filter(v=>v.command==='start_window_drag').length);
+  await page.locator('.detail-popover .window-titlebar h2').dispatchEvent('pointerdown',{button:0,isPrimary:true,bubbles:true});assert.equal(await page.evaluate(()=>window.testCalls.filter(v=>v.command==='start_window_drag').length),old+1);
+  const actions=await page.evaluate(()=>window.testCalls.filter(v=>['perform','delete'].includes(v.command)).length);
+  await page.locator('.detail-popover').focus();await page.keyboard.press('Delete');await page.keyboard.press('Enter');await page.keyboard.press('Control+f');assert.equal(await page.evaluate(()=>window.testCalls.filter(v=>['perform','delete'].includes(v.command)).length),actions);assert(await page.locator('.detail-popover').evaluate(el=>el.contains(document.activeElement)));
+  for(const size of [{width:480,height:360},{width:800,height:600},{width:1400,height:900}]){await page.setViewportSize(size);const r=await page.locator('.detail-popover').boundingBox();assert.equal(r.x,0);assert.equal(r.y,0);assert.equal(r.width,size.width);assert.equal(r.height,size.height);assert(!(await page.locator('.toolbar').isVisible()));assert(!(await page.locator('.status-bar').isVisible()));const close=await page.getByLabel('关闭详情',{exact:true}).boundingBox();assert(close.x>=0&&close.y>=0&&close.x+close.width<=size.width&&close.y+close.height<=size.height);}
+  assert.equal(await page.locator('.detail-popover .window-resize').count(),8);await page.screenshot({path:'reports/raw/dialog-detail-large.png'});await page.keyboard.press('Escape');await page.setViewportSize({width:1200,height:340});assert(await page.locator('.history').isVisible());
  });
  await check('details edit entry and hiding contents clears unsaved draft',async()=>{
   await card(1).click({button:'right'});await menu.getByRole('menuitem',{name:/^详情/}).click();await page.getByLabel('条目详情').getByRole('button',{name:'编辑内容',exact:true}).click();await page.getByLabel('文本内容').fill('private draft');

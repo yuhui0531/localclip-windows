@@ -43,5 +43,33 @@ button,input,select,textarea{font-family:inherit}button{border-radius:6px}button
 /* 卡片标题按卡片边长分级；中等面板仍保留时间和 Ctrl 数字提示。by AI.Coding */
 .small-cards .clip-card .card-title{font-size:12px}.small-cards .card-heading time{display:none}.tiny-cards .clip-card .card-title{font-size:10px}
 
-/* 编辑时隐藏但不卸载历史，避免多余卡片透出，同时保留搜索、滚动和选择状态。by AI.Coding */
-.editor-mode>:not(.edit-shade){visibility:hidden!important;pointer-events:none}.editor-mode{border-radius:12px}.editor-mode .edit-shade{padding:0;background:var(--bg)}.editor-mode .text-editor{max-height:100vh;border:0;border-radius:0}.editor-titlebar{cursor:move;user-select:none;touch-action:none}.editor-titlebar button{cursor:pointer}
+/* 弹窗覆盖整个原生窗口；历史保持挂载但不可见，避免边缘透出且保留滚动/选择。by AI.Coding */
+.dialog-mode>:not(.dialog-layer):not(.feedback-pill):not(.ocr-progress):not(.confirm-backdrop){visibility:hidden!important;pointer-events:none}
+.dialog-mode{border:0;border-radius:12px;overflow:hidden;background:var(--bg)}
+.dialog-mode .edit-shade{padding:0;background:var(--bg)}
+.native-dialog,.native-dialog.detail-popover,.native-dialog.quick-preview,.native-dialog.text-editor{position:fixed;inset:0!important;width:100%!important;height:100%;max-height:none;margin:0;padding:16px;gap:12px;display:flex;flex-direction:column;min-width:0;min-height:0;border:1px solid var(--border);border-radius:12px;background:var(--bg);box-shadow:none;overflow:hidden;outline:none;z-index:16}
+.native-dialog>.window-titlebar{padding:0;border:0;min-height:32px;flex-shrink:0;display:flex;align-items:center;gap:10px;cursor:move;user-select:none;touch-action:none}
+.window-titlebar h2{flex:1;min-width:0;font-size:16px;display:flex;gap:8px;align-items:center;overflow:hidden}
+.window-titlebar h2>span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.window-titlebar button{cursor:pointer;flex-shrink:0}
+.native-dialog .detail-layout{min-height:0;min-width:0;overflow:hidden}
+.native-dialog .detail-body{min-height:0;min-width:0;padding:0;overflow:auto}
+.native-dialog .detail-inspector{padding:0 0 0 16px;background:var(--bg)}
+.native-dialog.text-editor>p{flex-shrink:0}
+.native-dialog.text-editor textarea{min-width:0;min-height:0;flex:1;overflow:auto;resize:none}
+.native-dialog.text-editor footer{flex-shrink:0;flex-wrap:wrap;gap:8px}
+.native-dialog.text-editor footer span{min-width:150px;font-size:11px}
+.native-dialog.text-editor footer button{min-width:58px}
+.native-dialog .edit-error{max-height:64px;overflow:auto}
+/* 窄窗元数据独立滚动，关闭/保存区始终在固定布局中；图片保持原有缩放画布。 */
+@media(max-width:760px){.native-dialog .detail-layout{flex-direction:column}.native-dialog .detail-body{flex:1;min-height:0;overflow:auto}.native-dialog .detail-inspector{width:auto;max-height:40%;padding:12px 0 0;border-left:0;border-top:1px solid var(--border);overflow:auto}.native-dialog .detail-image-item,.native-dialog .detail-image-item:only-child{height:auto;min-height:0;flex:1}.native-dialog>.window-titlebar{flex-wrap:wrap}.native-dialog .detail-meta{display:none}}
+@media(max-height:400px){.native-dialog,.native-dialog.text-editor{padding:12px;gap:8px}.native-dialog.text-editor>p{font-size:11px}}
+/* 八个轻量命中区仅启动系统缩放；系统负责 DPI、最小尺寸和连续移动，不逐帧发 IPC。 */
+.window-resize{position:absolute;z-index:5;touch-action:none}
+.window-resize[data-direction=North],.window-resize[data-direction=South]{left:10px;right:10px;height:5px;cursor:ns-resize}
+.window-resize[data-direction=North]{top:0}.window-resize[data-direction=South]{bottom:0}
+.window-resize[data-direction=East],.window-resize[data-direction=West]{top:10px;bottom:10px;width:5px;cursor:ew-resize}
+.window-resize[data-direction=East]{right:0}.window-resize[data-direction=West]{left:0}
+.window-resize[data-direction=NorthEast],.window-resize[data-direction=SouthEast],.window-resize[data-direction=SouthWest],.window-resize[data-direction=NorthWest]{width:10px;height:10px}
+.window-resize[data-direction=NorthEast]{top:0;right:0;cursor:nesw-resize}.window-resize[data-direction=SouthWest]{bottom:0;left:0;cursor:nesw-resize}
+.window-resize[data-direction=NorthWest]{top:0;left:0;cursor:nwse-resize}.window-resize[data-direction=SouthEast]{bottom:0;right:0;cursor:nwse-resize}

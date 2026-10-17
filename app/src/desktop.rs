@@ -341,6 +341,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
             crate::commands::set_pinned,
             crate::commands::set_detail_view,
             crate::commands::start_window_drag,
+            crate::commands::start_window_resize,
             crate::commands::ocr_copy,
             crate::commands::ocr_cancel,
             crate::commands::set_favorite,
@@ -610,16 +611,22 @@ fn position_panel(app: &tauri::AppHandle, window: &tauri::WebviewWindow) {
     let _ = layout_panel(app, window, &monitor, PanelView::History);
 }
 
-/// 编辑使用独立的紧凑布局，避免把整个历史面板放大后留在编辑器背后。
+/// 详情和编辑共用系统可缩放布局，历史和设置保持原有固定布局。
 #[derive(Clone, Copy, PartialEq, Eq)]
 enum PanelView {
     History,
     Detail,
     Editor,
+    Settings,
 }
 
 /// 仅切换受限的历史、详情或编辑布局，不开放任意窗口尺寸或位置。
-pub fn set_detail_view(app: &tauri::AppHandle, expanded: bool, editor: bool) -> Result<(), String> {
+pub fn set_detail_view(
+    app: &tauri::AppHandle,
+    expanded: bool,
+    editor: bool,
+    detail: bool,
+) -> Result<(), String> {
     let window = app.get_webview_window("main").ok_or("panelHidden")?;
     if expanded && !window.is_visible().unwrap_or(false) {
         return Err("panelHidden".into());
@@ -632,8 +639,10 @@ pub fn set_detail_view(app: &tauri::AppHandle, expanded: bool, editor: bool) -> 
         PanelView::History
     } else if editor {
         PanelView::Editor
-    } else {
+    } else if detail {
         PanelView::Detail
+    } else {
+        PanelView::Settings
     };
     layout_panel(app, &window, &monitor, view)
 }
@@ -649,6 +658,21 @@ pub fn start_window_drag(app: &tauri::AppHandle) -> Result<(), String> {
         .map_err(|_| "previewUnavailable".into())
 }
 
+/// 边缘与四角调用系统缩放，历史和设置模式禁止启动缩放会话。
+pub fn start_window_resize(app: &tauri::AppHandle, direction: &str) -> Result<(), String> {
+    let window = app.get_webview_window("main").ok_or("panelHidden")?;
+    if !window.is_visible().unwrap_or(false) || !window.is_resizable().unwrap_or(false) {
+        return Err("panelHidden".into());
+    }
+    // 由 Tauri 的封闭枚举校验八个方向，拒绝其他字符串。
+    let direction = serde_json::from_value(json!(direction)).map_err(|_| "invalidRequest")?;
+    let webview: &tauri::Webview = window.as_ref();
+    webview
+        .window()
+        .start_resize_dragging(direction)
+        .map_err(|_| "previewUnavailable".into())
+}
+
 /// 编辑和详情在当前工作区居中，退出时恢复底部面板；不修改设置或粘贴目标。
 fn layout_panel(
     app: &tauri::AppHandle,
@@ -658,6 +682,14 @@ fn layout_panel(
 ) -> Result<(), String> {
     let area = monitor.work_area();
     let scale = monitor.scale_factor();
+    let dialog = matches!(view, PanelView::Detail | PanelView::Editor);
+    // 详情切换到编辑时保留用户刚拖动、缩放的几何，避免重置位置和草稿视口。
+    if dialog && window.is_resizable().unwrap_or(false) {
+        return Ok(());
+    }
+    window
+        .set_resizable(dialog)
+        .map_err(|_| "previewUnavailable")?;
     let logical_height = app
         .state::<AppState>()
         .runtime
@@ -667,8 +699,8 @@ fn layout_panel(
         .unwrap_or(340);
     let (width, height) = if view != PanelView::History {
         let margin = (24.0 * scale).round() as u32;
-        let (logical_width, logical_height) = if view == PanelView::Editor {
-            (560.0, 390.0)
+        let (logical_width, logical_height) = if dialog {
+            (800.0, 600.0)
         } else {
             (1200.0, 800.0)
         };
@@ -691,15 +723,13 @@ fn layout_panel(
         } else {
             (area.size.height - height) as i32
         };
-    // 历史的 640px 最小宽度不能阻止 560px 编辑器；关闭后恢复原约束。
+    // 两种弹窗共用最小尺寸；低分辨率/高 DPI 工作区进一步收紧，保证仍可关闭。
+    let min_width: f64 = if dialog { 480.0 } else { 640.0 };
+    let min_height: f64 = if dialog { 360.0 } else { 220.0 };
     window
         .set_min_size(Some(tauri::LogicalSize::new(
-            if view == PanelView::Editor {
-                320.0
-            } else {
-                640.0
-            },
-            220.0,
+            min_width.min(width as f64 / scale),
+            min_height.min(height as f64 / scale),
         )))
         .map_err(|_| "previewUnavailable")?;
     window

@@ -20,6 +20,7 @@
     "allow-set-pinned",
     "allow-set-detail-view",
     "allow-start-window-drag",
+    "allow-start-window-resize",
     "allow-ocr-copy",
     "allow-ocr-cancel",
     "allow-set-favorite",

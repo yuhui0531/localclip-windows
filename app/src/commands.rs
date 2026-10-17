@@ -800,6 +800,7 @@ pub fn set_detail_view(app: tauri::AppHandle, request: Value) -> Result<Value> {
         &app,
         request["expanded"].as_bool().ok_or("invalidRequest")?,
         request["editor"].as_bool().unwrap_or(false),
+        request["detail"].as_bool().unwrap_or(false),
     )?;
     Ok(Value::Null)
 }
@@ -808,6 +809,13 @@ pub fn set_detail_view(app: tauri::AppHandle, request: Value) -> Result<Value> {
 #[tauri::command]
 pub fn start_window_drag(app: tauri::AppHandle) -> Result<Value> {
     desktop::start_window_drag(&app)?;
+    Ok(Value::Null)
+}
+
+/// 缩放只接受系统方向枚举；不开放任意位置、尺寸或窗口句柄。
+#[tauri::command]
+pub fn start_window_resize(app: tauri::AppHandle, request: Value) -> Result<Value> {
+    desktop::start_window_resize(&app, request["direction"].as_str().ok_or("invalidRequest")?)?;
     Ok(Value::Null)
 }
 
